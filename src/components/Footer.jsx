@@ -70,7 +70,7 @@ export default function Footer() {
 
         {/* Bottom */}
         <div style={{ borderTop:'1px solid rgba(201,168,76,0.1)', paddingTop:'2rem', display:'flex', flexWrap:'wrap', alignItems:'center', justifyContent:'space-between', gap:'1rem' }}>
-          <p style={{ fontFamily:'DM Sans, sans-serif', fontSize:'0.75rem', color:'rgba(245,237,217,0.25)' }}>© 2026 HMA-Store. All rights reserved.</p>
+          <p style={{ fontFamily:'DM Sans, sans-serif', fontSize:'0.75rem', color:'rgba(245,237,217,0.25)' }}>© 2026 HMA-Store By Haris Shahnawaz. All rights reserved.</p>
           <div style={{ display:'flex', gap:'1.5rem' }}>
             {['Privacy Policy','Terms of Service','Returns'].map(l => (
               <a key={l} href="#" style={{ fontFamily:'DM Sans, sans-serif', fontSize:'0.7rem', color:'rgba(245,237,217,0.25)', textDecoration:'none', transition:'color 0.2s' }}
