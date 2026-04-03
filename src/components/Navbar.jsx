@@ -38,7 +38,7 @@ export default function Navbar({ activePage, onNavigate, onLoginOpen }) {
 
   return (
     <header
-      className={`sticky top-0 z-50 border-b border-[#d8d3cb] transition-all duration-300 ${
+      className={`sticky top-0 z-50 border-b border-border transition-all duration-300 ${
         scrolled ? "shadow-md" : ""
       }`}
       style={{
@@ -47,7 +47,7 @@ export default function Navbar({ activePage, onNavigate, onLoginOpen }) {
         WebkitBackdropFilter: "blur(12px)",
       }}
     >
-      <div className="max-w-[1400px] mx-auto px-4 md:px-8">
+      <div className="max-w-350 mx-auto px-4 md:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
 
           {/* ── LOGO ── */}
@@ -106,7 +106,7 @@ export default function Navbar({ activePage, onNavigate, onLoginOpen }) {
                 {link.label}
                 {/* Underline */}
                 <span
-                  className="absolute bottom-0 left-0 h-[1.5px] bg-[#1a1a1a] transition-all duration-300"
+                  className="absolute bottom-0 left-0 h-[1.5px] bg-black transition-all duration-300"
                   style={{
                     width: activePage === link.page ? "100%" : "0%",
                   }}
@@ -212,7 +212,8 @@ export default function Navbar({ activePage, onNavigate, onLoginOpen }) {
         </div>
       </div>
 
-      {/* ── MOBILE MENU ── */}
+
+      {/* ── MOBILE MENU ── */}~
       {mobileOpen && (
         <div
           className="md:hidden border-t"
@@ -221,7 +222,7 @@ export default function Navbar({ activePage, onNavigate, onLoginOpen }) {
             borderColor: "#d8d3cb",
           }}
         >
-          <div className="max-w-[1400px] mx-auto px-4 py-3 flex flex-col gap-1">
+          <div className="max-w-350 mx-auto px-4 py-3 flex flex-col gap-1">
             {navLinks.map((link) => (
               <button
                 key={link.page}
