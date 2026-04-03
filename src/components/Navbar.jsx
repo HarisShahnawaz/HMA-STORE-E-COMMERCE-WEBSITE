@@ -1,144 +1,280 @@
-import { useState, useEffect, useRef } from 'react'
-import { ShoppingBag, Search, X, Menu, ChevronDown, User } from 'lucide-react'
-import { useCart } from '../context/CartContext'
+import { useState, useEffect } from "react";
+import { Search, User, ShoppingBag, Menu, X, Sparkles } from "lucide-react";
+import { useCart } from "../context/CartContext";
 
-export default function Navbar() {
-  const { cartCount, setIsCartOpen, setIsLoginOpen } = useCart()
-  const [scrolled, setScrolled] = useState(false)
-  const [searchOpen, setSearchOpen] = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const [dropdownOpen, setDropdownOpen] = useState(false)
-  const [searchVal, setSearchVal] = useState('')
-  const searchRef = useRef(null)
+const navLinks = [
+  { label: "MEN", page: "men" },
+  { label: "WOMEN", page: "women" },
+  { label: "CHILDREN", page: "children" },
+  { label: "NEW ARRIVALS", page: "new-arrivals" },
+  { label: "SALE", page: "sale" },
+];
+
+export default function Navbar({ activePage, onNavigate, onLoginOpen }) {
+  const { cartCount, setCartOpen } = useCart();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 60)
-    window.addEventListener('scroll', fn)
-    return () => window.removeEventListener('scroll', fn)
-  }, [])
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
-    if (searchOpen) searchRef.current?.focus()
-  }, [searchOpen])
+    const handleResize = () => {
+      if (window.innerWidth >= 768) setMobileOpen(false);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-  const scrollTo = (id) => {
-    setMobileOpen(false)
-    document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' })
-  }
+  const handleNav = (page) => {
+    onNavigate && onNavigate(page);
+    setMobileOpen(false);
+  };
 
   return (
-    <>
-      <nav style={{
-        position:'fixed', top:0, left:0, right:0, zIndex:50, transition:'all 0.4s ease',
-        background: scrolled ? 'rgba(10,10,10,0.96)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(12px)' : 'none',
-        borderBottom: scrolled ? '1px solid rgba(201,168,76,0.1)' : 'none',
-        padding: scrolled ? '0.75rem 0' : '1.25rem 0',
-      }}>
-        <div style={{ maxWidth:'80rem', margin:'0 auto', padding:'0 1.5rem', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+    <header
+      className={`sticky top-0 z-50 border-b border-[#d8d3cb] transition-all duration-300 ${
+        scrolled ? "shadow-md" : ""
+      }`}
+      style={{
+        backgroundColor: "rgba(245, 242, 237, 0.97)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+      }}
+    >
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8">
+        <div className="flex items-center justify-between h-16 md:h-20">
 
-          {/* Logo */}
-          <a href="#home" style={{ display:'flex', alignItems:'center', textDecoration:'none' }}>
-            <span style={{ fontFamily:'Playfair Display, serif', fontSize:'1.5rem', fontWeight:700, color:'#F5EDD9' }}>HMA</span>
-            <span style={{ fontFamily:'Playfair Display, serif', fontSize:'1.5rem', fontWeight:700, color:'#C9A84C' }}>-Store</span>
-          </a>
+          {/* ── LOGO ── */}
+          <button
+            onClick={() => handleNav("home")}
+            className="group flex items-center gap-2 bg-transparent border-none cursor-pointer"
+          >
+            <Sparkles
+              size={15}
+              className="transition-transform duration-300 group-hover:rotate-12"
+              style={{ color: "#c9a96e" }}
+            />
+            <span
+              style={{
+                fontFamily: "'Playfair Display', Georgia, serif",
+                fontSize: "clamp(1.2rem, 3vw, 1.6rem)",
+                fontWeight: "700",
+                letterSpacing: "0.12em",
+                color: "#1a1a1a",
+                transition: "letter-spacing 0.3s ease",
+              }}
+              onMouseEnter={(e) => e.target.style.letterSpacing = "0.2em"}
+              onMouseLeave={(e) => e.target.style.letterSpacing = "0.12em"}
+            >
+              HMA STORE
+            </span>
+            <Sparkles
+              size={15}
+              className="transition-transform duration-300 group-hover:-rotate-12"
+              style={{ color: "#c9a96e" }}
+            />
+          </button>
 
-          {/* Desktop links */}
-          <div className="hidden-mobile" style={{ display:'flex', alignItems:'center', gap:'2rem' }}>
-            {['Home','About','Contact'].map(label => (
-              <button key={label} className="nav-link" onClick={() => scrollTo(`#${label.toLowerCase()}`)}>
-                {label}
+          {/* ── DESKTOP NAV ── */}
+          <nav className="hidden md:flex items-center gap-8">
+            {navLinks.map((link) => (
+              <button
+                key={link.page}
+                onClick={() => handleNav(link.page)}
+                className="relative bg-transparent border-none cursor-pointer pb-1 group"
+                style={{
+                  fontFamily: "'Jost', sans-serif",
+                  fontSize: "0.72rem",
+                  fontWeight: activePage === link.page ? "600" : "500",
+                  letterSpacing: "0.12em",
+                  color: activePage === link.page ? "#1a1a1a" : "#6b6b6b",
+                  transition: "color 0.2s ease",
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = "#1a1a1a"}
+                onMouseLeave={(e) => {
+                  if (activePage !== link.page) {
+                    e.currentTarget.style.color = "#6b6b6b";
+                  }
+                }}
+              >
+                {link.label}
+                {/* Underline */}
+                <span
+                  className="absolute bottom-0 left-0 h-[1.5px] bg-[#1a1a1a] transition-all duration-300"
+                  style={{
+                    width: activePage === link.page ? "100%" : "0%",
+                  }}
+                  ref={(el) => {
+                    if (el) {
+                      el.closest("button").addEventListener("mouseenter", () => {
+                        el.style.width = "100%";
+                      });
+                      el.closest("button").addEventListener("mouseleave", () => {
+                        if (activePage !== link.page) el.style.width = "0%";
+                      });
+                    }
+                  }}
+                />
               </button>
             ))}
-            {/* Dropdown */}
-            <div style={{ position:'relative' }}>
-              <button className="nav-link" style={{ display:'flex', alignItems:'center', gap:'0.25rem' }}
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                onBlur={() => setTimeout(() => setDropdownOpen(false), 150)}>
-                Categories <ChevronDown size={13} style={{ transition:'transform 0.2s', transform: dropdownOpen ? 'rotate(180deg)' : 'rotate(0)' }} />
-              </button>
-              {dropdownOpen && (
-                <div style={{ position:'absolute', top:'calc(100% + 0.75rem)', left:'50%', transform:'translateX(-50%)', background:'#141414', border:'1px solid rgba(201,168,76,0.15)', minWidth:'130px', boxShadow:'0 20px 40px rgba(0,0,0,0.5)', animation:'fadeIn 0.2s ease' }}>
-                  {['Men','Women','Kids'].map(item => (
-                    <button key={item} onClick={() => { scrollTo('#categories'); setDropdownOpen(false) }}
-                      style={{ display:'block', width:'100%', textAlign:'left', padding:'0.75rem 1.25rem', fontFamily:'DM Sans, sans-serif', fontSize:'0.7rem', letterSpacing:'0.2em', textTransform:'uppercase', color:'rgba(245,237,217,0.6)', background:'none', border:'none', cursor:'pointer', transition:'color 0.2s' }}
-                      onMouseEnter={e => e.target.style.color='#C9A84C'}
-                      onMouseLeave={e => e.target.style.color='rgba(245,237,217,0.6)'}>
-                      {item}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
+          </nav>
 
-          {/* Right icons */}
-          <div style={{ display:'flex', alignItems:'center', gap:'1rem' }}>
+          {/* ── RIGHT ICONS ── */}
+          <div className="flex items-center gap-1 md:gap-3">
+
+            {/* Search */}
             {searchOpen ? (
-              <div style={{ display:'flex', alignItems:'center', gap:'0.5rem', borderBottom:'1px solid rgba(201,168,76,0.4)', paddingBottom:'2px' }}>
-                <input ref={searchRef} value={searchVal} onChange={e => setSearchVal(e.target.value)}
-                  placeholder="Search..."
-                  style={{ background:'transparent', color:'#F5EDD9', fontSize:'0.85rem', outline:'none', width:'130px', fontFamily:'DM Sans, sans-serif', border:'none' }} />
-                <button onClick={() => setSearchOpen(false)} style={{ background:'none', border:'none', cursor:'pointer', color:'#C9A84C' }}><X size={15} /></button>
+              <div className="flex items-center gap-2">
+                <input
+                  autoFocus
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search styles..."
+                  onKeyDown={(e) => e.key === "Escape" && setSearchOpen(false)}
+                  className="text-sm bg-transparent outline-none pb-1 w-32 md:w-44"
+                  style={{
+                    fontFamily: "'Jost', sans-serif",
+                    borderBottom: "1.5px solid #1a1a1a",
+                    color: "#1a1a1a",
+                  }}
+                />
+                <button
+                  onClick={() => { setSearchOpen(false); setSearchQuery(""); }}
+                  className="p-2 rounded-full transition-all duration-200 hover:scale-110 border-none bg-transparent cursor-pointer"
+                  style={{ color: "#1a1a1a" }}
+                >
+                  <X size={18} />
+                </button>
               </div>
             ) : (
-              <button onClick={() => setSearchOpen(true)} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(245,237,217,0.7)', transition:'color 0.3s' }}
-                onMouseEnter={e => e.currentTarget.style.color='#C9A84C'}
-                onMouseLeave={e => e.currentTarget.style.color='rgba(245,237,217,0.7)'}>
-                <Search size={19} />
+              <button
+                onClick={() => setSearchOpen(true)}
+                className="p-2 rounded-full border-none bg-transparent cursor-pointer transition-all duration-200 hover:scale-110"
+                style={{ color: "#1a1a1a" }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#ede9e2"}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+              >
+                <Search size={20} />
               </button>
             )}
 
-            <button onClick={() => setIsCartOpen(true)} style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(245,237,217,0.7)', position:'relative', transition:'color 0.3s' }}
-              onMouseEnter={e => e.currentTarget.style.color='#C9A84C'}
-              onMouseLeave={e => e.currentTarget.style.color='rgba(245,237,217,0.7)'}>
-              <ShoppingBag size={19} />
+            {/* Login — desktop only */}
+            <button
+              onClick={() => onLoginOpen && onLoginOpen()}
+              className="hidden md:flex p-2 rounded-full border-none bg-transparent cursor-pointer transition-all duration-200 hover:scale-110"
+              style={{ color: "#1a1a1a" }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#ede9e2"}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+            >
+              <User size={20} />
+            </button>
+
+            {/* Cart */}
+            <button
+              onClick={() => setCartOpen(true)}
+              className="relative p-2 rounded-full border-none bg-transparent cursor-pointer transition-all duration-200 hover:scale-110"
+              style={{ color: "#1a1a1a" }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#ede9e2"}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+            >
+              <ShoppingBag size={20} />
               {cartCount > 0 && (
-                <span style={{ position:'absolute', top:'-8px', right:'-8px', background:'#C9A84C', color:'#0a0a0a', fontSize:'0.65rem', fontWeight:700, borderRadius:'50%', width:'16px', height:'16px', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                  {cartCount}
+                <span
+                  className="absolute -top-1 -right-1 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center"
+                  style={{
+                    backgroundColor: "#e05a5a",
+                    fontFamily: "'Jost', sans-serif",
+                  }}
+                >
+                  {cartCount > 9 ? "9+" : cartCount}
                 </span>
               )}
             </button>
 
-            <button onClick={() => setIsLoginOpen(true)} className="hidden-mobile"
-              style={{ display:'flex', alignItems:'center', gap:'0.4rem', border:'1px solid rgba(201,168,76,0.4)', color:'#C9A84C', fontFamily:'DM Sans, sans-serif', fontSize:'0.7rem', letterSpacing:'0.15em', textTransform:'uppercase', padding:'0.5rem 1rem', background:'transparent', cursor:'pointer', transition:'all 0.3s' }}
-              onMouseEnter={e => { e.currentTarget.style.background='#C9A84C'; e.currentTarget.style.color='#0a0a0a' }}
-              onMouseLeave={e => { e.currentTarget.style.background='transparent'; e.currentTarget.style.color='#C9A84C' }}>
-              <User size={13} /> Login
-            </button>
-
-            <button onClick={() => setMobileOpen(!mobileOpen)} className="show-mobile"
-              style={{ background:'none', border:'none', cursor:'pointer', color:'rgba(245,237,217,0.8)' }}>
+            {/* Mobile Hamburger */}
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="md:hidden p-2 rounded-full border-none bg-transparent cursor-pointer transition-all duration-200"
+              style={{ color: "#1a1a1a" }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#ede9e2"}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}
+            >
               {mobileOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
         </div>
-      </nav>
-
-      {/* Mobile Drawer */}
-      <div style={{ position:'fixed', inset:0, zIndex:40, pointerEvents: mobileOpen ? 'auto' : 'none' }}>
-        <div onClick={() => setMobileOpen(false)}
-          style={{ position:'absolute', inset:0, background:'rgba(10,10,10,0.85)', backdropFilter:'blur(4px)', opacity: mobileOpen ? 1 : 0, transition:'opacity 0.3s' }} />
-        <div className="drawer"
-          style={{ position:'absolute', top:0, left:0, height:'100%', width:'280px', background:'#141414', borderRight:'1px solid rgba(201,168,76,0.1)', transform: mobileOpen ? 'translateX(0)' : 'translateX(-100%)', padding:'5rem 2rem 2rem' }}>
-          <div style={{ fontFamily:'Playfair Display, serif', fontSize:'1.3rem', fontWeight:700, marginBottom:'1.5rem' }}>
-            <span style={{ color:'#F5EDD9' }}>HMA</span><span style={{ color:'#C9A84C' }}>-Store</span>
-          </div>
-          <div style={{ width:'2rem', height:'1px', background:'rgba(201,168,76,0.3)', marginBottom:'1.5rem' }} />
-          {['home','categories','about','contact'].map(page => (
-            <button key={page} onClick={() => scrollTo(`#${page}`)}
-              style={{ display:'block', fontFamily:'DM Sans, sans-serif', fontSize:'0.75rem', letterSpacing:'0.2em', textTransform:'uppercase', color:'rgba(245,237,217,0.7)', background:'none', border:'none', cursor:'pointer', padding:'0.75rem 0', transition:'color 0.2s' }}
-              onMouseEnter={e => e.currentTarget.style.color='#C9A84C'}
-              onMouseLeave={e => e.currentTarget.style.color='rgba(245,237,217,0.7)'}>
-              {page.charAt(0).toUpperCase() + page.slice(1)}
-            </button>
-          ))}
-          <div style={{ width:'2rem', height:'1px', background:'rgba(201,168,76,0.3)', margin:'1rem 0' }} />
-          <button onClick={() => { setIsLoginOpen(true); setMobileOpen(false) }} className="btn-outline" style={{ width:'100%', marginTop:'0.5rem' }}>
-            Login
-          </button>
-        </div>
       </div>
-    </>
-  )
+
+      {/* ── MOBILE MENU ── */}
+      {mobileOpen && (
+        <div
+          className="md:hidden border-t"
+          style={{
+            backgroundColor: "#f5f2ed",
+            borderColor: "#d8d3cb",
+          }}
+        >
+          <div className="max-w-[1400px] mx-auto px-4 py-3 flex flex-col gap-1">
+            {navLinks.map((link) => (
+              <button
+                key={link.page}
+                onClick={() => handleNav(link.page)}
+                className="text-left px-4 py-3 rounded-lg border-none cursor-pointer transition-all duration-200"
+                style={{
+                  fontFamily: "'Jost', sans-serif",
+                  fontSize: "0.8rem",
+                  letterSpacing: "0.12em",
+                  fontWeight: activePage === link.page ? "600" : "500",
+                  color: activePage === link.page ? "#1a1a1a" : "#6b6b6b",
+                  backgroundColor: activePage === link.page ? "#ede9e2" : "transparent",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#ede9e2";
+                  e.currentTarget.style.color = "#1a1a1a";
+                }}
+                onMouseLeave={(e) => {
+                  if (activePage !== link.page) {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.color = "#6b6b6b";
+                  }
+                }}
+              >
+                {link.label}
+              </button>
+            ))}
+
+            {/* Mobile Login */}
+            <button
+              onClick={() => { onLoginOpen && onLoginOpen(); setMobileOpen(false); }}
+              className="flex items-center gap-3 px-4 py-3 rounded-lg border-none bg-transparent cursor-pointer transition-all duration-200 mt-1"
+              style={{
+                fontFamily: "'Jost', sans-serif",
+                fontSize: "0.8rem",
+                color: "#6b6b6b",
+                borderTop: "1px solid #d8d3cb",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#ede9e2";
+                e.currentTarget.style.color = "#1a1a1a";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.color = "#6b6b6b";
+              }}
+            >
+              <User size={16} />
+              Login / Sign Up
+            </button>
+          </div>
+        </div>
+      )}
+    </header>
+  );
 }
