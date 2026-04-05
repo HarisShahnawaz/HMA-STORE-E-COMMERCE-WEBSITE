@@ -271,7 +271,7 @@ export default function Navbar({ activePage, onNavigate, onLoginOpen }) {
               }}
             >
               <User size={16} />
-              Login / Sign Up
+              Login / Sign Up              //both login and signup will be handled in the same modal for simplicity
             </button>
           </div>
         </div>
