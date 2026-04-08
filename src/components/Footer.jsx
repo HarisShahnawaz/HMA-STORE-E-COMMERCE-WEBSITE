@@ -51,7 +51,7 @@ export default function Footer() {
                   color: "var(--black)",
                 }}
               >
-                LUXE
+                HMA-Store
               </span>
               <Sparkles size={15} color="var(--black)" />
             </div>
