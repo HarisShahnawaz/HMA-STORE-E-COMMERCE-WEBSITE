@@ -39,7 +39,7 @@ export function About() {
         {/* About Us heading with underline */}
        <div className="flex flex-col items-center mb-12 md:mb-16">
   <h2 className="font-serif text-[3rem] md:text-[4rem] font-black text-foreground mb-3">
-    About Us
+    About us
   </h2>
   <div className="w-12 h-0.5 bg-foreground" />
 </div>
