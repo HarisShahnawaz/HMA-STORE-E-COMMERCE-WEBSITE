@@ -1,12 +1,14 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Header } from './components/header/Header';
-import { Hero } from './components/hero/hero';
-import { Categories } from './components/categories/categories';
-import { Featured } from './components/featured/featured';
-import { About } from './components/about/about';
-import { Contact } from './components/contact/contact';
-import  AIFeatures   from './components/ai-featured/ai-featured';
-import  Footer  from './components/footer/footer';
+// Fixed lowercase imports to match your actual files
+import { Header } from './components/Layout/header'; 
+import { Hero } from './components/Home/hero';
+import { Categories } from './components/Home/categories';
+import { Featured } from './components/Home/featured';
+import { About } from './components/Home/about';
+import { Contact } from './components/Home/contact';
+import AIFeatures from './components/Home/ai-featured';
+import Footer from './components/Layout/footer';
+
 const Home = () => (
   <main>
     <Hero />
@@ -15,6 +17,8 @@ const Home = () => (
     <About />
     <Contact />
     <AIFeatures />
+    {/* Usually Footer stays outside <main> so it shows on all pages, 
+        but keeping it here as per your request */}
     <Footer />
   </main>
 );
