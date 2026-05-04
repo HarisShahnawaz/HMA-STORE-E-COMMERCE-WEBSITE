@@ -61,15 +61,15 @@ export function Header() {
           {/* Right Icons */}
           <div className="flex items-center gap-4 md:gap-7">
             <button className="text-black/70 hover:text-black hover:scale-110 transition-all duration-200">
-              <Search className="h-[17px] w-[17px] md:h-[18px] md:w-[18px] stroke-[1.5]" />
+              <Search className="h-4.25 w-4.25 md:h-4.5 md:w-4.5 stroke-[1.5]" />
             </button>
 
             <button className="text-black/70 hover:text-black hover:scale-110 transition-all duration-200">
-              <User className="h-[17px] w-[17px] md:h-[18px] md:w-[18px] stroke-[1.5]" />
+              <User className="h-4.25 w-4.25 md:h-4.5 md:w-4.5 stroke-[1.5]" />
             </button>
 
             <Link to="/cart" className="text-black/70 hover:text-black hover:scale-110 transition-all duration-200 relative">
-              <ShoppingBag className="h-[17px] w-[17px] md:h-[18px] md:w-[18px] stroke-[1.5]" />
+              <ShoppingBag className="h-4.25 w-4.25 md:h-4.5 md:w-4.5 stroke-[1.5]" />
               <span className="absolute -top-1.5 -right-2 h-3.5 w-3.5 flex items-center justify-center bg-black text-[8px] text-white rounded-full font-bold">
                 0
               </span>

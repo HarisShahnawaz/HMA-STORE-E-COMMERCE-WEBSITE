@@ -31,18 +31,18 @@ function getBadgeType(product, index) {
 
 function Badge({ type }) {
   if (type === "ai") return (
-    <span className="flex items-center gap-1 bg-white text-black text-[9px] font-bold uppercase tracking-[0.1em] px-2.5 py-1 rounded-full shadow-sm">
+    <span className="flex items-center gap-1 bg-white text-black text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full shadow-sm">
       <Sparkles className="h-2.5 w-2.5" style={{ color: 'var(--brand-accent)' }} />
       AI Pick
     </span>
   );
   if (type === "sale") return (
-    <span className="bg-red-500 text-white text-[9px] font-bold uppercase tracking-[0.1em] px-2.5 py-1 rounded-full">
+    <span className="bg-red-500 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">
       Sale
     </span>
   );
   return (
-    <span className="bg-black text-white text-[9px] font-bold uppercase tracking-[0.1em] px-2.5 py-1 rounded-full">
+    <span className="bg-black text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full">
       New
     </span>
   );
@@ -58,7 +58,7 @@ function ProductCard({ product, index }) {
 
       {/* Image Container */}
       <div
-        className="relative overflow-hidden bg-[#f0ebe3] aspect-[3/4] mb-3"
+        className="relative overflow-hidden bg-[#f0ebe3] aspect-3/4 mb-3"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -116,7 +116,7 @@ function ProductCard({ product, index }) {
           </h3>
         </Link>
 
-        <p className="font-sans text-[10px] uppercase tracking-[0.1em] text-muted-foreground mb-1.5 capitalize">
+        <p className="font-sans text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5 ">
           {product.category === "kids" ? "Children" : product.category}
         </p>
 

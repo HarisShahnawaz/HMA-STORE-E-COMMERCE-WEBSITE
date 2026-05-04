@@ -21,14 +21,14 @@ export function Hero() {
                          text-[2.6rem] leading-[1.05]
                          md:text-[4.5rem]
                          lg:text-[5.5rem]
-                         max-w-[280px] md:max-w-2xl lg:max-w-4xl">
+                         max-w-70 md:max-w-2xl lg:max-w-4xl">
             Discover your
             <br />
             <em className="italic">perfect style</em>
           </h1>
 
           {/* Subtitle */}
-          <p className="font-sans text-[13px] md:text-base text-muted-foreground leading-relaxed max-w-[260px] md:max-w-xl mb-8 md:mb-12">
+          <p className="font-sans text-[13px] md:text-base text-muted-foreground leading-relaxed max-w-65 md:max-w-xl mb-8 md:mb-12">
             Experience the future of fashion with our AI-powered
             recommendations. Curated collections for Men, Women, and Children.
           </p>
@@ -39,7 +39,7 @@ export function Hero() {
             {/* Shop Now */}
             <Link
               to="/women"
-              className="w-[220px] md:w-auto flex items-center justify-center gap-2
+              className="w-55 md:w-auto flex items-center justify-center gap-2
                          bg-foreground text-background
                          font-sans text-[11px] font-semibold
                          px-7 py-3 rounded-full
@@ -53,7 +53,7 @@ export function Hero() {
             {/* Try AI Stylist - outline */}
             <Link
               to="/men"
-              className="w-[220px] md:w-auto flex items-center justify-center gap-2
+              className="w-55 md:w-auto flex items-center justify-center gap-2
                          bg-background text-foreground
                          border border-border
                          font-sans text-[11px] font-semibold
