@@ -4,12 +4,18 @@ import { Hero } from './components/hero/hero';
 import { Categories } from './components/categories/categories';
 import { Featured } from './components/featured/featured';
 import { About } from './components/about/about';
+import { Contact } from './components/contact/contact';
+import  AIFeatures   from './components/ai-featured/ai-featured';
+import  Footer  from './components/footer/footer';
 const Home = () => (
   <main>
     <Hero />
     <Categories />
     <Featured />
     <About />
+    <Contact />
+    <AIFeatures />
+    <Footer />
   </main>
 );
 

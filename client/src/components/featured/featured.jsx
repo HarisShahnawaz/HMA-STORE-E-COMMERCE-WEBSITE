@@ -47,7 +47,6 @@ function Badge({ type }) {
     </span>
   );
 }
-
 function ProductCard({ product, index }) {
   const [wishlisted, setWishlisted] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -55,10 +54,9 @@ function ProductCard({ product, index }) {
 
   return (
     <div className="group flex flex-col">
-
       {/* Image Container */}
       <div
-        className="relative overflow-hidden bg-[#f0ebe3] aspect-3/4 mb-3"
+        className="relative overflow-hidden bg-[#f0ebe3] aspect-3/4 mb-3 rounded-2xl"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -91,17 +89,16 @@ function ProductCard({ product, index }) {
           />
         </Link>
 
-        {/* Add to Cart - DESKTOP ONLY: slides up on hover */}
-        <div className="hidden md:flex absolute bottom-3 left-0 right-0 justify-center
-                        translate-y-16 group-hover:translate-y-0
-                        opacity-0 group-hover:opacity-100
+        {/* --- FIXED ADD TO CART: DESKTOP ONLY --- */}
+        <div className="hidden md:flex absolute bottom-4 left-4 right-4 z-20
+                        translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100
                         transition-all duration-300 ease-out">
-          <button className="flex items-center gap-2
+          <button className="w-full flex items-center justify-center gap-2
                              bg-black text-white
-                             font-sans text-[10px] font-bold uppercase tracking-[0.15em]
-                             px-6 py-2.5 rounded-full shadow-lg
-                             hover:bg-foreground/80 transition-colors">
-            <ShoppingBag className="h-3.5 w-3.5" />
+                             font-sans text-[11px] font-bold 
+                             py-3 rounded-xl shadow-xl
+                             hover:bg-black/90 transition-colors">
+            <ShoppingBag className="h-4 w-4" />
             Add to Cart
           </button>
         </div>
@@ -131,7 +128,7 @@ function ProductCard({ product, index }) {
           )}
         </div>
 
-        {/* Add to Cart - MOBILE ONLY: always visible below */}
+        {/* Add to Cart - MOBILE ONLY (Remains untouched) */}
         <button
           className="md:hidden mt-auto w-full flex items-center justify-center gap-2
                      border border-border text-foreground
