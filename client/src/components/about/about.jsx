@@ -50,7 +50,7 @@ export function About() {
         <img
           src="/aboutimage.png"
           alt="HMA-Store boutique"
-          className="w-full h-[280px] md:h-[500px] lg:h-[600px] object-cover"
+          className="w-full h-70 md:h-125 lg:h-150 object-cover"
         />
       </div>
 
@@ -80,21 +80,21 @@ export function About() {
 
       {/* Feature Cards */}
       <div className="max-w-360 mx-auto px-6 md:px-12 pb-16 md:pb-20">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-8">
           {features.map((f) => (
-            <div
-              key={f.title}
-              className="flex flex-col items-center text-center
-                         border border-border rounded-xl p-8 md:p-10
-                         hover:shadow-sm transition-shadow duration-200"
-            >
-              <span className="text-3xl mb-4">{f.emoji}</span>
-              <h4 className="font-sans text-[12px] font-bold uppercase tracking-[0.15em] text-foreground mb-3">
-                {f.title}
-              </h4>
-              <p className="font-sans text-[13px] text-muted-foreground leading-relaxed">
-                {f.desc}
-              </p>
+           <div
+         key={f.title}
+             className="flex flex-col items-center text-center
+             bg-white rounded-2xl p-10 md:p-12
+             shadow-sm hover:shadow-md transition-shadow duration-200"
+             >
+             <span className="text-4xl mb-5">{f.emoji}</span>
+             <h4 className="font-sans text-[13px] font-semibold text-foreground mb-3">
+            {f.title}
+           </h4>
+           <p className="font-sans text-[13px] text-muted-foreground leading-relaxed">
+            {f.desc}
+             </p>
             </div>
           ))}
         </div>
@@ -130,7 +130,7 @@ export function About() {
           <div className="flex flex-col sm:flex-row items-center gap-3">
             <Link
               to="/women"
-              className="w-[180px] flex items-center justify-center
+              className="w-45 flex items-center justify-center
                          bg-foreground text-background
                          font-sans text-[11px] font-bold uppercase tracking-[0.2em]
                          px-8 py-3 rounded-full
@@ -140,7 +140,7 @@ export function About() {
             </Link>
             <Link
               to="/contact"
-              className="w-[180px] flex items-center justify-center
+              className="w-45 flex items-center justify-center
                          border border-border text-foreground
                          font-sans text-[11px] font-bold uppercase tracking-[0.2em]
                          px-8 py-3 rounded-full

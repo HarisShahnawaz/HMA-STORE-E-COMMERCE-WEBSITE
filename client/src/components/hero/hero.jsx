@@ -9,7 +9,7 @@ export function Hero() {
         <div className="flex flex-col items-center text-center pt-14 md:pt-24 pb-10 md:pb-16">
 
           {/* AI Badge Pill */}
-          <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-background shadow-sm mb-7 md:mb-10">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-white  shadow-sm mb-7 md:mb-10">
             <Sparkles className="h-3 w-3 shrink-0" style={{ color: 'var(--brand-accent)' }} />
             <span className="font-sans text-[9px] md:text-[11px] font-semibold tracking-[0.12em] uppercase text-foreground">
               AI-Powered Shopping Experience

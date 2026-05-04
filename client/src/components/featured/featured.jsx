@@ -150,7 +150,7 @@ function ProductCard({ product, index }) {
 
 export function Featured() {
   return (
-    <section className="w-full bg-background pt-16 md:pt-20 pb-8 px-4 md:px-6">
+    <section className="w-full bg-white  pt-16 md:pt-20 pb-8 px-4 md:px-6">
       {/* Section Header */}
       <div className="max-w-360 mx-auto mb-10 md:mb-14">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
