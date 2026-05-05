@@ -16,7 +16,7 @@ export default function ProductCard({ product, index }) {
   return (
     <div className="group flex flex-col bg-white">
       {/* Image Container */}
-      <div className="relative overflow-hidden bg-[#f6f6f6] aspect-[3/4] mb-3 rounded-2xl">
+      <div className="relative overflow-hidden bg-[#f6f6f6] aspect-3/4 mb-3 rounded-2xl">
         {/* Badge stays visible */}
         <div className="absolute top-3 left-3 z-10">
           <Badge type={getBadgeType(product, index)} />
