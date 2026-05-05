@@ -25,7 +25,7 @@ const categories = [
   },
 ];
 
-export function Categories() {
+export default  function Categories() {
   return (
     <section className="w-full">
 
@@ -44,7 +44,7 @@ export function Categories() {
     <Link
       key={cat.name}
       to={cat.href}
-      className="group relative overflow-hidden rounded-2xl aspect-[3/4] md:aspect-auto md:h-[85vh] block"
+      className="group relative overflow-hidden rounded-2xl aspect-3/4]md:aspect-auto md:h-[85vh] block"
     >
             {/* Image */}
             <img
@@ -54,7 +54,7 @@ export function Categories() {
             />
 
             {/* Dark gradient overlay at bottom */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
 
             {/* Content overlay */}
             <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white">

@@ -1,7 +1,7 @@
 import React from "react";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 
-export function Contact() {
+export default function Contact() {
   const contactInfo = [
     {
       icon: <MapPin className="w-5 h-5" />,

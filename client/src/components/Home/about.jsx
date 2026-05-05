@@ -24,7 +24,7 @@ const stats = [
   { value: "100%", label: "AI Curated" },
 ];
 
-export function About() {
+export default function About() {
   return (
     <section className="w-full bg-background">
 

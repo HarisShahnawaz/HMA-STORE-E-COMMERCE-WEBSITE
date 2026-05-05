@@ -10,7 +10,7 @@ const navigation = [
   { name: "Contact", href: "/contact" },
 ];
 
-export function Header() {
+export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (

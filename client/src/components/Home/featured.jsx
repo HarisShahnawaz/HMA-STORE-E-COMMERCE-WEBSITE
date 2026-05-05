@@ -2,7 +2,7 @@ import { Sparkles } from "lucide-react";
 import ProductGrid from "../Products/productGrid";
 import { products } from "../../data/products";
 
-export function Featured() {
+export default function Featured() {
   // 1. Strict filtering and slicing to get exactly 6, 6, and 4
   const men = products
     .filter(p => p.category.toLowerCase() === 'men')

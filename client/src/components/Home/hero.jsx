@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Sparkles, ArrowRight } from "lucide-react";
 
-export function Hero() {
+export default function Hero() {
   return (
     <section className="w-full bg-background">
       <div className="max-w-360 mx-auto px-6 md:px-12">

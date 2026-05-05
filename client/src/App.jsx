@@ -1,41 +1,29 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// Fixed lowercase imports to match your actual files
-import { Header } from './components/Layout/header'; 
-import { Hero } from './components/Home/hero';
-import { Categories } from './components/Home/categories';
-import { Featured } from './components/Home/featured';
-import { About } from './components/Home/about';
-import { Contact } from './components/Home/contact';
-import AIFeatures from './components/Home/ai-featured';
+import Header from './components/Layout/header'; 
 import Footer from './components/Layout/footer';
-
-const Home = () => (
-  <main>
-    <Hero />
-    <Categories />
-    <Featured />
-    <About />
-    <Contact />
-    <AIFeatures />
-    {/* Usually Footer stays outside <main> so it shows on all pages, 
-        but keeping it here as per your request */}
-    <Footer />
-  </main>
-);
-
-const Men = () => <div className="p-20 text-center font-sans">Men's Collection</div>;
+import Home from './Pages/Home';
+import Men from './Pages/Men';
+import Women from './Pages/Women';
+import Kids from './Pages/Kids';
+import Cart from './Pages/Cart';
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-white flex flex-col">
         <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/men" element={<Men />} />
-          <Route path="/women" element={<div className="p-20 text-center">Women's Collection</div>} />
-          <Route path="/kids" element={<div className="p-20 text-center">Kids' Collection</div>} />
-        </Routes>
+        {/* The Routes component decides WHICH page to show. 
+            Everything inside it swaps. Everything outside it stays. */}
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/men" element={<Men />} />
+            <Route path="/women" element={<Women />} />
+            <Route path="/kids" element={<Kids />} />
+            <Route path="/cart" element={<Cart />} />
+          </Routes>
+        </main>
+        <Footer />
       </div>
     </Router>
   );
