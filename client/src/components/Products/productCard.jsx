@@ -17,15 +17,13 @@ export default function ProductCard({ product, index }) {
     <div className="group flex flex-col bg-white">
       {/* Image Container */}
       <div className="relative overflow-hidden bg-[#f6f6f6] aspect-3/4 mb-3 rounded-2xl">
-        {/* Badge stays visible */}
         <div className="absolute top-3 left-3 z-10">
           <Badge type={getBadgeType(product, index)} />
         </div>
         
-        {/* Heart: Hover-only on Laptop */}
         <button
           onClick={() => setWishlisted(!wishlisted)}
-          className="absolute top-3 right-3 z-10 h-8 w-8 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-sm hover:scale-110"
+          className="absolute top-3 right-3 z-20 h-8 w-8 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-sm hover:scale-110"
         >
           <Heart 
             size={14} 
@@ -42,29 +40,37 @@ export default function ProductCard({ product, index }) {
           />
         </Link>
 
-        {/* THE PILL BUTTON: Centered and sleek */}
-        <div className="hidden md:flex absolute bottom-5 left-0 right-0 justify-center opacity-0 group-hover:opacity-100 translate-y-3 group-hover:translate-y-0 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto">
-          <Button className="bg-black text-white hover:bg-zinc-800 rounded-full h-10 px-6 flex items-center gap-2.5 shadow-2xl border-none">
+        {/* LAPTOP ONLY: Pill Button (Hidden on Mobile) */}
+        <div className="hidden md:flex absolute bottom-5 left-0 right-0 justify-center opacity-0 group-hover:opacity-100 translate-y-3 group-hover:translate-y-0 transition-all duration-300 z-30">
+          <Button className="h-10 px-6">
             <ShoppingBag size={15} />
-            <span className="text-[11px] font-bold tracking-widest uppercase">Add to Cart</span>
+            ADD TO CART
           </Button>
         </div>
       </div>
 
+     {/* MOBILE ONLY: Single Button above text */}
+<div className="md:hidden px-1 mb-3">
+  <Button 
+    variant="outline" 
+    className="w-full h-10 rounded-xl flex items-center justify-center gap-2 px-2"
+  >
+    {/* Icon size matches text weight */}
+    <ShoppingBag size={16} strokeWidth={2.5} className="shrink-0" />
+    
+    <span className="text-[13px] font-bold whitespace-nowrap">
+      Add to Cart
+    </span>
+  </Button>
+</div>
+
       {/* Details Section */}
       <div className="flex flex-col px-1">
-        {/* Mobile Button: Minimalist border style */}
-        <div className="flex md:hidden mb-2.5">
-          <Button variant="outline" className="w-full h-8 text-[9px] font-bold border-gray-200 rounded-lg uppercase tracking-widest px-0">
-            Add to Cart
-          </Button>
-        </div>
-
         <div className="space-y-0.5">
-          <h3 className="font-serif text-[14px] font-black text-black leading-tight truncate">
+          <h3 className="font-serif text-[15px] font-black text-black leading-tight truncate">
             {product.name}
           </h3>
-          <p className="text-[10px] uppercase text-gray-400 font-bold tracking-widest">
+          <p className="text-[10px] uppercase text-gray-400 font-bold tracking-[0.15em]">
             {product.category}
           </p>
           <div className="font-sans text-[13px] font-black text-black mt-1">
