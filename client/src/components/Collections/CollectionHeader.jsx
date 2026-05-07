@@ -2,23 +2,28 @@ import SortDropdown from "./SortDropdown";
 
 export default function CollectionHeader({ title, description, count }) {
   return (
-    <div className="mb-12">
-      {/* Dynamic Title and Description */}
-      <div className="text-center max-w-2xl mx-auto mb-10">
-        <h1 className="font-serif text-6xl md:text-7xl font-black text-black mb-4 uppercase tracking-tighter">
-          {title}
-        </h1>
-        <p className="text-gray-500 text-sm md:text-base italic leading-relaxed px-4">
-          {description}
-        </p>
-      </div>
+    <div className="text-center pt-8 pb-12">
+      {/* Smaller, precise font sizes from your v0 inspector */}
+      <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">
+        {title}
+      </h1>
+      <p className="text-muted-foreground text-sm md:text-lg max-w-2xl mx-auto leading-relaxed">
+        {description}
+      </p>
 
-      {/* Stats and Sort Bar */}
-      <div className="flex justify-between items-center border-b border-gray-100 pb-4">
-        <span className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-400">
-          {count} Products Found
-        </span>
-        <SortDropdown />
+      {/* Responsive Toolbar */}
+      <div className="flex justify-between items-end mt-12 pb-4 border-b border-border/50">
+        <div className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/70">
+          {count} products
+        </div>
+        <div className="flex items-center gap-4">
+          <SortDropdown />
+          {/* Grid Toggle Icons seen in your screenshot */}
+          <div className="hidden md:flex items-center gap-1 border-l border-border pl-4 ml-2">
+            <div className="w-4 h-4 border border-foreground/20 rounded-[2px]" />
+            <div className="w-4 h-4 border border-foreground/80 rounded-[2px] bg-foreground/10" />
+          </div>
+        </div>
       </div>
     </div>
   );

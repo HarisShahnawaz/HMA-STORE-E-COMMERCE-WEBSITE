@@ -5,24 +5,21 @@ import Home from './Pages/Home';
 import Men from './Pages/Men';
 import Women from './Pages/Women';
 import Kids from './Pages/Kids';
-import Cart from './Pages/Cart';
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-white flex flex-col">
+      <div className="min-h-screen bg-white">
         <Header />
-        {/* The Routes component decides WHICH page to show. 
-            Everything inside it swaps. Everything outside it stays. */}
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/men" element={<Men />} />
-            <Route path="/women" element={<Women />} />
-            <Route path="/kids" element={<Kids />} />
-            <Route path="/cart" element={<Cart />} />
-          </Routes>
-        </main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/men" element={<Men />} />
+          <Route path="/women" element={<Women />} />
+          <Route path="/kids" element={<Kids />} />
+          {/* Add these so the links don't crash the router */}
+          <Route path="/about" element={<div className="pt-40 text-center">About Page</div>} />
+          <Route path="/contact" element={<div className="pt-40 text-center">Contact Page</div>} />
+        </Routes>
         <Footer />
       </div>
     </Router>
