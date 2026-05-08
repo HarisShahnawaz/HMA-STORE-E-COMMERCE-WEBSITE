@@ -1,30 +1,35 @@
 import { useState } from "react";
 
-export default function SortDropdown() {
+const OPTIONS = ["Featured", "Newest", "Price: Low to High", "Price: High to Low"];
+
+export default function SortDropdown({ value, onChange }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState("Featured");
-  const options = ["Featured", "Newest", "Price: Low to High", "Price: High to Low"];
 
   return (
     <div className="relative">
-      <button 
+      <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-3 group cursor-pointer"
+        className="flex items-center gap-3 cursor-pointer"
       >
         <span className="font-sans text-[11px] font-black uppercase tracking-[0.2em]">Sort By:</span>
-        <span className="font-sans text-[11px] text-muted-foreground uppercase tracking-widest">{selected}</span>
-        <span className={`text-[9px] transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>▼</span>
+        <span className="font-sans text-[11px] text-muted-foreground uppercase tracking-widest">{value}</span>
+        <span className={`text-[9px] transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}>▼</span>
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-4 w-48 bg-white border border-border rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in duration-200">
-          {options.map((option) => (
+        <div className="absolute right-0 mt-4 w-52 bg-white border border-border rounded-xl shadow-xl z-50 overflow-hidden">
+          {OPTIONS.map((opt) => (
             <button
-              key={option}
-              onClick={() => { setSelected(option); setIsOpen(false); }}
-              className={`w-full text-left px-5 py-3 text-[11px] font-bold uppercase tracking-wider hover:bg-muted transition-colors ${selected === option ? 'text-brand-accent' : 'text-foreground'}`}
+              key={opt}
+              onClick={() => { onChange(opt); setIsOpen(false); }}
+              className={`w-full text-left px-5 py-3 text-[11px] font-bold uppercase tracking-wider transition-colors
+                ${value === opt
+                  ? "bg-red-500 text-white"
+                  : "hover:bg-muted text-foreground"
+                }`}
             >
-              {option}
+              {opt}
+              {value === opt && <span className="float-right">✓</span>}
             </button>
           ))}
         </div>
