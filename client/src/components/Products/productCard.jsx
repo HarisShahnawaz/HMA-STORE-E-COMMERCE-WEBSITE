@@ -41,7 +41,7 @@ export default function ProductCard({ product, index }) {
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 "
           />
         </Link>
 
@@ -66,7 +66,7 @@ export default function ProductCard({ product, index }) {
       </div>
 
       {/* Details */}
-      <div className="flex flex-col px-1">
+      <div className="flex flex-col px-1 bg-background">
         <div className="space-y-0.5">
           <h3 className="font-serif text-[15px] font-black text-black leading-tight truncate">
             {product.name}
