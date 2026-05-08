@@ -108,7 +108,7 @@ export default function Men() {
   };
 
   return (
-    <div className="bg-background min-h-screen pt-20">
+    <div className="bg-white min-h-screen pt-20">
       <div className="max-w-[1440px] mx-auto px-4 md:px-8">
 
         {/* ── Header: reduced pb so heading sits higher ── */}

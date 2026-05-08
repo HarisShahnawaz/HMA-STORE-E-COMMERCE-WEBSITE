@@ -66,7 +66,7 @@ export default function ProductCard({ product, index }) {
       </div>
 
       {/* Details */}
-      <div className="flex flex-col px-1 bg-background">
+      <div className="flex flex-col px-1">
         <div className="space-y-0.5">
           <h3 className="font-serif text-[15px] font-black text-black leading-tight truncate">
             {product.name}
