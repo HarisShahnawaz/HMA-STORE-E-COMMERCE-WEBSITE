@@ -17,7 +17,7 @@ export default function ProductCard({ product, index }) {
   const badgeType = getBadgeType(product, index);
 
   return (
-    <div className="group flex flex-col bg-white">
+    <div className="group flex flex-col bg-[#f6f6f6]">
       {/* Image Container */}
       <div className="relative overflow-hidden bg-[#f6f6f6] aspect-3/4 mb-3 rounded-2xl">
         {badgeType && (
