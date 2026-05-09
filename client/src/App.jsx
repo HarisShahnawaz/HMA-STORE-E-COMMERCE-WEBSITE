@@ -10,8 +10,8 @@ import Sale from './Pages/Sale';
 import Cart from './Pages/Cart';
 import Login from './Pages/Login';
 import Signup from './Pages/Signup';
-import Checkout from "./pages/Checkout";
-import ProductDetail from "./pages/ProductDetail";
+import Checkout from "./Pages/Checkout";
+import ProductDetail from "./Pages/ProductDetail";
 
 function App() {
   return (
