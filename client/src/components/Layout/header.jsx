@@ -5,9 +5,9 @@ import { Search, ShoppingBag, User, Menu, X, Sparkles } from "lucide-react";
 const navigation = [
   { name: "Men", href: "/men" },
   { name: "Women", href: "/women" },
-  { name: "Children", href: "/kids" },
-  { name: "About", href: "/about" },
-  { name: "Contact", href: "/contact" },
+  { name: "Kids", href: "/kids" },
+  { name: "New-Arrivals", href: "/new-arrivals" },
+  { name: "Sale", href: "/sale" },
 ];
 
 export default function Header() {
