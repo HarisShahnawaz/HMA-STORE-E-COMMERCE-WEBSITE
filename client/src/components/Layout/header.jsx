@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Search, ShoppingBag, User, X, Sparkles, LogIn, UserPlus, ArrowRight } from "lucide-react";
+import { useCart } from "../../context/CartContext";
 
 const navigation = [
   { name: "Men", href: "/men" },
@@ -13,8 +14,8 @@ const navigation = [
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
+  const { cartCount } = useCart(); // Access the live count
 
-  // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = "hidden";
@@ -32,7 +33,6 @@ export default function Header() {
         <div className="max-w-360 mx-auto px-5 md:px-12">
           <div className="flex h-14 md:h-16 items-center justify-between relative">
 
-            {/* Mobile: Hamburger — LEFT */}
             <button
               className="lg:hidden flex flex-col justify-center gap-1.25 w-8 h-8 group"
               onClick={() => setIsMobileMenuOpen(true)}
@@ -42,7 +42,6 @@ export default function Header() {
               <span className="block h-[1.5px] w-3.5 bg-foreground transition-all duration-300" />
             </button>
 
-            {/* Logo — centered on mobile, left on desktop */}
             <Link
               to="/"
               className="flex items-center gap-1.5 absolute left-1/2 -translate-x-1/2 lg:static lg:left-auto lg:translate-x-0"
@@ -54,7 +53,6 @@ export default function Header() {
               <Sparkles className="h-3 w-3 md:h-3.5 md:w-3.5 text-red-500" fill="currentColor" />
             </Link>
 
-            {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-10">
               {navigation.map((item) => (
                 <NavLink
@@ -73,13 +71,11 @@ export default function Header() {
               ))}
             </nav>
 
-            {/* Right Icons */}
             <div className="flex items-center gap-4 md:gap-7">
               <button className="text-black/70 hover:text-black transition-all duration-200">
                 <Search className="h-4.5 w-4.5 stroke-[1.5]" />
               </button>
 
-              {/* Account dropdown */}
               <div className="relative">
                 <button
                   onClick={() => setIsAccountOpen(!isAccountOpen)}
@@ -116,19 +112,20 @@ export default function Header() {
                 )}
               </div>
 
+              {/* Shopping Bag with Dynamic Count */}
               <Link to="/cart" className="text-black/70 hover:text-black transition-all duration-200 relative">
                 <ShoppingBag className="h-4.5 w-4.5 stroke-[1.5]" />
-                <span className="absolute -top-1.5 -right-2 h-3.5 w-3.5 flex items-center justify-center bg-black text-[8px] text-white rounded-full font-bold">
-                  0
-                </span>
+                {cartCount > 0 && (
+                  <span className="absolute -top-1.5 -right-2 h-4 w-4 flex items-center justify-center bg-red-500 text-[9px] text-white rounded-full font-bold shadow-sm animate-in zoom-in duration-200">
+                    {cartCount}
+                  </span>
+                )}
               </Link>
             </div>
           </div>
         </div>
       </header>
 
-      {/* ── Mobile Menu Overlay ── */}
-      {/* Backdrop */}
       <div
         className={`fixed inset-0 z-60 bg-black/50 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
           isMobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
@@ -136,13 +133,11 @@ export default function Header() {
         onClick={closeMenu}
       />
 
-      {/* Slide-in Panel */}
       <div
         className={`fixed top-0 left-0 z-70 h-full w-[85%] max-w-sm bg-background flex flex-col transition-transform duration-300 ease-in-out lg:hidden ${
           isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* Panel Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-border">
           <Link to="/" onClick={closeMenu} className="flex items-center gap-1.5">
             <span className="font-serif text-[1.15rem] font-black tracking-tight text-foreground">
@@ -159,7 +154,6 @@ export default function Header() {
           </button>
         </div>
 
-        {/* Browse Section */}
         <div className="flex-1 overflow-y-auto">
           <div className="px-6 pt-6 pb-2">
             <span className="font-sans text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
@@ -183,7 +177,6 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* Account Section */}
           <div className="px-6 pt-8 pb-2">
             <span className="font-sans text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
               Account
@@ -220,7 +213,6 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Panel Footer */}
         <div className="px-6 py-5 border-t border-border">
           <p className="font-sans text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
             HMA-Store · AI-Powered Fashion
