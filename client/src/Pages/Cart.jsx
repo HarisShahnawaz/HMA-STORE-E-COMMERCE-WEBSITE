@@ -152,10 +152,12 @@ export default function Cart() {
                 </span>
               </div>
 
-              <Button className="w-full h-14 bg-[#0f172a] text-white rounded-2xl flex items-center justify-center gap-3 group shadow-lg shadow-black/5">
-                <span className="font-bold text-sm">Proceed to Checkout</span>
-                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-              </Button>
+              <Link to="/checkout" className="w-full block">
+  <Button className="w-full h-14 bg-[#0f172a] text-white rounded-2xl flex items-center justify-center gap-3">
+    <span>Proceed to Checkout</span>
+    <ArrowRight size={18} />
+  </Button>
+</Link>
 
               <div className="flex justify-center items-center gap-6 mt-8">
                 <div className="flex items-center gap-1.5 opacity-40">
