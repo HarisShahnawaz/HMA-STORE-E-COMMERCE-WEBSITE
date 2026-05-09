@@ -84,7 +84,7 @@ export default function Women() {
 
   return (
     <div className="bg-white min-h-screen pt-20">
-      <div className="max-w-[1440px] mx-auto px-4 md:px-8">
+      <div className="max-w-360 mx-auto px-4 md:px-8">
 
         <CollectionHeader
           title="Women"

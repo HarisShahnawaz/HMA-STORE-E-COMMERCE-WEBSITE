@@ -139,14 +139,14 @@ export default function About() {
               Shop Now
             </Link>
             <Link
-              to="/contact"
+              to="/sale"
               className="w-45 flex items-center justify-center
                          border border-border text-foreground
                          font-sans text-[11px] font-bold uppercase tracking-[0.2em]
                          px-8 py-3 rounded-full
                          hover:border-foreground transition-all duration-200"
             >
-              Contact Us
+              View Sale
             </Link>
           </div>
         </div>
