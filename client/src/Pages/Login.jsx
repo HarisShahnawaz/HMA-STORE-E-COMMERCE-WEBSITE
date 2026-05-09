@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 export default function Login() {
   return (
     <div className="min-h-screen bg-[#f8f9fa] pt-32 pb-20 px-4 flex justify-center items-start">
-      <div className="bg-white w-full max-w-[450px] rounded-3xl p-10 shadow-sm border border-gray-100">
+      <div className="bg-white w-full max-w-112.5 rounded-3xl p-10 shadow-sm border border-gray-100">
         <div className="text-center mb-10">
           <span className="font-sans text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">HMA-Store</span>
           <h1 className="font-serif text-4xl font-black mt-4 mb-2">Welcome back</h1>
