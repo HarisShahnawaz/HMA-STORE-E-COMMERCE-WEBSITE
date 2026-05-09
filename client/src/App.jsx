@@ -7,6 +7,9 @@ import Women from './Pages/Women';
 import Kids from './Pages/Kids';
 import NewArrivals from './Pages/NewArrivals'; 
 import Sale from './Pages/Sale';
+import Cart from './Pages/Cart';
+import Login from './Pages/Login';
+import Signup from './Pages/Signup';
 
 function App() {
   return (
@@ -18,9 +21,12 @@ function App() {
           <Route path="/men" element={<Men />} />
           <Route path="/women" element={<Women />} />
           <Route path="/kids" element={<Kids />} />
-          {/* Add these so the links don't crash the router */}
         <Route path="/new-arrivals" element={<NewArrivals />} />
-<Route path="/sale" element={<Sale />} />
+          <Route path="/sale" element={<Sale />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/login" element={<Login />} />
+         <Route path="/signup" element={<Signup />} />
+          
         </Routes>
         <Footer />
       </div>
