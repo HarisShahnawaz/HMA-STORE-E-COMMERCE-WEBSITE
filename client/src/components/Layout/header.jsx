@@ -102,7 +102,7 @@ export default function Header() {
               {/* White Search Box - Width adjusted for small mobile screens */}
               <div ref={searchRef} className="flex items-center">
                 <div className={`flex items-center overflow-hidden transition-all duration-300 ease-in-out bg-white border border-gray-200 rounded-full ${
-                  isSearchOpen ? "w-[105px] xs:w-36 sm:w-64 opacity-100 px-2 shadow-sm" : "w-0 opacity-0 px-0 border-none"
+                  isSearchOpen ? "w-26.25 xs:w-36 sm:w-64 opacity-100 px-2 shadow-sm" : "w-0 opacity-0 px-0 border-none"
                 }`}>
                   <Search size={12} className="text-gray-400 shrink-0" />
                   <input 
@@ -130,7 +130,7 @@ export default function Header() {
                 </button>
 
                 {isAccountOpen && (
-                  <div className="absolute right-0 mt-4 w-48 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-[100] animate-in fade-in zoom-in duration-200">
+                  <div className="absolute right-0 mt-4 w-48 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-100 animate-in fade-in zoom-in duration-200">
                     <div className="bg-[#0f172a] px-4 py-3">
                       <span className="text-white font-sans text-[10px] font-black uppercase tracking-[0.2em]">My Account</span>
                     </div>

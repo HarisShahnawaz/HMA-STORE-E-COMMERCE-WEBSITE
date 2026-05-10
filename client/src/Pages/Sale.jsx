@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 import CollectionHeader from "../components/Collections/CollectionHeader";
 import FilterSidebar from "../components/Collections/FilterSidebar";
 import ProductCard from "../components/Products/productCard";
-import { products } from "../data/products";
+import { useProducts } from "../hooks/useProducts"; // ← NEW
 
 const INITIAL_SIZE = 20;
 const LOAD_MORE_SIZE = 4;
@@ -25,14 +25,13 @@ const sortProducts = (list, sort) => {
 };
 
 export default function Sale() {
-  const globalSaleItems = useMemo(() => products.filter((_, index) => index % 3 === 2), []);
+  const { products: globalSaleItems, loading, error } = useProducts({ isSale: true }); // ← NEW
 
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [priceMax, setPriceMax] = useState(10000);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [showAiOnly, setShowAiOnly] = useState(false);
   const [sortValue, setSortValue] = useState("Featured");
-  
   const [gridCols, setGridCols] = useState(4);
   const [visibleCount, setVisibleCount] = useState(INITIAL_SIZE);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -75,6 +74,18 @@ export default function Sale() {
     onReset: () => { handleReset(); setDrawerOpen(false); },
   };
 
+  if (loading) return (
+    <div className="bg-white min-h-screen pt-20 flex items-center justify-center">
+      <p className="font-serif text-xl text-gray-400 animate-pulse">Loading products...</p>
+    </div>
+  );
+
+  if (error) return (
+    <div className="bg-white min-h-screen pt-20 flex items-center justify-center">
+      <p className="font-serif text-xl text-red-400">Failed to load products. Please try again.</p>
+    </div>
+  );
+
   return (
     <div className="bg-white min-h-screen pt-20">
       <div className="max-w-360 mx-auto px-4 md:px-8">
@@ -87,7 +98,7 @@ export default function Sale() {
           onSortChange={(val) => { setSortValue(val); setVisibleCount(INITIAL_SIZE); }}
           gridCols={gridCols}
           onGridChange={setGridCols}
-          onOpenFilters={() => setDrawerOpen(true)} 
+          onOpenFilters={() => setDrawerOpen(true)}
         />
 
         {drawerOpen && (
@@ -125,8 +136,8 @@ export default function Sale() {
             ) : (
               <>
                 <div className={`grid ${colClass} gap-x-4 gap-y-10 md:gap-x-6 md:gap-y-12`}>
-                  {visible.map((product) => (
-                    <ProductCard key={product.id} product={product} index={2} />
+                  {visible.map((product, index) => (
+                    <ProductCard key={product._id} product={{ ...product, id: product._id }} index={index} />
                   ))}
                 </div>
 

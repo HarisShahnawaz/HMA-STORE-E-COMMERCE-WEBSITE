@@ -12,29 +12,28 @@ export default function ProductCard({ product, index }) {
   const handleAddToCart = () => {
     addToCart(product);
     setIsAdded(true);
-    setTimeout(() => {
-      setIsAdded(false);
-    }, 2000);
+    setTimeout(() => setIsAdded(false), 2000);
   };
 
   const renderBadge = () => {
-    const badgeType = index % 3;
-    if (badgeType === 0) return (
-      <div className="bg-black w-11 h-6 flex items-center justify-center rounded-md shadow-sm">
-        <span className="text-[9px] font-bold uppercase tracking-wider text-white">New</span>
-      </div>
-    );
-    if (badgeType === 1) return (
-      <div className="bg-white border border-black/5 px-2 h-6 flex items-center gap-1 rounded-md shadow-sm">
-        <span className="text-[9px] font-bold uppercase tracking-wider text-black whitespace-nowrap">AI Pick</span>
-      </div>
-    );
-    return (
-      <div className="bg-[#ef4444] w-11 h-6 flex items-center justify-center rounded-md shadow-sm">
-        <span className="text-[9px] font-bold uppercase tracking-wider text-white">Sale</span>
-      </div>
-    );
-  };
+  if (product.isNew) return (
+    <div className="bg-black w-11 h-6 flex items-center justify-center rounded-md shadow-sm">
+      <span className="text-[9px] font-bold uppercase tracking-wider text-white">New</span>
+    </div>
+  );
+  if (product.aiRecommended) return (
+    <div className="bg-white border border-black/5 px-2 h-6 flex items-center gap-1 rounded-md shadow-sm">
+      <Sparkles size={9} className="text-black" />
+      <span className="text-[9px] font-bold uppercase tracking-wider text-black whitespace-nowrap">AI Pick</span>
+    </div>
+  );
+  if (product.isSale) return (
+    <div className="bg-[#ef4444] w-11 h-6 flex items-center justify-center rounded-md shadow-sm">
+      <span className="text-[9px] font-bold uppercase tracking-wider text-white">Sale</span>
+    </div>
+  );
+  return null;
+};
 
   return (
     <div className="group flex flex-col bg-white">
@@ -54,7 +53,7 @@ export default function ProductCard({ product, index }) {
 
         {/* Desktop Button */}
         <div className="hidden md:flex absolute bottom-5 left-0 right-0 justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 z-30 px-6">
-          <Button 
+          <Button
             onClick={handleAddToCart}
             disabled={isAdded}
             className={`w-full h-8 rounded-lg flex items-center justify-center gap-2 transition-colors duration-300 ${
@@ -76,7 +75,7 @@ export default function ProductCard({ product, index }) {
         </div>
       </div>
 
-      {/* Mobile Button - Optimized for Oppo A60/Small screens */}
+      {/* Mobile Button */}
       <div className="md:hidden px-1 mb-3">
         <Button
           variant="outline"
@@ -97,7 +96,12 @@ export default function ProductCard({ product, index }) {
       <div className="flex flex-col px-1">
         <h3 className="font-serif text-[14px] font-bold text-black truncate">{product.name}</h3>
         <p className="text-[10px] uppercase text-gray-400 font-bold tracking-widest">{product.category}</p>
-        <p className="font-sans text-[13px] font-black text-black mt-1">Rs {product.price?.toLocaleString()}</p>
+        <div className="flex items-center gap-2 mt-1">
+          <p className="font-sans text-[13px] font-black text-black">Rs {product.price?.toLocaleString()}</p>
+          {product.isSale && product.originalPrice && (
+            <p className="font-sans text-[11px] text-gray-400 line-through">Rs {product.originalPrice?.toLocaleString()}</p>
+          )}
+        </div>
       </div>
     </div>
   );

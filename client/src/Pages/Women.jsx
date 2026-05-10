@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 import CollectionHeader from "../components/Collections/CollectionHeader";
 import FilterSidebar from "../components/Collections/FilterSidebar";
 import ProductCard from "../components/Products/productCard";
-import { products } from "../data/products";
+import { useProducts } from "../hooks/useProducts"; // ← NEW
 
 const INITIAL_SIZE = 20;
 const LOAD_MORE_SIZE = 4;
@@ -26,19 +26,13 @@ const sortProducts = (list, sort) => {
 };
 
 export default function Women() {
-  // Filter for women category
-  const womenProducts = useMemo(
-    () => products.filter(p => p.category.toLowerCase() === "women"),
-    []
-  );
+  const { products: womenProducts, loading, error } = useProducts({ category: "women" }); // ← NEW
 
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [priceMax, setPriceMax] = useState(10000);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [showAiOnly, setShowAiOnly] = useState(false);
   const [sortValue, setSortValue] = useState("Featured");
-  
-  // Set default grid to 4 as requested
   const [gridCols, setGridCols] = useState(4);
   const [visibleCount, setVisibleCount] = useState(INITIAL_SIZE);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -65,7 +59,6 @@ export default function Women() {
     setVisibleCount(INITIAL_SIZE);
   };
 
-  // Logic: 2 on mobile, 3 on tablet, 4 on desktop (or 3 if toggled)
   const colClass = gridCols === 4
     ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
     : "grid-cols-2 md:grid-cols-2 lg:grid-cols-3";
@@ -82,6 +75,18 @@ export default function Women() {
     onReset: () => { handleReset(); setDrawerOpen(false); },
   };
 
+  if (loading) return (
+    <div className="bg-white min-h-screen pt-20 flex items-center justify-center">
+      <p className="font-serif text-xl text-gray-400 animate-pulse">Loading products...</p>
+    </div>
+  );
+
+  if (error) return (
+    <div className="bg-white min-h-screen pt-20 flex items-center justify-center">
+      <p className="font-serif text-xl text-red-400">Failed to load products. Please try again.</p>
+    </div>
+  );
+
   return (
     <div className="bg-white min-h-screen pt-20">
       <div className="max-w-360 mx-auto px-4 md:px-8">
@@ -94,7 +99,7 @@ export default function Women() {
           onSortChange={(val) => { setSortValue(val); setVisibleCount(INITIAL_SIZE); }}
           gridCols={gridCols}
           onGridChange={setGridCols}
-          onOpenFilters={() => setDrawerOpen(true)} 
+          onOpenFilters={() => setDrawerOpen(true)}
         />
 
         {drawerOpen && (
@@ -131,10 +136,9 @@ export default function Women() {
               </div>
             ) : (
               <>
-                {/* 2-column mobile grid ensured via colClass */}
                 <div className={`grid ${colClass} gap-x-4 gap-y-10 md:gap-x-6 md:gap-y-12`}>
                   {visible.map((product, index) => (
-                    <ProductCard key={product.id} product={product} index={index} />
+                    <ProductCard key={product._id} product={{ ...product, id: product._id }} index={index} />
                   ))}
                 </div>
 

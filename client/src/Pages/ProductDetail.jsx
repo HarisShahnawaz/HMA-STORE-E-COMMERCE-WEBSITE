@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import { products } from "../data/products"; 
 import { 
   ShoppingBag, Star, ShieldCheck, Truck, 
   RotateCcw, Heart, ChevronRight, Sparkles 
@@ -11,22 +10,33 @@ export default function ProductDetail() {
   const { id } = useParams();
   const { addToCart } = useCart();
   const [selectedSize, setSelectedSize] = useState('M');
-  
-  // Find the specific product from your products.js array
-  const product = products.find((p) => p.id === id);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Scroll to top when page opens
   useEffect(() => {
     window.scrollTo(0, 0);
+    setLoading(true);
+    fetch(`http://localhost:5000/api/products/${id}`)
+      .then(res => {
+        if (!res.ok) throw new Error("Product not found");
+        return res.json();
+      })
+      .then(data => { setProduct(data); setLoading(false); })
+      .catch(err => { setError(err.message); setLoading(false); });
   }, [id]);
 
-  if (!product) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <h2 className="font-serif text-2xl">Product not found</h2>
-      </div>
-    );
-  }
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <p className="font-serif text-xl text-gray-400 animate-pulse">Loading product...</p>
+    </div>
+  );
+
+  if (error || !product) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <h2 className="font-serif text-2xl">Product not found</h2>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-white">
@@ -34,7 +44,7 @@ export default function ProductDetail() {
       <div className="max-w-325 mx-auto px-6 pt-6 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-gray-400">
         <Link to="/" className="hover:text-black">Home</Link>
         <ChevronRight size={10} />
-        <Link to={`/category/${product.category}`} className="hover:text-black">{product.category}</Link>
+        <Link to={`/${product.category}`} className="hover:text-black">{product.category}</Link>
         <ChevronRight size={10} />
         <span className="text-black">{product.name}</span>
       </div>
@@ -51,8 +61,7 @@ export default function ProductDetail() {
             />
           </div>
           
-          {/* Badge logic based on your products.js data */}
-          {(product.aiRecommended || product.id === 'm4') && (
+          {product.aiRecommended && (
             <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-2 shadow-sm">
                <Sparkles size={12} className="text-black" />
                <span className="text-[10px] font-black uppercase tracking-tighter">AI Pick</span>
@@ -97,7 +106,7 @@ export default function ProductDetail() {
               <button className="text-gray-400 underline lowercase">Size Guide</button>
             </div>
             <div className="flex flex-wrap gap-3">
-              {['XS', 'S', 'M', 'L', 'XL', 'XXI'].map(size => (
+              {['XS', 'S', 'M', 'L', 'XL', 'XXL'].map(size => (
                 <button 
                   key={size}
                   onClick={() => setSelectedSize(size)}
@@ -116,7 +125,7 @@ export default function ProductDetail() {
           {/* Buttons */}
           <div className="flex gap-4 mb-8">
             <button 
-              onClick={() => addToCart({...product, size: selectedSize})}
+              onClick={() => addToCart({ ...product, id: product._id, size: selectedSize })}
               className="flex-1 h-14 bg-black text-white rounded-xl font-bold text-[12px] flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-xl shadow-black/5"
             >
               <ShoppingBag size={16} /> Add to Cart
@@ -126,7 +135,6 @@ export default function ProductDetail() {
             </button>
           </div>
 
-          {/* AI Banner - Visible if aiRecommended is true */}
           {product.aiRecommended && (
             <div className="bg-orange-50/50 border border-orange-100 p-5 rounded-2xl mb-10">
               <div className="flex items-center gap-2 text-orange-600 mb-1">
@@ -139,7 +147,6 @@ export default function ProductDetail() {
             </div>
           )}
 
-          {/* Static Details List */}
           <div className="space-y-3 mb-12">
             <h4 className="text-[11px] font-black uppercase tracking-widest mb-4">Product Details</h4>
             <p className="text-[12px] text-gray-500 flex items-center gap-3">
@@ -153,7 +160,6 @@ export default function ProductDetail() {
             </p>
           </div>
 
-          {/* Trust Badges */}
           <div className="grid grid-cols-3 gap-4 border-t border-gray-100 pt-8">
             <div className="text-center">
               <Truck size={20} className="mx-auto text-blue-500 mb-2" />

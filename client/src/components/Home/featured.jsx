@@ -1,22 +1,17 @@
 import { Sparkles } from "lucide-react";
-// Import ProductCard instead of ProductGrid
-import ProductCard from "../Products/productCard"; 
-import { products } from "../../data/products";
+import ProductCard from "../Products/productCard";
+import { useProducts } from "../../hooks/useProducts";
+import { useMemo } from "react";
 
 export default function Featured() {
-  const men = products
-    .filter(p => p.category.toLowerCase() === 'men')
-    .slice(0, 6); 
-    
-  const women = products
-    .filter(p => p.category.toLowerCase() === 'women')
-    .slice(0, 6); 
-    
-  const kids = products
-    .filter(p => p.category.toLowerCase() === 'kids' || p.category.toLowerCase() === 'children')
-    .slice(0, 4); 
+  const { products, loading } = useProducts();
 
-  const mixedCollection = [...men, ...women, ...kids].sort(() => Math.random() - 0.5);
+  const mixedCollection = useMemo(() => {
+    const men = products.filter(p => p.category === 'men').slice(0, 6);
+    const women = products.filter(p => p.category === 'women').slice(0, 6);
+    const kids = products.filter(p => p.category === 'kids').slice(0, 4);
+    return [...men, ...women, ...kids].sort(() => Math.random() - 0.5);
+  }, [products]);
 
   return (
     <section className="w-full bg-white pt-12 pb-20 px-4 md:px-12">
@@ -38,16 +33,23 @@ export default function Featured() {
           </p>
         </div>
 
-        {/* This grid layout matches your Men/Women category pages exactly */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6 md:gap-y-12">
-          {mixedCollection.map((product, index) => (
-            <ProductCard 
-              key={product.id} 
-              product={product} 
-              index={index % 3} 
-            />
-          ))}
-        </div>
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6 md:gap-y-12">
+            {[...Array(12)].map((_, i) => (
+              <div key={i} className="aspect-3/4 bg-gray-100 rounded-2xl animate-pulse" />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6 md:gap-y-12">
+            {mixedCollection.map((product, index) => (
+              <ProductCard
+                key={product._id}
+                product={{ ...product, id: product._id }}
+                index={index}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

@@ -3,9 +3,8 @@ import { X } from "lucide-react";
 import CollectionHeader from "../components/Collections/CollectionHeader";
 import FilterSidebar from "../components/Collections/FilterSidebar";
 import ProductCard from "../components/Products/productCard";
-import { products } from "../data/products";
+import { useProducts } from "../hooks/useProducts"; // ← NEW
 
-// 20 products initially as requested
 const INITIAL_SIZE = 20;
 const LOAD_MORE_SIZE = 4;
 
@@ -27,19 +26,14 @@ const sortProducts = (list, sort) => {
 };
 
 export default function Men() {
-  const menProducts = useMemo(
-    () => products.filter(p => p.category.toLowerCase() === "men"),
-    []
-  );
+  const { products: menProducts, loading, error } = useProducts({ category: "men" }); // ← NEW
 
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [priceMax, setPriceMax] = useState(10000);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [showAiOnly, setShowAiOnly] = useState(false);
   const [sortValue, setSortValue] = useState("Featured");
-  
-  // Defaulting to 3 columns as requested
-const [gridCols, setGridCols] = useState(4);
+  const [gridCols, setGridCols] = useState(4);
   const [visibleCount, setVisibleCount] = useState(INITIAL_SIZE);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -65,10 +59,9 @@ const [gridCols, setGridCols] = useState(4);
     setVisibleCount(INITIAL_SIZE);
   };
 
-  // 3-column logic: 1 on mobile, 2 on small tablets, 3 on desktop
- const colClass = gridCols === 4
-  ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4" // Default: 2 mobile, 3 tablet, 4 desktop
-  : "grid-cols-2 md:grid-cols-2 lg:grid-cols-3"; // Toggled: 2 mobile, 2 tablet, 3 desktop
+  const colClass = gridCols === 4
+    ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+    : "grid-cols-2 md:grid-cols-2 lg:grid-cols-3";
 
   const sidebarProps = {
     selectedCategory,
@@ -82,6 +75,19 @@ const [gridCols, setGridCols] = useState(4);
     onReset: () => { handleReset(); setDrawerOpen(false); },
   };
 
+  // ── Loading & Error states ──
+  if (loading) return (
+    <div className="bg-white min-h-screen pt-20 flex items-center justify-center">
+      <p className="font-serif text-xl text-gray-400 animate-pulse">Loading products...</p>
+    </div>
+  );
+
+  if (error) return (
+    <div className="bg-white min-h-screen pt-20 flex items-center justify-center">
+      <p className="font-serif text-xl text-red-400">Failed to load products. Please try again.</p>
+    </div>
+  );
+
   return (
     <div className="bg-white min-h-screen pt-20">
       <div className="max-w-360 mx-auto px-4 md:px-8">
@@ -94,11 +100,8 @@ const [gridCols, setGridCols] = useState(4);
           onSortChange={(val) => { setSortValue(val); setVisibleCount(INITIAL_SIZE); }}
           gridCols={gridCols}
           onGridChange={setGridCols}
-          // Now passing the function to open the drawer
-          onOpenFilters={() => setDrawerOpen(true)} 
+          onOpenFilters={() => setDrawerOpen(true)}
         />
-
-        {/* Removed the old redundant mobile filter bar that caused double buttons */}
 
         {drawerOpen && (
           <div className="fixed inset-0 z-50 lg:hidden">
@@ -136,7 +139,7 @@ const [gridCols, setGridCols] = useState(4);
               <>
                 <div className={`grid ${colClass} gap-x-4 gap-y-10 md:gap-x-6 md:gap-y-12`}>
                   {visible.map((product, index) => (
-                    <ProductCard key={product.id} product={product} index={index} />
+                    <ProductCard key={product._id} product={{ ...product, id: product._id }} index={index} />
                   ))}
                 </div>
 

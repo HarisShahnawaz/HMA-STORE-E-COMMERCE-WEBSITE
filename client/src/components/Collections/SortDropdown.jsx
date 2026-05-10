@@ -10,7 +10,7 @@ export default function SortDropdown({ value, onChange }) {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between gap-4 px-4 py-2 border border-black/10 rounded-lg bg-secondary/30 hover:bg-secondary/50 transition-all min-w-[160px]"
+        className="flex items-center justify-between gap-4 px-4 py-2 border border-black/10 rounded-lg bg-secondary/30 hover:bg-secondary/50 transition-all min-w-40"
       >
         <span className="font-sans text-[12px] text-foreground uppercase tracking-wider">
           {value}

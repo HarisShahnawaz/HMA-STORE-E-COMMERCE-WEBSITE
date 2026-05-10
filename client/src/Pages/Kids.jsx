@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 import CollectionHeader from "../components/Collections/CollectionHeader";
 import FilterSidebar from "../components/Collections/FilterSidebar";
 import ProductCard from "../components/Products/productCard";
-import { products } from "../data/products";
+import { useProducts } from "../hooks/useProducts"; // ← NEW
 
 const INITIAL_SIZE = 20;
 const LOAD_MORE_SIZE = 4;
@@ -26,22 +26,13 @@ const sortProducts = (list, sort) => {
 };
 
 export default function Kids() {
-  // Filters specifically for kids/children categories
-  const kidsProducts = useMemo(
-    () => products.filter(p => 
-      p.category.toLowerCase() === "kids" || 
-      p.category.toLowerCase() === "children"
-    ),
-    []
-  );
+  const { products: kidsProducts, loading, error } = useProducts({ category: "kids" }); // ← NEW
 
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [priceMax, setPriceMax] = useState(10000);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [showAiOnly, setShowAiOnly] = useState(false);
   const [sortValue, setSortValue] = useState("Featured");
-  
-  // Standard 4-column layout
   const [gridCols, setGridCols] = useState(4);
   const [visibleCount, setVisibleCount] = useState(INITIAL_SIZE);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -84,6 +75,18 @@ export default function Kids() {
     onReset: () => { handleReset(); setDrawerOpen(false); },
   };
 
+  if (loading) return (
+    <div className="bg-white min-h-screen pt-20 flex items-center justify-center">
+      <p className="font-serif text-xl text-gray-400 animate-pulse">Loading products...</p>
+    </div>
+  );
+
+  if (error) return (
+    <div className="bg-white min-h-screen pt-20 flex items-center justify-center">
+      <p className="font-serif text-xl text-red-400">Failed to load products. Please try again.</p>
+    </div>
+  );
+
   return (
     <div className="bg-white min-h-screen pt-20">
       <div className="max-w-360 mx-auto px-4 md:px-8">
@@ -96,10 +99,9 @@ export default function Kids() {
           onSortChange={(val) => { setSortValue(val); setVisibleCount(INITIAL_SIZE); }}
           gridCols={gridCols}
           onGridChange={setGridCols}
-          onOpenFilters={() => setDrawerOpen(true)} 
+          onOpenFilters={() => setDrawerOpen(true)}
         />
 
-        {/* Mobile Filter Drawer */}
         {drawerOpen && (
           <div className="fixed inset-0 z-50 lg:hidden">
             <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setDrawerOpen(false)} />
@@ -136,7 +138,7 @@ export default function Kids() {
               <>
                 <div className={`grid ${colClass} gap-x-4 gap-y-10 md:gap-x-6 md:gap-y-12`}>
                   {visible.map((product, index) => (
-                    <ProductCard key={product.id} product={product} index={index} />
+                    <ProductCard key={product._id} product={{ ...product, id: product._id }} index={index} />
                   ))}
                 </div>
 
