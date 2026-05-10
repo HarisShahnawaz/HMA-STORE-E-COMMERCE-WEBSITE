@@ -1,20 +1,17 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Heart, ShoppingBag, Sparkles, Check } from "lucide-react"; // Added Check
+import { Heart, ShoppingBag, Sparkles, Check } from "lucide-react";
 import { Button } from "../ui/button";
 import { useCart } from "../../context/CartContext";
 
 export default function ProductCard({ product, index }) {
   const [wishlisted, setWishlisted] = useState(false);
-  const [isAdded, setIsAdded] = useState(false); // New state for button feedback
+  const [isAdded, setIsAdded] = useState(false);
   const { addToCart } = useCart();
 
-  // Function to handle the temporary "Added" state
   const handleAddToCart = () => {
     addToCart(product);
     setIsAdded(true);
-    
-    // Reset back to "Add to Cart" after 2 seconds
     setTimeout(() => {
       setIsAdded(false);
     }, 2000);
@@ -55,7 +52,7 @@ export default function ProductCard({ product, index }) {
           <img src={product.image} alt={product.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
         </Link>
 
-        {/* Desktop Button with dynamic text/icon */}
+        {/* Desktop Button */}
         <div className="hidden md:flex absolute bottom-5 left-0 right-0 justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 z-30 px-6">
           <Button 
             onClick={handleAddToCart}
@@ -66,31 +63,33 @@ export default function ProductCard({ product, index }) {
           >
             {isAdded ? (
               <>
-                <Check size={12} />
-                <span className="text-[12px] font-medium">Added</span>
+                <Check size={12} className="shrink-0" />
+                <span className="text-[12px] font-medium whitespace-nowrap">Added</span>
               </>
             ) : (
               <>
-                <ShoppingBag size={12} />
-                <span className="text-[12px] font-medium">Add to Cart</span>
+                <ShoppingBag size={12} className="shrink-0" />
+                <span className="text-[12px] font-medium whitespace-nowrap">Add to Cart</span>
               </>
             )}
           </Button>
         </div>
       </div>
 
-      {/* Mobile Button with dynamic text/icon */}
+      {/* Mobile Button - Optimized for Oppo A60/Small screens */}
       <div className="md:hidden px-1 mb-3">
         <Button
           variant="outline"
           onClick={handleAddToCart}
           disabled={isAdded}
-          className={`w-full h-8 rounded-lg flex items-center justify-center gap-2 border-black/10 text-[12px] font-medium ${
-            isAdded ? "bg-black text-white border-black" : ""
+          className={`w-full h-8 rounded-lg flex items-center justify-center gap-1.5 border-black/10 transition-colors ${
+            isAdded ? "bg-black text-white border-black" : "bg-white text-black"
           }`}
         >
-          {isAdded ? <Check size={12} /> : <ShoppingBag size={12} />}
-          {isAdded ? "Added" : "Add to Cart"}
+          {isAdded ? <Check size={12} className="shrink-0" /> : <ShoppingBag size={12} className="shrink-0" />}
+          <span className="text-[10px] font-bold normal-case tracking-tight whitespace-nowrap">
+            {isAdded ? "Added" : "Add to Cart"}
+          </span>
         </Button>
       </div>
 

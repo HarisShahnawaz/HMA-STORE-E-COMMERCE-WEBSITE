@@ -50,12 +50,11 @@ export default function Header() {
 
   return (
     <>
-      {/* Restored your original background color/blur */}
       <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-sm">
-        <div className="max-w-360 mx-auto px-5 md:px-12">
+        <div className="max-w-360 mx-auto px-4 md:px-12">
           <div className="flex h-14 md:h-16 items-center justify-between relative">
 
-            {/* Mobile Menu Toggle */}
+            {/* Mobile Menu Toggle - Hidden when search is open to save space */}
             <button
               className={`lg:hidden flex flex-col justify-center gap-1.25 w-8 h-8 transition-opacity duration-300 ${isSearchOpen ? "opacity-0 pointer-events-none" : "opacity-100"}`}
               onClick={() => setIsMobileMenuOpen(true)}
@@ -64,17 +63,17 @@ export default function Header() {
               <span className="block h-[1.5px] w-3.5 bg-foreground" />
             </button>
 
-            {/* Logo - Physically pushes left to prevent merging */}
+            {/* Logo - Pushed to the far left edge when search is active */}
             <Link
               to="/"
-              className={`flex items-center gap-1.5 absolute transition-all duration-300 ease-in-out ${
+              className={`flex items-center gap-1 absolute transition-all duration-300 ease-in-out ${
                 isSearchOpen 
-                ? "left-4 translate-x-0" 
+                ? "left-0 translate-x-0 scale-90" 
                 : "left-1/2 -translate-x-1/2"
               } lg:static lg:left-auto lg:translate-x-0`}
               onClick={closeMenu}
             >
-              <span className="font-serif text-[1.1rem] md:text-[1.5rem] font-black tracking-tight text-foreground">
+              <span className="font-serif text-[1rem] md:text-[1.5rem] font-black tracking-tight text-foreground whitespace-nowrap">
                 HMA-Store
               </span>
               <Sparkles className="h-3 w-3 text-red-500" fill="currentColor" />
@@ -98,18 +97,18 @@ export default function Header() {
             </nav>
 
             {/* Right Icons Section */}
-            <div className="flex items-center gap-2 md:gap-6">
+            <div className="flex items-center gap-1 md:gap-6">
               
-              {/* White Search Box with better spacing */}
+              {/* White Search Box - Width adjusted for small mobile screens */}
               <div ref={searchRef} className="flex items-center">
                 <div className={`flex items-center overflow-hidden transition-all duration-300 ease-in-out bg-white border border-gray-200 rounded-full ${
-                  isSearchOpen ? "w-32.5 sm:w-64 opacity-100 px-3 shadow-sm" : "w-0 opacity-0 px-0 border-none"
+                  isSearchOpen ? "w-[105px] xs:w-36 sm:w-64 opacity-100 px-2 shadow-sm" : "w-0 opacity-0 px-0 border-none"
                 }`}>
                   <Search size={12} className="text-gray-400 shrink-0" />
                   <input 
                     type="text"
                     placeholder="Search..."
-                    className="h-7 w-full bg-transparent border-none px-2 text-[11px] outline-none"
+                    className="h-7 w-full bg-transparent border-none px-1.5 text-[10px] outline-none"
                     autoFocus={isSearchOpen}
                   />
                 </div>
@@ -131,7 +130,7 @@ export default function Header() {
                 </button>
 
                 {isAccountOpen && (
-                  <div className="absolute right-0 mt-4 w-48 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-100 animate-in fade-in zoom-in duration-200">
+                  <div className="absolute right-0 mt-4 w-48 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-[100] animate-in fade-in zoom-in duration-200">
                     <div className="bg-[#0f172a] px-4 py-3">
                       <span className="text-white font-sans text-[10px] font-black uppercase tracking-[0.2em]">My Account</span>
                     </div>
