@@ -13,9 +13,11 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/admin/products", {
-      headers: { Authorization: `Bearer ${token}` }
-    })
+    const API_URL = import.meta.env.VITE_API_URL;
+
+fetch(`${API_URL}/api/admin/products`, {
+  headers: { Authorization: `Bearer ${token}` }
+})
       .then(res => res.json())
       .then(products => {
         setStats({
