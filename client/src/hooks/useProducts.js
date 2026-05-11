@@ -7,7 +7,7 @@ export function useProducts(filters = {}) {
 
   useEffect(() => {
     const params = new URLSearchParams(filters).toString();
-    fetch(`http://localhost:5000/api/products${params ? '?' + params : ''}`)
+    fetch(`https://hma-store-e-commerce-website.vercel.app/api/products${params ? '?' + params : ''}`)
       .then(res => res.json())
       .then(data => { setProducts(data); setLoading(false); })
       .catch(err => { setError(err.message); setLoading(false); });

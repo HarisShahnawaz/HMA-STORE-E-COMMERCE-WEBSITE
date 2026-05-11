@@ -17,7 +17,7 @@ export default function AdminLogin() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("http://localhost:5000/api/admin/login", {
+      const res = await fetch("https://hma-store-e-commerce-website.vercel.app/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
