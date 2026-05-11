@@ -15,7 +15,7 @@ app.use(express.json());
 
 // ── ADMIN ROUTES (order matters: products before auth) ──
 app.use('/api/admin/products', adminProductsRoute);
-app.use('/api/admin', adminAuthRoute);
+app.use('/api/admin', adminAuthRoute)
 
 // ── PUBLIC ROUTES ──
 app.get("/api/products", async (req, res) => {
