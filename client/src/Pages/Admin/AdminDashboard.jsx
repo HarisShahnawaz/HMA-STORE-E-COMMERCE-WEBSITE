@@ -83,7 +83,7 @@ export default function AdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-   fetch("https://hma-store-e-commerce-website.vercel.app/api/admin/products", {
+    fetch("http://localhost:5000/api/admin/products", {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
