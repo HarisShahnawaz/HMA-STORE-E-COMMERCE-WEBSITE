@@ -17,12 +17,22 @@ import AdminDashboard from "./Pages/Admin/AdminDashboard";
 import AdminProducts from "./Pages/Admin/AdminProducts";
 import AdminProductForm from "./Pages/Admin/AdminProductForm";
 import ProtectedRoute from "./components/Admin/ProtectedRoute";
+import HMAAssistant from './components/Layout/HMAAssistant';
+import { useLocation } from 'react-router-dom';
+
+// ── Wrapper to hide assistant on admin pages ──
+function AssistantWrapper() {
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith("/admin");
+  if (isAdmin) return null;
+  return <HMAAssistant />;
+}
 
 function App() {
   return (
     <Router>
       <Routes>
-       
+        {/* ── Admin Routes ── */}
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={
           <ProtectedRoute><AdminDashboard /></ProtectedRoute>
@@ -37,7 +47,7 @@ function App() {
           <ProtectedRoute><AdminProductForm /></ProtectedRoute>
         } />
 
-        {/* ── Public Routes (with Header/Footer) ── */}
+        {/* ── Public Routes ── */}
         <Route path="/*" element={
           <div className="min-h-screen bg-white">
             <Header />
@@ -58,6 +68,9 @@ function App() {
           </div>
         } />
       </Routes>
+
+      {/* ── Assistant renders outside all routes, always on top ── */}
+      <AssistantWrapper />
     </Router>
   );
 }
