@@ -161,18 +161,19 @@ export default function HMAAssistant() {
 
       {/* ── Chat Dialog ── */}
       <div
-        style={{ zIndex: 9998 }}
-        className={`fixed transition-all duration-300 ease-out
-          bottom-0 right-0 left-0 md:bottom-6 md:right-6 md:left-auto
-          ${open ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-6 pointer-events-none"}
-        `}
-      >
+  style={{ zIndex: 9998 }}
+  className={`fixed transition-all duration-300 ease-out
+    bottom-0 right-0 left-0 
+    md:bottom-6 md:right-6 md:left-auto
+    ${open ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-full pointer-events-none"}
+  `}
+>
         <div className="
-          w-full h-[85dvh] rounded-t-3xl
-          md:w-[360px] md:h-[520px] md:rounded-3xl
-          bg-white shadow-2xl flex flex-col overflow-hidden
-          border border-gray-100
-        ">
+  w-full h-[72dvh] rounded-t-3xl
+  md:w-90 md:h-130 md:rounded-3xl
+  bg-white shadow-2xl flex flex-col overflow-hidden
+  border border-gray-100
+">
 
           {/* Header */}
           <div className="bg-[#0f172a] px-5 py-3.5 flex items-center justify-between shrink-0">
