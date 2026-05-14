@@ -11,4 +11,7 @@ const productSchema = new mongoose.Schema({
   isSale: { type: Boolean, default: false }
 }, { timestamps: true, suppressReservedKeysWarning: true });
 
+// ── TEXT INDEX for search (name + category) ──
+productSchema.index({ name: "text", category: "text" });
+
 module.exports = mongoose.model('Product', productSchema);

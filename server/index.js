@@ -13,9 +13,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ── ADMIN ROUTES (order matters: products before auth) ──
+// ── ADMIN ROUTES ──
 app.use('/api/admin/products', adminProductsRoute);
-app.use('/api/admin', adminAuthRoute)
+app.use('/api/admin', adminAuthRoute);
 
 // ── PUBLIC ROUTES ──
 app.get("/api/products", async (req, res) => {
@@ -40,6 +40,38 @@ app.get("/api/products/:id", async (req, res) => {
     res.json(product);
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+// ── SEARCH ROUTE ──
+app.get("/api/search", async (req, res) => {
+  try {
+    const { q } = req.query;
+
+    if (!q || q.trim() === "") return res.json([]);
+
+    // Try MongoDB full-text search first
+    const results = await Product.find(
+      { $text: { $search: q } },
+      { score: { $meta: "textScore" } }
+    )
+      .sort({ score: { $meta: "textScore" } }) // best match first
+      .limit(6);
+
+    res.json(results);
+  } catch (err) {
+    // Fallback to regex if text index not ready
+    try {
+      const results = await Product.find({
+        $or: [
+          { name: { $regex: req.query.q, $options: "i" } },
+          { category: { $regex: req.query.q, $options: "i" } },
+        ],
+      }).limit(6);
+      res.json(results);
+    } catch (fallbackErr) {
+      res.status(500).json({ error: fallbackErr.message });
+    }
   }
 });
 
