@@ -18,6 +18,7 @@ import AdminProducts from "./Pages/Admin/AdminProducts";
 import AdminProductForm from "./Pages/Admin/AdminProductForm";
 import ProtectedRoute from "./components/Admin/ProtectedRoute";
 import HMAAssistant from './components/Layout/HMAAssistant';
+import SearchPage from './Pages/SearchPage';
 import { useLocation } from 'react-router-dom';
 
 // ── Wrapper to hide assistant on admin pages ──
@@ -63,6 +64,7 @@ function App() {
               <Route path="/signup" element={<Signup />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/product/:id" element={<ProductDetail />} />
+              <Route path="/search" element={<SearchPage />} />
             </Routes>
             <Footer />
           </div>

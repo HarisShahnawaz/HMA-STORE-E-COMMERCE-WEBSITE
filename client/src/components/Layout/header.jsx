@@ -150,10 +150,10 @@ export default function Header() {
                 <p className="text-[11px] text-gray-400 capitalize">{product.category}</p>
               </div>
               <div className="text-right shrink-0">
-                <p className="text-[13px] font-bold text-gray-800">${product.price}</p>
-                {product.originalPrice && (
-                  <p className="text-[11px] text-gray-400 line-through">${product.originalPrice}</p>
-                )}
+               <p className="text-[13px] font-bold text-gray-800">Rs. {product.price.toLocaleString()}</p>
+{product.originalPrice && (
+  <p className="text-[11px] text-gray-400 line-through">Rs. {product.originalPrice.toLocaleString()}</p>
+)}
               </div>
             </button>
           ))}
