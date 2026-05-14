@@ -80,7 +80,7 @@ export default function SearchPage() {
               className="group flex flex-col"
             >
               {/* Image */}
-              <div className="relative overflow-hidden bg-gray-100 aspect-[3/4] mb-3">
+              <div className="relative overflow-hidden bg-gray-100 aspect-3/4 mb-3">
                 <img
                   src={product.image}
                   alt={product.name}
@@ -107,7 +107,7 @@ export default function SearchPage() {
               </div>
 
               {/* Info */}
-              <p className="text-[10px] uppercase tracking-[0.15em] text-black/40 font-bold mb-1 capitalize">
+              <p className="text-[10px] capitalize tracking-[0.15em] text-black/40 font-bold mb-1">
                 {product.category}
               </p>
               <p className="text-[14px] font-semibold text-gray-800 mb-1 leading-snug line-clamp-2 group-hover:underline underline-offset-2">
