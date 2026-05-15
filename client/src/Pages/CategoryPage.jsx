@@ -1,31 +1,32 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { X } from "lucide-react";
 import CollectionHeader from "../components/Collections/CollectionHeader";
 import FilterSidebar from "../components/Collections/FilterSidebar";
 import ProductCard from "../components/Products/productCard";
-import { useProducts } from "../hooks/useProducts"; // ← NEW
+import { useProducts } from "../hooks/useProducts";
 
 const INITIAL_SIZE = 20;
 const LOAD_MORE_SIZE = 4;
 
 const CATEGORY_MAP = {
   All: () => true,
-  Tops: (p) => /polo|shirt|tee|hoodie|sweater|top/i.test(p.name),
-  Bottoms: (p) => /trouser|chino|jean|pant|short|bottom/i.test(p.name),
-  Dresses: (p) => /dress|frock|suit|set/i.test(p.name),
-  Outerwear: (p) => /jacket|coat|vest|puffer/i.test(p.name),
-  Accessories: (p) => /toy|bag|hat|sock|accessory/i.test(p.name),
+  Tops: (p) => /polo|shirt|tee|hoodie|sweater|blouse|top|cardigan|oxford|wool/i.test(p.name),
+  Bottoms: (p) => /trouser|chino|jean|pant|bottom|skirt|short|legging/i.test(p.name),
+  Dresses: (p) => /dress|gown|suit|set|jumpsuit|frock/i.test(p.name),
+  Outerwear: (p) => /jacket|coat|blazer|vest|puffer|trench/i.test(p.name),
+  Accessories: (p) => /belt|scarf|bag|earring|jewelry|accessory|toy|hat|sock/i.test(p.name),
 };
 
 const sortProducts = (list, sort) => {
   const arr = [...list];
+  if (sort === "Newest") return arr.filter(p => p.isNew).concat(arr.filter(p => !p.isNew));
   if (sort === "Price: Low to High") return arr.sort((a, b) => a.price - b.price);
   if (sort === "Price: High to Low") return arr.sort((a, b) => b.price - a.price);
   return arr;
 };
 
-export default function Sale() {
-  const { products: globalSaleItems, loading, error } = useProducts({ isSale: true }); // ← NEW
+export default function CategoryPage({ title, description, filterOptions }) {
+  const { products, loading, error } = useProducts(filterOptions);
 
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [priceMax, setPriceMax] = useState(10000);
@@ -36,15 +37,26 @@ export default function Sale() {
   const [visibleCount, setVisibleCount] = useState(INITIAL_SIZE);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  // Reset filters when the page changes (e.g. going from Men to Women)
+  useEffect(() => {
+    setSelectedCategory("All");
+    setPriceMax(10000);
+    setSelectedSizes([]);
+    setShowAiOnly(false);
+    setSortValue("Featured");
+    setVisibleCount(INITIAL_SIZE);
+    window.scrollTo(0, 0);
+  }, [title]);
+
   const filtered = useMemo(() => {
-    let result = globalSaleItems;
+    let result = products;
     const matchFn = CATEGORY_MAP[selectedCategory] ?? CATEGORY_MAP.All;
     if (selectedCategory !== "All") result = result.filter(matchFn);
     result = result.filter(p => p.price <= priceMax);
     if (showAiOnly) result = result.filter(p => p.aiRecommended);
     result = sortProducts(result, sortValue);
     return result;
-  }, [globalSaleItems, selectedCategory, priceMax, showAiOnly, sortValue]);
+  }, [products, selectedCategory, priceMax, showAiOnly, sortValue]);
 
   const visible = filtered.slice(0, visibleCount);
   const hasMore = visibleCount < filtered.length;
@@ -74,9 +86,10 @@ export default function Sale() {
     onReset: () => { handleReset(); setDrawerOpen(false); },
   };
 
+  // ── Loading & Error states ──
   if (loading) return (
     <div className="bg-white min-h-screen pt-20 flex items-center justify-center">
-      <p className="font-serif text-xl text-gray-400 animate-pulse">Loading products...</p>
+      <p className="font-serif text-xl text-gray-400 animate-pulse">Loading {title.toLowerCase()}...</p>
     </div>
   );
 
@@ -91,8 +104,8 @@ export default function Sale() {
       <div className="max-w-360 mx-auto px-4 md:px-8">
 
         <CollectionHeader
-          title="Exclusive Sale"
-          description="Unbeatable prices on high-quality fashion. Grab your favorites before they're gone."
+          title={title}
+          description={description}
           count={filtered.length}
           sortValue={sortValue}
           onSortChange={(val) => { setSortValue(val); setVisibleCount(INITIAL_SIZE); }}

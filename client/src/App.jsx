@@ -2,11 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Layout/header';
 import Footer from './components/Layout/footer';
 import Home from './Pages/Home';
-import Men from './Pages/Men';
-import Women from './Pages/Women';
-import Kids from './Pages/Kids';
-import NewArrivals from './Pages/NewArrivals';
-import Sale from './Pages/Sale';
+import CategoryPage from './Pages/CategoryPage';
 import Cart from './Pages/Cart';
 import Login from './Pages/Login';
 import Signup from './Pages/Signup';
@@ -54,11 +50,11 @@ function App() {
             <Header />
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/men" element={<Men />} />
-              <Route path="/women" element={<Women />} />
-              <Route path="/kids" element={<Kids />} />
-              <Route path="/new-arrivals" element={<NewArrivals />} />
-              <Route path="/sale" element={<Sale />} />
+              <Route path="/men" element={<CategoryPage title="Men" description="Sophisticated essentials crafted for the modern man. Discover tailored pieces that blend timeless style with contemporary comfort." filterOptions={{ category: "men" }} />} />
+              <Route path="/women" element={<CategoryPage title="Women" description="Elegant silhouettes and contemporary designs. Explore our curated selection of women's fashion, from timeless staples to bold statement pieces." filterOptions={{ category: "women" }} />} />
+              <Route path="/kids" element={<CategoryPage title="Kids" description="Comfort meets style for the little ones. Discover our playful collection of durable, high-quality clothing for children of all ages." filterOptions={{ category: "kids" }} />} />
+              <Route path="/new-arrivals" element={<CategoryPage title="New Arrivals" description="The latest drops from Men, Women, and Kids collections." filterOptions={{ isNew: true }} />} />
+              <Route path="/sale" element={<CategoryPage title="Exclusive Sale" description="Unbeatable prices on high-quality fashion. Grab your favorites before they're gone." filterOptions={{ isSale: true }} />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
