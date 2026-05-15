@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 export function useProducts(filters = {}) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -7,7 +9,7 @@ export function useProducts(filters = {}) {
 
   useEffect(() => {
     const params = new URLSearchParams(filters).toString();
-    fetch(`http://localhost:5000/api/products${params ? '?' + params : ''}`)
+    fetch(`${API_URL}/api/products${params ? '?' + params : ''}`)
       .then(res => res.json())
       .then(data => { setProducts(data); setLoading(false); })
       .catch(err => { setError(err.message); setLoading(false); });

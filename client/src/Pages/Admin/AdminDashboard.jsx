@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 import { Link, useNavigate } from "react-router-dom";
 import { useAdminAuth } from "../../context/AdminAuthContext";
 import {
@@ -83,7 +85,7 @@ export default function AdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/admin/products", {
+    fetch(`${API_URL}/api/admin/products`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())

@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 import { Link, useNavigate } from "react-router-dom";
 import { useAdminAuth } from "../../context/AdminAuthContext";
 import {
@@ -82,7 +84,7 @@ export default function AdminProducts() {
   const [page, setPage] = useState(1);
 
   const fetchProducts = () => {
-    fetch("http://localhost:5000/api/admin/products", {
+    fetch(`${API_URL}/api/admin/products`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -96,7 +98,7 @@ export default function AdminProducts() {
     if (!window.confirm(`Delete "${name}"? This cannot be undone.`)) return;
     setDeletingId(id);
     try {
-      await fetch(`http://localhost:5000/api/admin/products/${id}`, {
+      await fetch(`${API_URL}/api/admin/products/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` }
       });

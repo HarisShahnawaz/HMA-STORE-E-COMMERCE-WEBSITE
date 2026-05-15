@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAdminAuth } from "../../context/AdminAuthContext";
 import {
@@ -83,7 +85,7 @@ export default function AdminProductForm() {
 
   useEffect(() => {
     if (!isEditing) return;
-    fetch(`http://localhost:5000/api/admin/products/${id}`, {
+    fetch(`${API_URL}/api/admin/products/${id}`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -126,8 +128,8 @@ export default function AdminProductForm() {
 
     try {
       const url = isEditing
-        ? `http://localhost:5000/api/admin/products/${id}`
-        : `http://localhost:5000/api/admin/products`;
+        ? `${API_URL}/api/admin/products/${id}`
+        : `${API_URL}/api/admin/products`;
       const method = isEditing ? "PUT" : "POST";
 
       const res = await fetch(url, {

@@ -11,7 +11,7 @@ const navigation = [
   { name: "Sale", href: "/sale" },
 ];
 
-// ── Your backend URL — set VITE_API_URL in client/.env ──
+
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export default function Header() {
@@ -150,10 +150,10 @@ export default function Header() {
                 <p className="text-[11px] text-gray-400 capitalize">{product.category}</p>
               </div>
               <div className="text-right shrink-0">
-               <p className="text-[13px] font-bold text-gray-800">Rs. {product.price.toLocaleString()}</p>
-{product.originalPrice && (
-  <p className="text-[11px] text-gray-400 line-through">Rs. {product.originalPrice.toLocaleString()}</p>
-)}
+                <p className="text-[13px] font-bold text-gray-800">Rs. {product.price.toLocaleString()}</p>
+                {product.originalPrice && (
+                  <p className="text-[11px] text-gray-400 line-through">Rs. {product.originalPrice.toLocaleString()}</p>
+                )}
               </div>
             </button>
           ))}
@@ -194,9 +194,8 @@ export default function Header() {
             {/* ── Logo ── */}
             <Link
               to="/"
-              className={`absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0 flex items-center gap-1 transition-opacity duration-200 ${
-                isSearchOpen ? "opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto" : "opacity-100"
-              }`}
+              className={`absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0 flex items-center gap-1 transition-opacity duration-200 ${isSearchOpen ? "opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto" : "opacity-100"
+                }`}
             >
               <span className="font-serif text-[1rem] md:text-[1.5rem] font-black tracking-tight text-foreground">
                 HMA-Store
@@ -280,9 +279,8 @@ export default function Header() {
                 {/* Search icon toggle button */}
                 <button
                   onClick={handleSearchToggle}
-                  className={`p-1.5 rounded-sm transition-colors ${
-                    isSearchOpen ? "text-black" : "text-black/60 hover:text-black"
-                  }`}
+                  className={`p-1.5 rounded-sm transition-colors ${isSearchOpen ? "text-black" : "text-black/60 hover:text-black"
+                    }`}
                 >
                   <Search size={18} />
                 </button>
@@ -292,9 +290,8 @@ export default function Header() {
               <div ref={accountRef} className="relative">
                 <button
                   onClick={handleAccountToggle}
-                  className={`p-1.5 rounded-sm transition-colors ${
-                    isAccountOpen ? "bg-red-500 text-white" : "text-black/60 hover:text-black"
-                  }`}
+                  className={`p-1.5 rounded-sm transition-colors ${isAccountOpen ? "bg-red-500 text-white" : "text-black/60 hover:text-black"
+                    }`}
                 >
                   <User size={18} />
                 </button>

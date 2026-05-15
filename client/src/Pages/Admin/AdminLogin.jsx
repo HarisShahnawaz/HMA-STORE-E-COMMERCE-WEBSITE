@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useAdminAuth } from "../../context/AdminAuthContext";
 import { ShieldCheck, Eye, EyeOff } from "lucide-react";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 export default function AdminLogin() {
   const { login } = useAdminAuth();
   const navigate = useNavigate();
@@ -17,7 +19,7 @@ export default function AdminLogin() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("http://localhost:5000/api/admin/login", {
+      const res = await fetch(`${API_URL}/api/admin/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

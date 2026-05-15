@@ -6,6 +6,8 @@ import {
   RotateCcw, Heart, ChevronRight, Sparkles 
 } from "lucide-react";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 export default function ProductDetail() {
   const { id } = useParams();
   const { addToCart } = useCart();
@@ -17,7 +19,7 @@ export default function ProductDetail() {
   useEffect(() => {
     window.scrollTo(0, 0);
     setLoading(true);
-    fetch(`http://localhost:5000/api/products/${id}`)
+    fetch(`${API_URL}/api/products/${id}`)
       .then(res => {
         if (!res.ok) throw new Error("Product not found");
         return res.json();
