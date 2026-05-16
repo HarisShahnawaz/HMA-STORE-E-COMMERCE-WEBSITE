@@ -67,7 +67,7 @@ function App() {
         } />
       </Routes>
 
-      {/* ── Assistant renders outside all routes, always on top this is necessary ── */}
+      {/* ── Assistant renders outside all routes, always on top this is necessary// ── */}
       <AssistantWrapper />
     </Router>
   );
