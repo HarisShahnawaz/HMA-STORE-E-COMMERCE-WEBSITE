@@ -41,6 +41,9 @@ function Sidebar({ open, onClose }) {
               <p className="font-serif font-bold text-white text-base leading-tight tracking-tight">HMA-Store</p>
               <p className="text-[10px] text-white/40 uppercase tracking-widest font-medium">Admin Panel</p>
             </div>
+            <button onClick={onClose} className="lg:hidden ml-auto text-white/40 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/5">
+              <X size={18} />
+            </button>
           </div>
         </div>
 
@@ -127,8 +130,8 @@ export default function AdminDashboard() {
 
       <div className="flex-1 lg:ml-64 flex flex-col min-h-screen">
         {/* NEW PROFESSIONAL TOP BAR */}
-        <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 px-8 py-4 flex items-center justify-between sticky top-0 z-20">
-          <div className="flex items-center gap-6 flex-1">
+        <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 px-4 sm:px-6 md:px-8 py-4 flex items-center justify-between sticky top-0 z-20">
+          <div className="flex items-center gap-3 sm:gap-6 flex-1">
             <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 rounded-xl hover:bg-gray-100">
               <Menu size={20} />
             </button>
@@ -140,7 +143,7 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-3 sm:gap-5">
             <button className="relative p-2.5 text-gray-400 hover:text-black hover:bg-gray-100 rounded-xl transition-all">
               <Bell size={20} />
               <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
@@ -148,7 +151,7 @@ export default function AdminDashboard() {
 
             <div className="h-8 w-px bg-gray-200"></div>
 
-            <div className="flex items-center gap-3 pl-2 group cursor-pointer">
+            <div className="flex items-center gap-2 sm:gap-3 pl-1 sm:pl-2 group cursor-pointer">
               <div className="text-right hidden sm:block">
                 <p className="text-sm font-bold text-black leading-none">Super Admin</p>
                 <p className="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Verified</p>
@@ -160,11 +163,11 @@ export default function AdminDashboard() {
           </div>
         </header>
 
-        <main className="flex-1 p-8">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+        <main className="flex-1 p-4 sm:p-6 md:p-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-10">
             <div>
-              <h1 className="font-serif text-3xl font-bold text-black tracking-tight">Overview</h1>
-              <p className="text-sm text-gray-500 mt-1">Snapshot of your store's current status.</p>
+              <h1 className="font-serif text-2xl sm:text-3xl font-bold text-black tracking-tight">Overview</h1>
+              <p className="text-xs sm:text-sm text-gray-500 mt-1">Snapshot of your store's current status.</p>
             </div>
             <Link to="/admin/products/new" className="w-fit flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl text-sm font-bold hover:shadow-xl hover:shadow-black/20 transition-all active:scale-95">
               <Plus size={18} /> Add New Product
@@ -173,23 +176,23 @@ export default function AdminDashboard() {
 
           {/* Stats Grid - 5 columns for symmetry */}
           {loading ? (
-            <div className="grid grid-cols-2 lg:grid-cols-5 gap-5 mb-10">
-              {[...Array(10)].map((_, i) => <div key={i} className="h-36 rounded-2xl bg-gray-200 animate-pulse" />)}
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-5 mb-6 sm:mb-10">
+              {[...Array(10)].map((_, i) => <div key={i} className="h-28 sm:h-36 rounded-2xl bg-gray-200 animate-pulse" />)}
             </div>
           ) : (
-            <div className="grid grid-cols-2 lg:grid-cols-5 gap-5 mb-10">
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-5 mb-6 sm:mb-10">
               {statCards.map((card, i) => (
-                <div key={i} className={`${card.bg} rounded-2xl p-6 shadow-sm hover:scale-[1.03] transition-all duration-300`}>
-                  <div className={`${card.text} opacity-70 mb-4`}>{card.icon}</div>
-                  <p className={`font-serif text-3xl font-bold ${card.text}`}>{card.value}</p>
-                  <p className={`text-[10px] font-black uppercase tracking-widest mt-2 ${card.sub}`}>{card.label}</p>
+                <div key={i} className={`${card.bg} rounded-2xl p-4 sm:p-6 shadow-sm hover:scale-[1.03] transition-all duration-300`}>
+                  <div className={`${card.text} opacity-70 mb-2 sm:mb-4`}>{card.icon}</div>
+                  <p className={`font-serif text-lg sm:text-2xl lg:text-3xl font-bold ${card.text} truncate`} title={String(card.value)}>{card.value}</p>
+                  <p className={`text-[9px] sm:text-[10px] font-black uppercase tracking-widest mt-1.5 sm:mt-2 ${card.sub} truncate`}>{card.label}</p>
                 </div>
               ))}
             </div>
           )}
 
           {/* Quick Actions (Unchanged) */}
-          <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 mb-8">
+          <div className="bg-white rounded-2xl p-4 sm:p-6 md:p-8 shadow-sm border border-gray-100 mb-6 sm:mb-8">
             <div className="flex items-center justify-between mb-8">
               <h2 className="font-serif text-xl font-bold text-black">Management Actions</h2>
               <div className="px-3 py-1 bg-gray-50 rounded-lg text-[10px] font-bold text-gray-400 uppercase tracking-widest">Quick Access</div>
@@ -229,7 +232,7 @@ export default function AdminDashboard() {
 
           {/* Category Breakdown (Unchanged) */}
           {stats && (
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+            <div className="bg-white rounded-2xl p-4 sm:p-6 md:p-8 shadow-sm border border-gray-100">
               <h2 className="font-serif text-xl font-bold text-black mb-8">Stock Distribution</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                 {[

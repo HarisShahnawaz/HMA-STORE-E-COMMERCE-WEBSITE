@@ -34,7 +34,7 @@ function Sidebar({ open, onClose }) {
               <p className="font-serif font-bold text-white text-base leading-tight">HMA-Store</p>
               <p className="text-[10px] text-white/40 uppercase tracking-widest font-medium">Admin Panel</p>
             </div>
-            <button onClick={onClose} className="lg:hidden ml-auto text-white/40 hover:text-white">
+            <button onClick={onClose} className="lg:hidden ml-auto text-white/40 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/5">
               <X size={18} />
             </button>
           </div>
@@ -169,33 +169,35 @@ export default function AdminProductForm() {
       <div className="flex-1 lg:ml-64 flex flex-col min-h-screen">
 
         {/* Top Bar */}
-        <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 px-8 py-4 flex items-center justify-between sticky top-0 z-20">
-          <div className="flex items-center gap-4">
+        <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 px-4 sm:px-6 md:px-8 py-4 flex items-center justify-between sticky top-0 z-20">
+          <div className="flex items-center gap-3 sm:gap-4">
             <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 rounded-xl hover:bg-gray-100">
               <Menu size={20} />
             </button>
             <button onClick={() => navigate("/admin/products")}
-              className="flex items-center gap-2 text-gray-400 hover:text-black transition-colors text-sm font-medium">
-              <ArrowLeft size={16} /> Back
+              className="flex items-center gap-1.5 text-gray-400 hover:text-black transition-colors text-sm font-medium">
+              <ArrowLeft size={16} />
+              <span className="hidden sm:inline">Back</span>
             </button>
             <div className="h-5 w-px bg-gray-200" />
             <div>
-              <h1 className="font-serif text-2xl font-bold text-black">
+              <h1 className="font-serif text-lg sm:text-2xl font-bold text-black">
                 {isEditing ? "Edit Product" : "Add New Product"}
               </h1>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-gray-400 hidden sm:block">
                 {isEditing ? "Update product details" : "Create a new product listing"}
               </p>
             </div>
           </div>
           <button onClick={handleSubmit} disabled={loading}
-            className="flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:shadow-xl hover:shadow-black/20 transition-all active:scale-95 disabled:opacity-50">
+            className="flex items-center gap-2 bg-black text-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-sm font-bold hover:shadow-xl hover:shadow-black/20 transition-all active:scale-95 disabled:opacity-50 shrink-0">
             <Save size={16} />
-            {loading ? "Saving..." : "Save Product"}
+            <span className="hidden sm:inline">{loading ? "Saving..." : "Save Product"}</span>
+            <span className="sm:hidden">{loading ? "Saving..." : "Save"}</span>
           </button>
         </header>
 
-        <main className="flex-1 p-6 md:p-8">
+        <main className="flex-1 p-4 sm:p-6 md:p-8">
           {fetching ? (
             <div className="flex items-center justify-center py-32">
               <p className="font-serif text-xl text-gray-400 animate-pulse">Loading product...</p>
@@ -215,7 +217,7 @@ export default function AdminProductForm() {
                 <div className="lg:col-span-2 space-y-6">
 
                   {/* Basic Info */}
-                  <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                  <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100">
                     <div className="flex items-center gap-2 mb-6">
                       <Layers size={16} className="text-gray-400" />
                       <h2 className="font-bold text-sm uppercase tracking-widest text-gray-400">Basic Info</h2>
@@ -253,12 +255,12 @@ export default function AdminProductForm() {
                   </div>
 
                   {/* Pricing */}
-                  <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                  <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100">
                     <div className="flex items-center gap-2 mb-6">
                       <DollarSign size={16} className="text-gray-400" />
                       <h2 className="font-bold text-sm uppercase tracking-widest text-gray-400">Pricing</h2>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="text-[11px] font-black uppercase tracking-widest text-gray-400 block mb-2">
                           Sale Price (Rs) *
@@ -293,7 +295,7 @@ export default function AdminProductForm() {
                   </div>
 
                   {/* Image */}
-                  <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                  <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100">
                     <div className="flex items-center gap-2 mb-6">
                       <Image size={16} className="text-gray-400" />
                       <h2 className="font-bold text-sm uppercase tracking-widest text-gray-400">Image</h2>
@@ -345,7 +347,7 @@ export default function AdminProductForm() {
                 <div className="space-y-6">
 
                   {/* ── Status Toggles — FIXED ── */}
-                  <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                  <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100">
                     <div className="flex items-center gap-2 mb-6">
                       <Tag size={16} className="text-gray-400" />
                       <h2 className="font-bold text-sm uppercase tracking-widest text-gray-400">Status</h2>
@@ -371,7 +373,7 @@ export default function AdminProductForm() {
                   </div>
 
                   {/* Live Preview */}
-                  <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                  <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100">
                     <h2 className="font-bold text-sm uppercase tracking-widest text-gray-400 mb-4">Preview</h2>
                     <div className="bg-gray-50 rounded-xl overflow-hidden">
                       <div className="aspect-square relative">
