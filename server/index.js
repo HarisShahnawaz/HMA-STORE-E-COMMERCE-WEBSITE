@@ -1,3 +1,13 @@
+const dns = require('dns');
+
+// Fix local DNS resolution issues (c-ares) on Windows/local environment for MongoDB+SRV connections
+if (process.env.NODE_ENV !== "production") {
+  try {
+    dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
+  } catch (err) {
+    console.warn("⚠️ DNS: Failed to set custom DNS servers:", err.message);
+  }
+}
 
 const express = require('express');
 const mongoose = require('mongoose');
