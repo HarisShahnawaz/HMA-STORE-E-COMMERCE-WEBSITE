@@ -15,7 +15,7 @@ export default function Login() {
             <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-700 mb-2">Email address</label>
             <input type="email" placeholder="you@example.com" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-black outline-none transition-all text-sm" />
           </div>
-          
+
           <div>
             <div className="flex justify-between mb-2">
               <label className="text-[11px] font-bold uppercase tracking-wider text-gray-700">Password</label>

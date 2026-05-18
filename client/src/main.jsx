@@ -8,7 +8,7 @@ import { AdminAuthProvider } from './context/AdminAuthContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-   <AdminAuthProvider>
+    <AdminAuthProvider>
       <CartProvider>
         <App />
       </CartProvider>

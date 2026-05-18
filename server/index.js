@@ -118,4 +118,4 @@ if (process.env.NODE_ENV !== "production") {
 
 module.exports = app;
 
-// Force restart nodemon to load latest .env variables and assistant route
+// Force restart nodemon to load latest .env variables and assistant route

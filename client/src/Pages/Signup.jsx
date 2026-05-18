@@ -20,7 +20,7 @@ export default function Signup() {
             <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-700 mb-2">Email address</label>
             <input type="email" placeholder="you@example.com" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-black outline-none transition-all text-sm" />
           </div>
-          
+
           <div>
             <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-700 mb-2">Password</label>
             <input type="password" placeholder="••••••••" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-black outline-none transition-all text-sm" />
