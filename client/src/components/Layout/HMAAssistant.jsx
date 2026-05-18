@@ -2,49 +2,14 @@ import { useState, useRef, useEffect } from "react";
 import { Sparkles, X, Send, ShoppingBag } from "lucide-react";
 import { useCart } from "../../context/CartContext";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 const SUGGESTED_QUESTIONS = [
   "What's on sale?",
   "New arrivals?",
   "AI picks?",
   "Kids clothing?",
 ];
-
-function getBotReply(message) {
-  const msg = message.toLowerCase();
-  if (msg.match(/sale|discount|offer|cheap/))
-    return "🏷️ We have exclusive sale items! Head to our **Sale** section for discounted Men's, Women's, and Kids' clothing — up to 30% off!";
-  if (msg.match(/new arrival|latest|new|fresh/))
-    return "✨ Check our **New Arrivals** section for the freshest drops from Men, Women, and Kids collections!";
-  if (msg.match(/ai|recommend|suggest|pick|stylist/))
-    return "🤖 Our **AI Picks** are curated by our style engine! Look for the ✨ AI Pick badge — selected based on trending styles and top ratings.";
-  if (msg.match(/men|man|male|gents/))
-    return "👔 Our **Men's Collection** has 24 products — blazers, polos, hoodies, trousers and more. Ranging from Rs 1,200 to Rs 7,500!";
-  if (msg.match(/women|woman|female|ladies/))
-    return "👗 Our **Women's Collection** has 21 pieces — dresses, coats, bags, earrings and more. Ranging from Rs 1,200 to Rs 8,500!";
-  if (msg.match(/kid|child|children|boy|baby/))
-    return "🧒 Our **Kids Collection** has 22 items — jackets, hoodies, sets, shoes and more. Ranging from Rs 800 to Rs 4,900!";
-  if (msg.match(/price|cost|how much|range|budget/))
-    return "💰 Prices range from **Rs 800 to Rs 8,500**. Men's: Rs 1,200–7,500 | Women's: Rs 1,200–8,500 | Kids: Rs 800–4,900.";
-  if (msg.match(/delivery|shipping|ship|deliver/))
-    return "🚚 **Free delivery** on orders over Rs 30,000. We deliver across Pakistan!";
-  if (msg.match(/return|exchange|refund/))
-    return "↩️ **Easy returns within 7 days**. We want you to be 100% satisfied!";
-  if (msg.match(/payment|pay|cash|card|online/))
-    return "💳 We accept **cash on delivery** and **online payment**. Shop with confidence!";
-  if (msg.match(/size|fit|measurement/))
-    return "📏 We offer sizes **XS, S, M, L, XL, XXL**. Check the size guide on each product page!";
-  if (msg.match(/hello|hi|hey|greet/))
-    return "👋 Welcome to **HMA-Store**! I can help with products, shipping, returns, or pricing. What are you looking for?";
-  if (msg.match(/thank|thanks/))
-    return "😊 You're welcome! Happy shopping at HMA-Store!";
-  if (msg.match(/cart|bag|checkout|order/))
-    return "🛒 Add items from any product page, then head to **Cart** to checkout!";
-  if (msg.match(/product|item|collection|how many/))
-    return "🛍️ We have **67 products** across Men, Women, and Kids! Use filters to find exactly what you need.";
-  if (msg.match(/contact|help|support/))
-    return "📞 Visit the **Contact** section on our homepage. We're happy to help!";
-  return "🤔 I can help with **products**, **prices**, **sale items**, **new arrivals**, **shipping**, or **returns**. What would you like to know?";
-}
 
 export default function HMAAssistant() {
   const [open, setOpen] = useState(false);
@@ -79,29 +44,92 @@ export default function HMAAssistant() {
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
-  const sendMessage = (text) => {
+  const sendMessage = async (text) => {
     const trimmed = (text || input).trim();
     if (!trimmed) return;
-    setMessages(prev => [...prev, { from: "user", text: trimmed, time: new Date() }]);
+
+    // Create message history safely
+    const newUserMessage = { from: "user", text: trimmed, time: new Date() };
+    const updatedMessages = [...messages, newUserMessage];
+    
+    setMessages(updatedMessages);
     setInput("");
     setTyping(true);
-    setTimeout(() => {
-      setMessages(prev => [...prev, { from: "bot", text: getBotReply(trimmed), time: new Date() }]);
+
+    try {
+      const response = await fetch(`${API_URL}/api/assistant/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: trimmed,
+          history: updatedMessages,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to fetch response");
+      }
+
+      const data = await response.json();
+      setMessages(prev => [
+        ...prev,
+        { from: "bot", text: data.reply, time: new Date() },
+      ]);
+    } catch (error) {
+      console.error("Assistant API Error:", error);
+      setMessages(prev => [
+        ...prev,
+        {
+          from: "bot",
+          text: "⚠️ Sorry, I encountered an error connecting to the AI service. Please make sure your Gemini key is configured correctly and try again.",
+          time: new Date(),
+        },
+      ]);
+    } finally {
       setTyping(false);
-    }, 600 + Math.random() * 400);
+    }
   };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
   };
 
-  const formatText = (text) =>
-    text.split(/\*\*(.*?)\*\*/g).map((part, i) =>
-      i % 2 === 1 ? <strong key={i} className="font-black text-black">{part}</strong> : part
-    );
+  const formatText = (text) => {
+    if (!text) return "";
+    const lines = text.split("\n");
+    return lines.map((line, index) => {
+      let content = line;
+      let isBullet = false;
+      if (line.trim().startsWith("- ") || line.trim().startsWith("* ")) {
+        content = line.trim().substring(2);
+        isBullet = true;
+      }
+      const parts = content.split(/\*\*(.*?)\*\*/g);
+      const parsedParts = parts.map((part, i) =>
+        i % 2 === 1 ? <strong key={i} className="font-black text-black">{part}</strong> : part
+      );
+      if (isBullet) {
+        return (
+          <li key={index} className="ml-4 list-disc pl-1 my-1 text-gray-700">
+            {parsedParts}
+          </li>
+        );
+      }
+      return (
+        <p key={index} className={line.trim() === "" ? "h-2" : "my-0.5"}>
+          {parsedParts}
+        </p>
+      );
+    });
+  };
 
-  const formatTime = (date) =>
-    date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  const formatTime = (date) => {
+    const d = date instanceof Date ? date : new Date(date);
+    return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  };
 
   return (
     <>

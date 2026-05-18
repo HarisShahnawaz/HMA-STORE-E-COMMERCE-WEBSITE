@@ -16,6 +16,7 @@ require('dotenv').config();
 const Product = require('./models/Product');
 const adminAuthRoute = require('./routes/adminAuth');
 const adminProductsRoute = require('./routes/adminProducts');
+const assistantRoute = require('./routes/assistant');
 
 const app = express();
 app.use(cors());
@@ -43,6 +44,9 @@ app.use(async (req, res, next) => {
 // ── ADMIN ROUTES ──
 app.use('/api/admin/products', adminProductsRoute);
 app.use('/api/admin', adminAuthRoute);
+
+// ── ASSISTANT ROUTE ──
+app.use('/api/assistant', assistantRoute);
 
 // ── PUBLIC ROUTES ──
 app.get("/api/products", async (req, res) => {
@@ -113,3 +117,5 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 module.exports = app;
+
+// Force restart nodemon to load latest .env variables and assistant route
