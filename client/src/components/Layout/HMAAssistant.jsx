@@ -51,7 +51,7 @@ export default function HMAAssistant() {
     // Create message history safely
     const newUserMessage = { from: "user", text: trimmed, time: new Date() };
     const updatedMessages = [...messages, newUserMessage];
-    
+
     setMessages(updatedMessages);
     setInput("");
     setTyping(true);
@@ -84,7 +84,7 @@ export default function HMAAssistant() {
         ...prev,
         {
           from: "bot",
-          text: "⚠️ Sorry, I encountered an error connecting to the AI service. Please make sure your Gemini key is configured correctly and try again.",
+          text: "⚠️ HMA Assistant is a bit overwhelmed with requests right now! Our personal shoppers are currently fully booked. Please wait a moment and try asking again shortly.",
           time: new Date(),
         },
       ]);
@@ -142,60 +142,60 @@ export default function HMAAssistant() {
       )}
 
       {/* ── Floating Button ── */}
-{!open && (
-  <button
-    onClick={() => setOpen(true)}
-    style={{
-      position: "fixed",
-      bottom: "24px",
-      right: "20px",
-      zIndex: 9999,
-      width: "52px",
-      height: "52px",
-      borderRadius: "50%",
-      backgroundColor: "#000",
-      color: "#fff",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      boxShadow: "0 10px 40px rgba(0,0,0,0.3)",
-      border: "none",
-      cursor: "pointer",
-    }}
-  >
-    <Sparkles size={20} fill="currentColor" />
-    {cartCount > 0 && (
-      <span style={{
-        position: "absolute",
-        top: "-4px",
-        right: "-4px",
-        width: "20px",
-        height: "20px",
-        backgroundColor: "#ef4444",
-        color: "#fff",
-        fontSize: "9px",
-        fontWeight: "900",
-        borderRadius: "50%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        border: "2px solid white",
-      }}>
-        {cartCount}
-      </span>
-    )}
-  </button>
-)}
+      {!open && (
+        <button
+          onClick={() => setOpen(true)}
+          style={{
+            position: "fixed",
+            bottom: "24px",
+            right: "20px",
+            zIndex: 9999,
+            width: "52px",
+            height: "52px",
+            borderRadius: "50%",
+            backgroundColor: "#000",
+            color: "#fff",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "0 10px 40px rgba(0,0,0,0.3)",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          <Sparkles size={20} fill="currentColor" />
+          {cartCount > 0 && (
+            <span style={{
+              position: "absolute",
+              top: "-4px",
+              right: "-4px",
+              width: "20px",
+              height: "20px",
+              backgroundColor: "#ef4444",
+              color: "#fff",
+              fontSize: "9px",
+              fontWeight: "900",
+              borderRadius: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              border: "2px solid white",
+            }}>
+              {cartCount}
+            </span>
+          )}
+        </button>
+      )}
 
       {/* ── Chat Dialog ── */}
       <div
-  style={{ zIndex: 9998 }}
-  className={`fixed transition-all duration-300 ease-out
+        style={{ zIndex: 9998 }}
+        className={`fixed transition-all duration-300 ease-out
     bottom-0 right-0 left-0 
     md:bottom-6 md:right-6 md:left-auto
     ${open ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-full pointer-events-none"}
   `}
->
+      >
         <div className="
   w-full h-[72dvh] rounded-t-3xl
   md:w-90 md:h-130 md:rounded-3xl
@@ -235,11 +235,10 @@ export default function HMAAssistant() {
                   </div>
                 )}
                 <div className={`max-w-[80%] flex flex-col gap-1 ${msg.from === "user" ? "items-end" : "items-start"}`}>
-                  <div className={`px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${
-                    msg.from === "user"
+                  <div className={`px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${msg.from === "user"
                       ? "bg-black text-white rounded-tr-sm"
                       : "bg-white text-gray-700 rounded-tl-sm shadow-sm border border-gray-100"
-                  }`}>
+                    }`}>
                     {formatText(msg.text)}
                   </div>
                   <span className="text-[10px] text-gray-400 px-1">{formatTime(msg.time)}</span>
