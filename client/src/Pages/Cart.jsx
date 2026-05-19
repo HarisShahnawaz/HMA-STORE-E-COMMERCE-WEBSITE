@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { products } from "../data/products";
@@ -7,8 +8,27 @@ import { Button } from "../components/ui/button";
 
 export default function Cart() {
   const { cartItems, removeFromCart, updateQuantity, cartTotal } = useCart();
+  const [couponInput, setCouponInput] = useState("");
+  const [couponCode, setCouponCode] = useState("");
+  const [discountAmount, setDiscountAmount] = useState(0);
+
   const shippingFee = 500;
   const freeShippingThreshold = 30000;
+
+  const handleApplyCoupon = () => {
+    if (couponInput.toUpperCase() === "HMA10") {
+      setCouponCode("HMA10");
+      setDiscountAmount(cartTotal * 0.1);
+    } else {
+      alert("Invalid coupon code");
+      setCouponInput("");
+      setCouponCode("");
+      setDiscountAmount(0);
+    }
+  };
+
+  const finalShipping = cartTotal >= freeShippingThreshold ? 0 : shippingFee;
+  const finalTotal = cartTotal - discountAmount + finalShipping;
 
   const suggestedProducts = products.slice(0, 4);
 
@@ -136,19 +156,31 @@ export default function Cart() {
                 </div>
                 <input 
                   type="text" 
+                  value={couponInput}
+                  onChange={(e) => setCouponInput(e.target.value)}
                   placeholder="Coupon code" 
-                  className="w-full h-12 bg-gray-50/50 border border-gray-100 rounded-xl pl-11 pr-24 text-sm focus:outline-none focus:ring-1 focus:ring-black/5"
+                  className="w-full h-12 bg-gray-50/50 border border-gray-100 rounded-xl pl-11 pr-24 text-sm focus:outline-none focus:ring-1 focus:ring-black/5 uppercase"
                 />
-                <button className="absolute right-1.5 top-1.5 h-9 px-5 bg-[#0f172a] text-white text-[10px] font-black uppercase tracking-widest rounded-lg transition-all hover:bg-black">
+                <button 
+                  onClick={handleApplyCoupon}
+                  className="absolute right-1.5 top-1.5 h-9 px-5 bg-[#0f172a] text-white text-[10px] font-black uppercase tracking-widest rounded-lg transition-all hover:bg-black"
+                >
                   Apply
                 </button>
               </div>
               <p className="text-[10px] font-bold text-gray-300 mb-8 ml-1">Try: <span className="text-gray-400">HMA10</span></p>
 
+              {discountAmount > 0 && (
+                <div className="flex justify-between text-[14px] mb-4 text-green-500">
+                  <span className="font-medium">Discount ({couponCode})</span>
+                  <span className="font-black">-Rs {discountAmount.toLocaleString()}</span>
+                </div>
+              )}
+
               <div className="pt-8 border-t border-gray-100 flex justify-between items-baseline mb-8">
                 <span className="font-serif text-2xl font-black">Total</span>
                 <span className="font-serif text-2xl font-black text-[#0f172a]">
-                  Rs {(cartTotal >= freeShippingThreshold ? cartTotal : cartTotal + shippingFee).toLocaleString()}
+                  Rs {finalTotal.toLocaleString()}
                 </span>
               </div>
 
