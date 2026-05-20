@@ -84,15 +84,26 @@ function Sidebar({ open, onClose }) {
 export default function AdminDashboard() {
   const { token } = useAdminAuth();
   const [stats, setStats] = useState(null);
+  const [dashboardData, setDashboardData] = useState({
+    usersCount: 0,
+    ordersCount: 0,
+    totalRevenue: 0,
+    orders: [],
+    activities: []
+  });
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/admin/products`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => res.json())
-      .then(products => {
+    Promise.all([
+      fetch(`${API_URL}/api/admin/products`, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(res => res.json()),
+      fetch(`${API_URL}/api/admin/dashboard-stats`, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(res => res.json())
+    ])
+      .then(([products, dbStats]) => {
         setStats({
           total: products.length,
           men: products.filter(p => p.category === "men").length,
@@ -105,23 +116,33 @@ export default function AdminDashboard() {
           avgPrice: products.length > 0 ? Math.round(products.reduce((sum, p) => sum + p.price, 0) / products.length) : 0,
           totalSavings: products.filter(p => p.isSale && p.originalPrice).reduce((sum, p) => sum + (p.originalPrice - p.price), 0),
         });
+        setDashboardData({
+          usersCount: dbStats.usersCount || 0,
+          ordersCount: dbStats.ordersCount || 0,
+          totalRevenue: dbStats.totalRevenue || 0,
+          orders: dbStats.orders || [],
+          activities: dbStats.activities || []
+        });
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch((err) => {
+        console.error("Dashboard fetch error:", err);
+        setLoading(false);
+      });
   }, [token]);
 
-  // Stat cards exactly as you like them
+  // Stat cards exactly as you like them + users & orders
   const statCards = stats ? [
     { label: "Total Products", value: stats.total, icon: <Package size={22} />, bg: "bg-gradient-to-br from-black to-gray-800", text: "text-white", sub: "text-white/60" },
+    { label: "Registered Users", value: dashboardData.usersCount, icon: <Users size={22} />, bg: "bg-gradient-to-br from-indigo-500 to-indigo-700", text: "text-white", sub: "text-white/60" },
+    { label: "Total Orders", value: dashboardData.ordersCount, icon: <ShoppingBag size={22} />, bg: "bg-gradient-to-br from-purple-500 to-purple-700", text: "text-white", sub: "text-white/60" },
+    { label: "Sales Revenue", value: `Rs ${(dashboardData.totalRevenue || 0).toLocaleString()}`, icon: <TrendingUp size={22} />, bg: "bg-gradient-to-br from-teal-500 to-cyan-600", text: "text-white", sub: "text-white/60" },
     { label: "Men's Collection", value: stats.men, icon: <Users size={22} />, bg: "bg-gradient-to-br from-blue-500 to-blue-700", text: "text-white", sub: "text-white/60" },
     { label: "Women's Collection", value: stats.women, icon: <Users size={22} />, bg: "bg-gradient-to-br from-pink-500 to-rose-600", text: "text-white", sub: "text-white/60" },
     { label: "Kids Collection", value: stats.kids, icon: <Users size={22} />, bg: "bg-gradient-to-br from-amber-400 to-orange-500", text: "text-white", sub: "text-white/60" },
     { label: "New Arrivals", value: stats.isNew, icon: <TrendingUp size={22} />, bg: "bg-gradient-to-br from-emerald-400 to-green-600", text: "text-white", sub: "text-white/60" },
     { label: "On Sale", value: stats.isSale, icon: <Tag size={22} />, bg: "bg-gradient-to-br from-red-400 to-red-600", text: "text-white", sub: "text-white/60" },
     { label: "AI Recommended", value: stats.aiRecommended, icon: <Sparkles size={22} />, bg: "bg-gradient-to-br from-violet-500 to-purple-700", text: "text-white", sub: "text-white/60" },
-    { label: "Total Value", value: `Rs ${(stats?.totalRevenue || 0).toLocaleString()}`, icon: <ShoppingBag size={22} />, bg: "bg-gradient-to-br from-teal-500 to-cyan-600", text: "text-white", sub: "text-white/60" },
-    { label: "Avg Price", value: `Rs ${(stats?.avgPrice || 0).toLocaleString()}`, icon: <BarChart3 size={22} />, bg: "bg-gradient-to-br from-slate-600 to-slate-800", text: "text-white", sub: "text-white/60" },
-    { label: "Total Savings", value: `Rs ${(stats?.totalSavings || 0).toLocaleString()}`, icon: <Tag size={22} />, bg: "bg-gradient-to-br from-orange-400 to-orange-600", text: "text-white", sub: "text-white/60" },
   ] : [];
 
   return (
@@ -227,6 +248,91 @@ export default function AdminDashboard() {
                   <p className="text-xs text-gray-400 mt-0.5">Preview customer site</p>
                 </div>
               </Link>
+            </div>
+          </div>
+
+          {/* Live Activity Feed and Recent Orders */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-6 sm:mb-8">
+            {/* Recent Orders */}
+            <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 flex flex-col">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="font-serif text-lg font-bold text-black">Recent Orders</h2>
+                <span className="px-2.5 py-1 bg-gray-50 text-[10px] font-bold text-gray-400 rounded-lg uppercase tracking-wider">
+                  Latest {dashboardData.orders.length} orders
+                </span>
+              </div>
+              <div className="flex-1 overflow-x-auto">
+                {dashboardData.orders.length === 0 ? (
+                  <p className="text-sm text-gray-400 py-8 text-center">No orders placed yet.</p>
+                ) : (
+                  <table className="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr className="border-b border-gray-100 text-gray-400 uppercase font-black tracking-wider">
+                        <th className="pb-3 font-semibold">Customer</th>
+                        <th className="pb-3 font-semibold">Items</th>
+                        <th className="pb-3 font-semibold text-right">Total</th>
+                        <th className="pb-3 font-semibold text-right">Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {dashboardData.orders.slice(0, 5).map((order) => (
+                        <tr key={order._id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                          <td className="py-3 font-bold text-gray-800">
+                            <div>{order.userName}</div>
+                            <div className="text-[10px] text-gray-400 font-medium">{order.userEmail}</div>
+                          </td>
+                          <td className="py-3 text-gray-500">
+                            {order.items.length} {order.items.length === 1 ? 'item' : 'items'}
+                          </td>
+                          <td className="py-3 font-bold text-black text-right">
+                            Rs {order.total.toLocaleString()}
+                          </td>
+                          <td className="py-3 text-gray-400 text-right">
+                            {new Date(order.createdAt).toLocaleDateString()}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </div>
+
+            {/* Recent Activities */}
+            <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-100 flex flex-col">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="font-serif text-lg font-bold text-black">Recent Activity</h2>
+                <span className="px-2.5 py-1 bg-gray-50 text-[10px] font-bold text-gray-400 rounded-lg uppercase tracking-wider">
+                  Live Feed
+                </span>
+              </div>
+              <div className="flex-1 overflow-y-auto max-h-72 pr-1 space-y-4 no-scrollbar">
+                {dashboardData.activities.length === 0 ? (
+                  <p className="text-sm text-gray-400 py-8 text-center">No activities recorded yet.</p>
+                ) : (
+                  dashboardData.activities.slice(0, 5).map((activity) => {
+                    let badgeColor = "bg-gray-100 text-gray-600";
+                    if (activity.action === "signup") badgeColor = "bg-emerald-50 text-emerald-600 border border-emerald-100";
+                    if (activity.action === "login") badgeColor = "bg-blue-50 text-blue-600 border border-blue-100";
+                    if (activity.action === "order") badgeColor = "bg-amber-50 text-amber-600 border border-amber-100";
+
+                    return (
+                      <div key={activity._id} className="flex gap-4 items-start p-3 rounded-xl border border-gray-50 hover:bg-gray-50/50 transition-all">
+                        <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-md shrink-0 ${badgeColor}`}>
+                          {activity.action}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-bold text-gray-800 leading-tight">{activity.userName}</p>
+                          <p className="text-[11px] text-gray-500 mt-0.5 leading-normal">{activity.details}</p>
+                          <span className="text-[9px] text-gray-400 font-semibold uppercase tracking-wider block mt-1">
+                            {new Date(activity.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • {new Date(activity.createdAt).toLocaleDateString()}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
             </div>
           </div>
 

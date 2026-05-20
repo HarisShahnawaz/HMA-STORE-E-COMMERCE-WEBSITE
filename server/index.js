@@ -17,6 +17,9 @@ const Product = require('./models/Product');
 const adminAuthRoute = require('./routes/adminAuth');
 const adminProductsRoute = require('./routes/adminProducts');
 const assistantRoute = require('./routes/assistant');
+const authRoute = require('./routes/auth');
+const ordersRoute = require('./routes/orders');
+const adminDashboardRoute = require('./routes/adminDashboard');
 
 const app = express();
 app.use(cors());
@@ -44,9 +47,14 @@ app.use(async (req, res, next) => {
 // ── ADMIN ROUTES ──
 app.use('/api/admin/products', adminProductsRoute);
 app.use('/api/admin', adminAuthRoute);
+app.use('/api/admin/dashboard-stats', adminDashboardRoute);
 
 // ── ASSISTANT ROUTE ──
 app.use('/api/assistant', assistantRoute);
+
+// ── USER AUTH & ORDERS ROUTES ──
+app.use('/api/auth', authRoute);
+app.use('/api/orders', ordersRoute);
 
 // ── PUBLIC ROUTES ──
 app.get("/api/products", async (req, res) => {

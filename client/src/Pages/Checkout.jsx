@@ -1,14 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
+import { useUserAuth } from "../context/UserAuthContext";
 import { Link } from "react-router-dom";
 import { CheckCircle2, MapPin, CreditCard, ShoppingBag } from "lucide-react";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 export default function Checkout() {
   const { cartItems, cartTotal, clearCart } = useCart();
+  const { user, token } = useUserAuth();
   const [step, setStep] = useState(1); // 1: Shipping, 2: Payment, 3: Confirm
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: "",
+    email: "",
     phone: "",
     street: "",
     city: "",
@@ -28,6 +34,17 @@ export default function Checkout() {
   const shippingFee = 500;
   const freeShippingThreshold = 30000;
 
+  // Prefill details if user is logged in
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        fullName: prev.fullName || user.name || "",
+        email: prev.email || user.email || ""
+      }));
+    }
+  }, [user]);
+
   const handleApplyCoupon = () => {
     if (couponInput.toUpperCase() === "HMA10") {
       setCouponCode("HMA10");
@@ -43,22 +60,58 @@ export default function Checkout() {
   const finalShipping = cartTotal >= freeShippingThreshold ? 0 : shippingFee;
   const finalTotal = cartTotal - discountAmount + finalShipping;
 
-  const handleNextStep = (e) => {
+  const handleNextStep = async (e) => {
     e.preventDefault();
     if (step === 1) {
       setStep(2);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (step === 2) {
-      setPlacedOrderSummary({
-        cartTotal,
-        discountAmount,
-        couponCode,
-        finalShipping,
-        finalTotal
-      });
-      if (clearCart) clearCart();
-      setStep(3);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setLoading(true);
+      try {
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const res = await fetch(`${API_URL}/api/orders`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            formData,
+            items: cartItems.map(item => ({
+              name: item.name,
+              price: item.price,
+              quantity: item.quantity,
+              image: item.image
+            })),
+            paymentMethod,
+            cartTotal,
+            discountAmount,
+            finalShipping,
+            finalTotal
+          })
+        });
+
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.error || 'Failed to place order');
+        }
+
+        setPlacedOrderSummary({
+          cartTotal,
+          discountAmount,
+          couponCode,
+          finalShipping,
+          finalTotal
+        });
+        if (clearCart) clearCart();
+        setStep(3);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (err) {
+        alert(err.message || 'Error placing order');
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -163,6 +216,17 @@ export default function Checkout() {
                       />
                     </div>
                     <div className="md:col-span-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block mb-2">Email Address</label>
+                      <input
+                        required
+                        type="email"
+                        placeholder="e.g. haris@example.com"
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        className="w-full h-14 bg-white border border-gray-200 rounded-xl px-5 outline-none focus:border-black focus:ring-1 focus:ring-black transition-all"
+                      />
+                    </div>
+                    <div className="md:col-span-2">
                       <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block mb-2">Phone Number</label>
                       <input
                         required
@@ -263,9 +327,10 @@ export default function Checkout() {
                     </button>
                     <button
                       type="submit"
-                      className="flex-1 h-14 bg-black text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#1a1a1a] transition-all shadow-xl"
+                      disabled={loading}
+                      className="flex-1 h-14 bg-black text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#1a1a1a] transition-all shadow-xl disabled:opacity-50"
                     >
-                      Place Order &rarr;
+                      {loading ? "Placing Order..." : "Place Order \u2192"}
                     </button>
                   </div>
                 </div>

@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Search, ShoppingBag, User, X, Sparkles, LogIn, UserPlus, ChevronRight } from "lucide-react";
+import { Search, ShoppingBag, User, X, Sparkles, LogIn, UserPlus, ChevronRight, LogOut } from "lucide-react";
 import { useCart } from "../../context/CartContext";
+import { useUserAuth } from "../../context/UserAuthContext";
 
 const navigation = [
   { name: "Men", href: "/men" },
@@ -24,6 +25,7 @@ export default function Header() {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const { cartCount } = useCart();
+  const { user, logout } = useUserAuth();
   const navigate = useNavigate();
 
   const accountRef = useRef(null);
@@ -296,26 +298,48 @@ export default function Header() {
                   <User size={18} />
                 </button>
                 {isAccountOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-52 bg-white shadow-lg border border-gray-100 z-50">
-                    <div className="bg-[#1e293b] text-white px-5 py-3">
-                      <p className="text-[10px] font-black uppercase tracking-[0.2em]">My Account</p>
-                    </div>
-                    <div className="py-2">
-                      <Link
-                        to="/login"
-                        onClick={() => setIsAccountOpen(false)}
-                        className="flex items-center gap-3 px-5 py-3 text-[13px] font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
-                      >
-                        <User size={15} className="text-gray-400" /> Login
-                      </Link>
-                      <Link
-                        to="/signup"
-                        onClick={() => setIsAccountOpen(false)}
-                        className="flex items-center gap-3 px-5 py-3 text-[13px] font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
-                      >
-                        <Sparkles size={15} className="text-gray-400" /> Sign Up
-                      </Link>
-                    </div>
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-white shadow-lg border border-gray-100 z-50 rounded-xl overflow-hidden">
+                    {user ? (
+                      <>
+                        <div className="bg-[#1e293b] text-white px-5 py-4 border-b border-gray-200">
+                          <p className="text-xs font-bold text-white leading-tight truncate">{user.name}</p>
+                          <p className="text-[10px] text-gray-300 font-medium truncate mt-0.5">{user.email}</p>
+                        </div>
+                        <div className="py-2">
+                          <button
+                            onClick={() => {
+                              logout();
+                              setIsAccountOpen(false);
+                            }}
+                            className="w-full flex items-center gap-3 px-5 py-3 text-[13px] font-semibold text-red-600 hover:bg-red-50 transition-colors text-left"
+                          >
+                            <LogOut size={15} className="text-red-400" /> Logout
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="bg-[#1e293b] text-white px-5 py-3">
+                          <p className="text-[10px] font-black uppercase tracking-[0.2em]">My Account</p>
+                        </div>
+                        <div className="py-2">
+                          <Link
+                            to="/login"
+                            onClick={() => setIsAccountOpen(false)}
+                            className="flex items-center gap-3 px-5 py-3 text-[13px] font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+                          >
+                            <User size={15} className="text-gray-400" /> Login
+                          </Link>
+                          <Link
+                            to="/signup"
+                            onClick={() => setIsAccountOpen(false)}
+                            className="flex items-center gap-3 px-5 py-3 text-[13px] font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+                          >
+                            <Sparkles size={15} className="text-gray-400" /> Sign Up
+                          </Link>
+                        </div>
+                      </>
+                    )}
                   </div>
                 )}
               </div>
@@ -369,14 +393,32 @@ export default function Header() {
             </div>
             <div className="border-t border-gray-100 p-6 pb-20">
               <div className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-4">Account</div>
-              <div className="flex flex-col gap-5">
-                <Link to="/login" onClick={closeMenu} className="flex items-center gap-3 text-sm font-bold text-gray-700 hover:text-black">
-                  <LogIn size={16} className="text-gray-400" /> Login
-                </Link>
-                <Link to="/signup" onClick={closeMenu} className="flex items-center gap-3 text-sm font-bold text-gray-700 hover:text-black">
-                  <UserPlus size={16} className="text-gray-400" /> Sign Up
-                </Link>
-              </div>
+              {user ? (
+                <div className="flex flex-col gap-4">
+                  <div>
+                    <p className="text-sm font-bold text-gray-800 truncate">{user.name}</p>
+                    <p className="text-xs text-gray-500 truncate mt-0.5">{user.email}</p>
+                  </div>
+                  <button 
+                    onClick={() => {
+                      logout();
+                      closeMenu();
+                    }} 
+                    className="flex items-center gap-3 text-sm font-bold text-red-600 hover:text-red-700 mt-2 text-left w-full"
+                  >
+                    <LogOut size={16} className="text-red-400" /> Logout
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-5">
+                  <Link to="/login" onClick={closeMenu} className="flex items-center gap-3 text-sm font-bold text-gray-700 hover:text-black">
+                    <LogIn size={16} className="text-gray-400" /> Login
+                  </Link>
+                  <Link to="/signup" onClick={closeMenu} className="flex items-center gap-3 text-sm font-bold text-gray-700 hover:text-black">
+                    <UserPlus size={16} className="text-gray-400" /> Sign Up
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>
