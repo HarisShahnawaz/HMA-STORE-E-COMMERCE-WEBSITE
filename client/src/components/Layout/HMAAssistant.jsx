@@ -262,7 +262,7 @@ export default function HMAAssistant() {
             <div ref={bottomRef} />
           </div>
 
-          {/* Suggested Questions */}
+          {/* Suggested Questions that appear */}
           {messages.length <= 1 && (
             <div className="px-3 pb-2 pt-1 bg-[#f8f9fa] flex gap-2 overflow-x-auto shrink-0"
               style={{ scrollbarWidth: "none" }}>
