@@ -16,6 +16,7 @@ import ProtectedRoute from "./components/Admin/ProtectedRoute";
 import HMAAssistant from './components/Layout/HMAAssistant';
 import SearchPage from './Pages/SearchPage';
 import { useLocation } from 'react-router-dom';
+import Profile from "./Pages/Profile";
 
 // ── Wrapper to hide assistant on admin pages ──
 function AssistantWrapper() {
@@ -61,6 +62,7 @@ function App() {
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/product/:id" element={<ProductDetail />} />
               <Route path="/search" element={<SearchPage />} />
+              <Route path="/profile" element={<Profile />} />
             </Routes>
             <Footer />
           </div>

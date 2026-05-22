@@ -4,6 +4,7 @@ const Order = require('../models/Order');
 const ActivityLog = require('../models/ActivityLog');
 const router = express.Router();
 
+// ── CREATE NEW ORDER ──
 // @route   POST /api/orders
 // @desc    Create a new order (supports guest and logged-in users)
 router.post('/', async (req, res) => {
@@ -38,7 +39,7 @@ router.post('/', async (req, res) => {
     // Create Order
     const newOrder = new Order({
       user: userId,
-      userEmail: formData.email || req.body.userEmail || (userId ? 'registered-user' : 'guest@hmastore.com'), // fallback if not supplied
+      userEmail: formData.email || req.body.userEmail || (userId ? 'registered-user' : 'guest@hmastore.com'),
       userName: formData.fullName,
       phone: formData.phone,
       street: formData.street,
@@ -52,8 +53,6 @@ router.post('/', async (req, res) => {
       total: finalTotal
     });
 
-    // Make sure we have email details for activity log & database mapping
-    // If guest, we use their email from formData (if supplied, let's make sure client sends it)
     const orderEmail = formData.email || (userId ? 'registered-user' : 'guest@hmastore.com');
 
     await newOrder.save();
@@ -71,6 +70,38 @@ router.post('/', async (req, res) => {
 
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+// ── FETCH ORDER HISTORY ──
+// @route   GET /api/orders/my-history
+// @desc    Fetch order history for the logged-in customer (Sorted by newest first)
+router.get('/my-history', async (req, res) => {
+  try {
+    // 1. Grab the token from authorization headers
+    const authHeader = req.headers['authorization'];
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'Access denied. No authentication token provided.' });
+    }
+
+    const token = authHeader.split(' ')[1];
+    
+    // 2. Decode the token to identify who is looking at their history
+    let userId;
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      userId = decoded.id || decoded._id;
+    } catch (tokenErr) {
+      return res.status(401).json({ error: 'Invalid or expired user session token.' });
+    }
+
+    // 3. Find matching customer profiles down in your database cluster
+    const orders = await Order.find({ user: userId }).sort({ createdAt: -1 });
+    res.status(200).json(orders);
+
+  } catch (err) {
+    console.error('History Fetch Error:', err.message);
+    res.status(500).json({ error: 'Failed to retrieve shopping history profile records' });
   }
 });
 

@@ -23,4 +23,5 @@ const orderSchema = new mongoose.Schema({
   total: { type: Number, required: true }
 }, { timestamps: true, suppressReservedKeysWarning: true });
 
+
 module.exports = mongoose.model('Order', orderSchema);

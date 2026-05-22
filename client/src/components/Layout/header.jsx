@@ -12,7 +12,6 @@ const navigation = [
   { name: "Sale", href: "/sale" },
 ];
 
-
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export default function Header() {
@@ -36,10 +35,12 @@ export default function Header() {
   // ── Click outside closes dropdowns ──
   useEffect(() => {
     function handleClickOutside(event) {
-      if (accountRef.current && !accountRef.current.contains(event.target))
+      if (accountRef.current && !accountRef.current.contains(event.target)) {
         setIsAccountOpen(false);
-      if (searchRef.current && !searchRef.current.contains(event.target))
+      }
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
         setShowDropdown(false);
+      }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -49,6 +50,9 @@ export default function Header() {
   useEffect(() => {
     if (isSearchOpen && searchInputRef.current) {
       searchInputRef.current.focus();
+      if (searchQuery.trim()) {
+        setShowDropdown(true);
+      }
     }
   }, [isSearchOpen]);
 
@@ -84,7 +88,9 @@ export default function Header() {
     const val = e.target.value;
     setSearchQuery(val);
     clearTimeout(debounceTimer.current);
+    
     if (val.trim()) {
+      setShowDropdown(true);
       debounceTimer.current = setTimeout(() => fetchResults(val), 300);
     } else {
       setSearchResults([]);
@@ -123,7 +129,6 @@ export default function Header() {
     if (!isAccountOpen) handleSearchClose();
   };
 
-  // ── Click a result → go to product page ──
   const handleResultClick = (product) => {
     handleSearchClose();
     navigate(`/product/${product._id}`);
@@ -159,7 +164,6 @@ export default function Header() {
               </div>
             </button>
           ))}
-          {/* View all */}
           <button
             onClick={() => {
               navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
@@ -172,7 +176,7 @@ export default function Header() {
         </>
       ) : (
         <div className="px-4 py-5 text-[13px] text-gray-400 text-center">
-          No products found for "{searchQuery}"
+          {isSearching ? "Searching..." : `No products found for "${searchQuery}"`}
         </div>
       )}
     </div>
@@ -196,8 +200,9 @@ export default function Header() {
             {/* ── Logo ── */}
             <Link
               to="/"
-              className={`absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0 flex items-center gap-1 transition-opacity duration-200 ${isSearchOpen ? "opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto" : "opacity-100"
-                }`}
+              className={`absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0 flex items-center gap-1 transition-opacity duration-200 ${
+                isSearchOpen ? "opacity-0 pointer-events-none lg:opacity-100 lg:pointer-events-auto" : "opacity-100"
+              }`}
             >
               <span className="font-serif text-[1rem] md:text-[1.5rem] font-black tracking-tight text-foreground">
                 HMA-Store
@@ -223,8 +228,6 @@ export default function Header() {
 
               {/* ── SEARCH ── */}
               <div ref={searchRef} className="flex items-center relative">
-
-                {/* Desktop expanded search */}
                 {isSearchOpen && (
                   <div className="hidden lg:flex flex-col mr-2 relative">
                     <div className="flex items-center gap-2 border border-border rounded-sm px-3 py-1.5 bg-background w-56 xl:w-72">
@@ -247,11 +250,10 @@ export default function Header() {
                         <X size={14} />
                       </button>
                     </div>
-                    {showDropdown && <SearchDropdown />}
+                    {showDropdown && searchQuery.trim() && <SearchDropdown />}
                   </div>
                 )}
 
-                {/* Mobile expanded search */}
                 {isSearchOpen && (
                   <div className="lg:hidden flex flex-col mr-1 relative">
                     <div className="flex items-center gap-2 border border-border rounded-sm px-3 py-1.5 bg-background w-44 xs:w-52 sm:w-64">
@@ -274,28 +276,35 @@ export default function Header() {
                         <X size={14} />
                       </button>
                     </div>
-                    {showDropdown && <SearchDropdown isMobile />}
+                    {showDropdown && searchQuery.trim() && <SearchDropdown isMobile />}
                   </div>
                 )}
 
-                {/* Search icon toggle button */}
                 <button
                   onClick={handleSearchToggle}
-                  className={`p-1.5 rounded-sm transition-colors ${isSearchOpen ? "text-black" : "text-black/60 hover:text-black"
-                    }`}
+                  className={`p-1.5 rounded-sm transition-colors ${
+                    isSearchOpen ? "text-black" : "text-black/60 hover:text-black"
+                  }`}
                 >
                   <Search size={18} />
                 </button>
               </div>
 
               {/* ── ACCOUNT DROPDOWN ── */}
-              <div ref={accountRef} className="relative">
+              <div ref={accountRef} className="relative flex items-center">
                 <button
                   onClick={handleAccountToggle}
-                  className={`p-1.5 rounded-sm transition-colors ${isAccountOpen ? "bg-red-500 text-white" : "text-black/60 hover:text-black"
-                    }`}
+                  className={`transition-all ${
+                    user 
+                      ? "w-7 h-7 bg-gray-900 text-white rounded-full flex items-center justify-center text-[11px] font-bold uppercase shadow-sm hover:bg-black" 
+                      : `p-1.5 rounded-sm ${isAccountOpen ? "bg-red-500 text-white" : "text-black/60 hover:text-black"}`
+                  }`}
                 >
-                  <User size={18} />
+                  {user ? (
+                    user.name ? user.name.charAt(0) : "U"
+                  ) : (
+                    <User size={18} />
+                  )}
                 </button>
                 {isAccountOpen && (
                   <div className="absolute right-0 top-full mt-2 w-64 bg-white shadow-lg border border-gray-100 z-50 rounded-xl overflow-hidden">
@@ -306,12 +315,19 @@ export default function Header() {
                           <p className="text-[10px] text-gray-300 font-medium truncate mt-0.5">{user.email}</p>
                         </div>
                         <div className="py-2">
+                          <Link
+                            to="/profile"
+                            onClick={() => setIsAccountOpen(false)}
+                            className="flex items-center gap-3 px-5 py-3 text-[13px] font-medium text-gray-700 hover:bg-gray-50 hover:text-black transition-colors"
+                          >
+                            <User size={15} className="text-gray-400" /> My Profile
+                          </Link>
                           <button
                             onClick={() => {
                               logout();
                               setIsAccountOpen(false);
                             }}
-                            className="w-full flex items-center gap-3 px-5 py-3 text-[13px] font-semibold text-red-600 hover:bg-red-50 transition-colors text-left"
+                            className="w-full flex items-center gap-3 px-5 py-3 text-[13px] font-semibold text-red-600 hover:bg-red-50 transition-colors text-left border-t border-gray-50"
                           >
                             <LogOut size={15} className="text-red-400" /> Logout
                           </button>
@@ -328,14 +344,14 @@ export default function Header() {
                             onClick={() => setIsAccountOpen(false)}
                             className="flex items-center gap-3 px-5 py-3 text-[13px] font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
                           >
-                            <User size={15} className="text-gray-400" /> Login
+                            <LogIn size={15} className="text-gray-400" /> Login
                           </Link>
                           <Link
                             to="/signup"
                             onClick={() => setIsAccountOpen(false)}
                             className="flex items-center gap-3 px-5 py-3 text-[13px] font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
                           >
-                            <Sparkles size={15} className="text-gray-400" /> Sign Up
+                            <UserPlus size={15} className="text-gray-400" /> Sign Up
                           </Link>
                         </div>
                       </>
@@ -399,12 +415,19 @@ export default function Header() {
                     <p className="text-sm font-bold text-gray-800 truncate">{user.name}</p>
                     <p className="text-xs text-gray-500 truncate mt-0.5">{user.email}</p>
                   </div>
+                  <Link 
+                    to="/profile" 
+                    onClick={closeMenu} 
+                    className="flex items-center gap-3 text-sm font-medium text-gray-700 hover:text-black mt-1"
+                  >
+                    <User size={16} className="text-gray-400" /> My Profile
+                  </Link>
                   <button 
                     onClick={() => {
                       logout();
                       closeMenu();
                     }} 
-                    className="flex items-center gap-3 text-sm font-bold text-red-600 hover:text-red-700 mt-2 text-left w-full"
+                    className="flex items-center gap-3 text-sm font-bold text-red-600 hover:text-red-700 mt-1 text-left w-full"
                   >
                     <LogOut size={16} className="text-red-400" /> Logout
                   </button>
