@@ -1,6 +1,6 @@
 # 🛍️ HmaStore — E-Commerce Web Application
 
-![HmaStore Banner](./assets/screenshots/banner.png)
+![HmaStore Banner](./client/src/assets/screenshots/home.png)
 
 > A modern, full-stack e-commerce web application built with React, Node.js, Express, and MongoDB.
 
@@ -183,7 +183,7 @@ hmastore/
 
 | Home Page | Product Page | Cart |
 |---|---|---|
-| ![Home](./assets/screenshots/home.png) | ![Product](./assets/screenshots/product.png) | ![Cart](./assets/screenshots/cart.png) |
+| ![Home](./client/src/assets/screenshots/banner.png) | ![Product](./client/src/assets/screenshots/product.png) | ![Cart](./client./assets/screenshots/cart.png) |
 
 ---
 
