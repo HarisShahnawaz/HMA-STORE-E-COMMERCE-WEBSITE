@@ -1,6 +1,6 @@
 # 🛍️ HmaStore — E-Commerce Web Application
 
-![HmaStore Banner](https://via.placeholder.com/1200x300?text=HmaStore)
+![HmaStore Banner](./assets/screenshots/banner.png)
 
 > A modern, full-stack e-commerce web application built with React, Node.js, Express, and MongoDB.
 
@@ -143,7 +143,7 @@ cd client
 npm run dev
 ```
 
-The app will be available at **http://localhost:5173**
+The app will be available at **https://hma-store-e-commerce-website.vercel.app/**
 
 ---
 
@@ -183,7 +183,7 @@ hmastore/
 
 | Home Page | Product Page | Cart |
 |---|---|---|
-| ![Home](https://via.placeholder.com/300x180?text=Home) | ![Product](https://via.placeholder.com/300x180?text=Product) | ![Cart](https://via.placeholder.com/300x180?text=Cart) |
+| ![Home](./assets/screenshots/home.png) | ![Product](./assets/screenshots/product.png) | ![Cart](./assets/screenshots/cart.png) |
 
 ---
 
