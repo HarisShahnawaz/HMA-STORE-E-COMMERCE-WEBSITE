@@ -183,7 +183,7 @@ hmastore/
 
 | Home Page | Product Page | Cart |
 |---|---|---|
-| ![Home](./client/src/assets/screenshots/banner.png) | ![Product](./client/src/assets/screenshots/product.png) | ![Cart](./client./assets/screenshots/cart.png) |
+| ![Home](./client/src/assets/screenshots/banner.png) | ![Product](./client/src/assets/screenshots/product.png) | ![Cart](./client/src/assets/screenshots/cart.png) |
 
 ---
 
