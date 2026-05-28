@@ -2,6 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const Order = require('../models/Order');
 const ActivityLog = require('../models/ActivityLog');
+const sendEmail = require('../utils/sendEmail');
 const router = express.Router();
 
 // ── CREATE NEW ORDER ──
@@ -56,6 +57,69 @@ router.post('/', async (req, res) => {
     const orderEmail = formData.email || (userId ? 'registered-user' : 'guest@hmastore.com');
 
     await newOrder.save();
+
+    // Send Checkout Confirmation Email
+    if (orderEmail && orderEmail !== 'registered-user' && orderEmail !== 'guest@hmastore.com') {
+      const itemsHtml = items.map(item => `
+        <tr>
+          <td style="padding: 10px; border-bottom: 1px solid #eee;">${item.name || item.title} (x${item.quantity})</td>
+          <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">Rs. ${(item.price * item.quantity).toLocaleString()}</td>
+        </tr>
+      `).join('');
+
+      sendEmail({
+        to: orderEmail,
+        subject: `HMA Store - Order Confirmation #${newOrder._id.toString().substring(18).toUpperCase()}`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 8px;">
+            <h2 style="color: #333; text-align: center;">Order Confirmed!</h2>
+            <p>Thank you for shopping with us, ${formData.fullName}. Your order has been placed successfully and is being processed.</p>
+            
+            <h3 style="border-bottom: 2px solid #000; padding-bottom: 8px; margin-top: 30px;">Order Summary</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background-color: #f9f9f9;">
+                  <th style="padding: 10px; text-align: left;">Item</th>
+                  <th style="padding: 10px; text-align: right;">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${itemsHtml}
+                <tr>
+                  <td style="padding: 10px; font-weight: bold; border-top: 2px solid #eee;">Subtotal</td>
+                  <td style="padding: 10px; text-align: right; font-weight: bold; border-top: 2px solid #eee;">Rs. ${cartTotal.toLocaleString()}</td>
+                </tr>
+                ${discountAmount ? `
+                <tr>
+                  <td style="padding: 10px; color: #d9534f;">Discount</td>
+                  <td style="padding: 10px; text-align: right; color: #d9534f;">- Rs. ${discountAmount.toLocaleString()}</td>
+                </tr>` : ''}
+                <tr>
+                  <td style="padding: 10px; border-bottom: 2px solid #eee;">Shipping Fee</td>
+                  <td style="padding: 10px; text-align: right; border-bottom: 2px solid #eee;">Rs. ${finalShipping.toLocaleString()}</td>
+                </tr>
+                <tr style="font-size: 18px; font-weight: bold;">
+                  <td style="padding: 10px;">Total Paid</td>
+                  <td style="padding: 10px; text-align: right;">Rs. ${finalTotal.toLocaleString()}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3 style="border-bottom: 2px solid #000; padding-bottom: 8px; margin-top: 30px;">Shipping Details</h3>
+            <p style="margin: 5px 0;"><strong>Name:</strong> ${formData.fullName}</p>
+            <p style="margin: 5px 0;"><strong>Phone:</strong> ${formData.phone}</p>
+            <p style="margin: 5px 0;"><strong>Address:</strong> ${formData.street}, ${formData.city}, ${formData.province}</p>
+            <p style="margin: 5px 0;"><strong>Payment Method:</strong> ${paymentMethod === 'cod' ? 'Cash on Delivery (COD)' : paymentMethod}</p>
+
+            <p style="margin-top: 30px; color: #666; font-size: 14px;">We will notify you once your order is dispatched.</p>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />
+            <p style="color: #999; font-size: 12px; text-align: center;">HMA Store | Pakistan's Premium Fashion E-Commerce</p>
+          </div>
+        `
+      }).catch(emailErr => {
+        console.error('Failed to send order confirmation email:', emailErr.message);
+      });
+    }
 
     // Log Activity
     const newLog = new ActivityLog({

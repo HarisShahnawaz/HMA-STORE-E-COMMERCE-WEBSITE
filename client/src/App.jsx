@@ -17,6 +17,8 @@ import HMAAssistant from './components/Layout/HMAAssistant';
 import SearchPage from './Pages/SearchPage';
 import { useLocation } from 'react-router-dom';
 import Profile from "./Pages/Profile";
+import ForgotPassword from "./Pages/ForgotPassword";
+import ResetPassword from "./Pages/ResetPassword";
 
 // ── Wrapper to hide assistant on admin pages ──
 function AssistantWrapper() {
@@ -59,6 +61,8 @@ function App() {
               <Route path="/cart" element={<Cart />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password/:token" element={<ResetPassword />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/product/:id" element={<ProductDetail />} />
               <Route path="/search" element={<SearchPage />} />
