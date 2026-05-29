@@ -11,8 +11,8 @@ router.post('/chat', async (req, res) => {
     }
 
     if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'your_gemini_api_key_here') {
-      return res.status(500).json({ 
-        error: 'Gemini API key is not configured. Please add GEMINI_API_KEY to your .env file.' 
+      return res.status(500).json({
+        error: 'Gemini API key is not configured. Please add GEMINI_API_KEY to your .env file.'
       });
     }
 
@@ -21,7 +21,7 @@ router.post('/chat', async (req, res) => {
 
     // Initialize Gemini
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    
+
     const systemInstruction = `
 You are HMA Assistant, the premium, friendly, and expert AI styling and shopping assistant for the HMA-Store, a top-tier clothing brand in Pakistan.
 
@@ -48,7 +48,7 @@ Strict Guidelines:
 7. Keep your replies friendly, concise, and professional. Ensure the answers are easy to read inside a compact chat window.
 `;
 
-    const model = genAI.getGenerativeModel({ 
+    const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash",
       systemInstruction: systemInstruction
     });
@@ -58,7 +58,7 @@ Strict Guidelines:
     const formattedHistory = [];
     if (history && Array.isArray(history)) {
       // Skip the initial welcome message from the bot so history matches standard turn order
-      const historyToFormat = history.slice(1); 
+      const historyToFormat = history.slice(1);
       for (const msg of historyToFormat) {
         formattedHistory.push({
           role: msg.from === 'user' ? 'user' : 'model',
@@ -78,7 +78,7 @@ Strict Guidelines:
     res.json({ reply: replyText });
   } catch (err) {
     console.error('Error in /api/assistant/chat:', err);
-    res.status(500).json({ error: 'Failed to generate assistant response: ' + err.message });
+    res.status(500).json({ error: 'Failed to generate assistant response ' + err.message });
   }
 });
 
