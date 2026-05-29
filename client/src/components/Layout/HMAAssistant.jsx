@@ -8,7 +8,7 @@ const SUGGESTED_QUESTIONS = [
   "What's on sale?",
   "New arrivals?",
   "AI picks?",
-  "Kids clothing?",
+  "About us?",
 ];
 
 export default function HMAAssistant() {
