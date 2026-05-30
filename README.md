@@ -40,7 +40,7 @@ HmaStore is a fully featured e-commerce platform that allows users to browse pro
 - 👤 User profile and order history
 - 🛠️ Admin dashboard for product & order management
 - 📱 Fully responsive design (mobile-first)
-- 🌙 Dark / Light mode support
+  
 
 ---
 
@@ -53,7 +53,7 @@ HmaStore is a fully featured e-commerce platform that allows users to browse pro
 | [Vite](https://vitejs.dev/) | Build tool & dev server |
 | [Tailwind CSS](https://tailwindcss.com/) | Utility-first styling |
 | [React Router](https://reactrouter.com/) | Client-side routing |
-| [Axios](https://axios-http.com/) | HTTP requests |
+
 
 ### Backend
 | Technology | Purpose |
