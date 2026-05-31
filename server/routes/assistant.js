@@ -53,8 +53,7 @@ Strict Guidelines:
       systemInstruction: systemInstruction
     });
 
-    // Format history for Gemini SDK
-    // Gemini expects roles: 'user' and 'model'
+ 
     const formattedHistory = [];
     if (history && Array.isArray(history)) {
       // Skip the initial welcome message from the bot so history matches standard turn order
