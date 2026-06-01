@@ -49,14 +49,14 @@ app.use('/api/admin/products', adminProductsRoute);
 app.use('/api/admin', adminAuthRoute);
 app.use('/api/admin/dashboard-stats', adminDashboardRoute);
 
-// ── ASSISTANT ROUTE ──
+
 app.use('/api/assistant', assistantRoute);
 
-// ── USER AUTH & ORDERS ROUTES ──
+
 app.use('/api/auth', authRoute);
 app.use('/api/orders', ordersRoute);
 
-// ── PUBLIC ROUTES ──
+
 app.get("/api/products", async (req, res) => {
   try {
     const { category, isNew, isSale, aiRecommended } = req.query;
