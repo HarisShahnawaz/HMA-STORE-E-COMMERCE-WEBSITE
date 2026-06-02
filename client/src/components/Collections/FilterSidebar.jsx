@@ -99,14 +99,12 @@ export default function FilterSidebar({
         <label className="flex items-center gap-3 cursor-pointer">
           <div
             onClick={onAiToggle}
-            className={`relative w-10 h-5 rounded-full transition-colors duration-300 cursor-pointer ${
-              showAiOnly ? "bg-black" : "bg-gray-200"
-            }`}
+            className={`relative w-10 h-5 rounded-full transition-colors duration-300 cursor-pointer ${showAiOnly ? "bg-black" : "bg-gray-200"
+              }`}
           >
             <span
-              className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-300 ${
-                showAiOnly ? "translate-x-5" : "translate-x-0"
-              }`}
+              className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-300 ${showAiOnly ? "translate-x-5" : "translate-x-0"
+                }`}
             />
           </div>
           <span className="text-[12px] font-bold text-foreground">Show AI recommendations</span>
