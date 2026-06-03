@@ -89,28 +89,17 @@ app.get("/api/search", async (req, res) => {
 
     if (!q || q.trim() === "") return res.json([]);
 
-    // Try MongoDB full-text search first
-    const results = await Product.find(
-      { $text: { $search: q } },
-      { score: { $meta: "textScore" } }
-    )
-      .sort({ score: { $meta: "textScore" } }) // best match first
-      .limit(6);
+    // Perform partial substring match (regex) on name or category for real-time autocomplete
+    const results = await Product.find({
+      $or: [
+        { name: { $regex: q, $options: "i" } },
+        { category: { $regex: q, $options: "i" } },
+      ],
+    }).limit(6);
 
     res.json(results);
   } catch (err) {
-    // Fallback to regex if text index not ready
-    try {
-      const results = await Product.find({
-        $or: [
-          { name: { $regex: req.query.q, $options: "i" } },
-          { category: { $regex: req.query.q, $options: "i" } },
-        ],
-      }).limit(6);
-      res.json(results);
-    } catch (fallbackErr) {
-      res.status(500).json({ error: fallbackErr.message });
-    }
+    res.status(500).json({ error: err.message });
   }
 });
 
