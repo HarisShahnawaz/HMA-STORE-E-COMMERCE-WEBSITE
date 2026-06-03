@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { 
   ShoppingBag, Star, ShieldCheck, Truck, 
@@ -10,6 +10,7 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export default function ProductDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { addToCart } = useCart();
   const [selectedSize, setSelectedSize] = useState('M');
   const [product, setProduct] = useState(null);
@@ -39,6 +40,11 @@ export default function ProductDetail() {
       <h2 className="font-serif text-2xl">Product not found</h2>
     </div>
   );
+
+  const handleBuyNow = () => {
+    addToCart({ ...product, id: product._id, size: selectedSize });
+    navigate("/checkout");
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -132,7 +138,10 @@ export default function ProductDetail() {
             >
               <ShoppingBag size={16} /> Add to Cart
             </button>
-            <button className="flex-1 h-14 border border-gray-200 rounded-xl font-bold text-[12px] hover:bg-gray-50 transition-colors">
+            <button 
+              onClick={handleBuyNow}
+              className="flex-1 h-14 border border-gray-200 rounded-xl font-bold text-[12px] hover:bg-gray-50 transition-colors"
+            >
               Buy Now
             </button>
           </div>
