@@ -4,13 +4,13 @@ import { Heart, ShoppingBag, Sparkles, Check } from "lucide-react";
 import { Button } from "../ui/button";
 import { useCart } from "../../context/CartContext";
 
-export default function ProductCard({ product, index }) {
+export default function ProductCard({ product, selectedSize = "M", index }) {
   const [wishlisted, setWishlisted] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
   const { addToCart } = useCart();
 
   const handleAddToCart = () => {
-    addToCart(product);
+    addToCart({ ...product, size: selectedSize });
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 2000);
   };
@@ -68,7 +68,7 @@ export default function ProductCard({ product, index }) {
             ) : (
               <>
                 <ShoppingBag size={12} className="shrink-0" />
-                <span className="text-[12px] font-medium whitespace-nowrap">Add to Cart</span>
+                <span className="text-[12px] font-medium whitespace-nowrap">Add to Cart ({selectedSize})</span>
               </>
             )}
           </Button>
@@ -87,7 +87,7 @@ export default function ProductCard({ product, index }) {
         >
           {isAdded ? <Check size={12} className="shrink-0" /> : <ShoppingBag size={12} className="shrink-0" />}
           <span className="text-[10px] font-bold normal-case tracking-tight whitespace-nowrap">
-            {isAdded ? "Added" : "Add to Cart"}
+            {isAdded ? "Added" : `Add to Cart (${selectedSize})`}
           </span>
         </Button>
       </div>

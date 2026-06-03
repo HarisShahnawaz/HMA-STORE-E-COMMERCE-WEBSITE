@@ -83,7 +83,7 @@ export default function Cart() {
           {/* Cart Items List */}
           <div className="lg:col-span-8 space-y-4">
             {cartItems.map((item) => (
-  <div key={item.id} className="bg-white border border-gray-100 rounded-3xl md:rounded-4xl p-3 md:p-7 flex gap-3 md:gap-6 shadow-sm">
+  <div key={`${item.id}-${item.size || 'M'}`} className="bg-white border border-gray-100 rounded-3xl md:rounded-4xl p-3 md:p-7 flex gap-3 md:gap-6 shadow-sm">
     {/* Product Image: Smaller on mobile (w-20 vs md:w-40) */}
     <div className="w-20 h-24 md:w-40 md:h-44 bg-[#f6f6f6] rounded-xl md:rounded-2xl overflow-hidden shrink-0">
       <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
@@ -98,8 +98,11 @@ export default function Cart() {
           <h3 className="font-serif text-sm md:text-xl font-bold text-black leading-tight">
             {item.name}
           </h3>
+          <p className="text-[10px] md:text-[12px] font-bold text-gray-500 mt-1">
+            Size: <span className="text-black uppercase">{item.size || "M"}</span>
+          </p>
         </div>
-        <button onClick={() => removeFromCart(item.id)} className="text-gray-200 hover:text-red-500 transition-colors">
+        <button onClick={() => removeFromCart(item.id, item.size)} className="text-gray-200 hover:text-red-500 transition-colors">
           <Trash2 size={16} />
         </button>
       </div>
@@ -107,13 +110,13 @@ export default function Cart() {
       <div className="flex items-end justify-between gap-2 mt-2">
         {/* Compact Quantity Controls for mobile */}
         <div className="flex items-center bg-gray-50/50 rounded-lg px-1 py-1 border border-gray-100 scale-90 md:scale-100 origin-left">
-          <button onClick={() => updateQuantity(item.id, -1)} className="w-6 h-6 md:w-8 md:h-8 flex items-center justify-center hover:bg-white rounded-md transition-all">
+          <button onClick={() => updateQuantity(item.id, item.size, -1)} className="w-6 h-6 md:w-8 md:h-8 flex items-center justify-center hover:bg-white rounded-md transition-all">
             <Minus size={12} />
           </button>
           <span className="w-8 text-center font-sans font-bold text-[12px] md:text-sm">
             {item.quantity}
           </span>
-          <button onClick={() => updateQuantity(item.id, 1)} className="w-6 h-6 md:w-8 md:h-8 flex items-center justify-center hover:bg-white rounded-md transition-all">
+          <button onClick={() => updateQuantity(item.id, item.size, 1)} className="w-6 h-6 md:w-8 md:h-8 flex items-center justify-center hover:bg-white rounded-md transition-all">
             <Plus size={12} />
           </button>
         </div>

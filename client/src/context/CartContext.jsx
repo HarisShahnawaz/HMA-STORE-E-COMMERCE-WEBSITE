@@ -21,24 +21,24 @@ export const CartProvider = ({ children }) => {
 
   const addToCart = (product) => {
     setCartItems((prev) => {
-      const isItemInCart = prev.find((item) => item.id === product.id);
+      const isItemInCart = prev.find((item) => item.id === product.id && item.size === product.size);
       if (isItemInCart) {
         return prev.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+          (item.id === product.id && item.size === product.size) ? { ...item, quantity: item.quantity + 1 } : item
         );
       }
       return [...prev, { ...product, quantity: 1 }];
     });
   };
 
-  const removeFromCart = (id) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
+  const removeFromCart = (id, size) => {
+    setCartItems((prev) => prev.filter((item) => !(item.id === id && item.size === size)));
   };
 
-  const updateQuantity = (id, amount) => {
+  const updateQuantity = (id, size, amount) => {
     setCartItems((prev) =>
       prev.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(1, item.quantity + amount) } : item
+        (item.id === id && item.size === size) ? { ...item, quantity: Math.max(1, item.quantity + amount) } : item
       )
     );
   };

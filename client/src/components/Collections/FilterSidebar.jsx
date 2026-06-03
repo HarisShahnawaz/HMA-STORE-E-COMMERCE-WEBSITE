@@ -8,7 +8,7 @@ export default function FilterSidebar({
   onCategoryChange,
   priceMax,
   onPriceChange,
-  selectedSizes,
+  selectedSize,
   onSizeChange,
   showAiOnly,
   onAiToggle,
@@ -69,7 +69,7 @@ export default function FilterSidebar({
         </h3>
         <div className="flex flex-wrap gap-2">
           {SIZES.map((size) => {
-            const active = selectedSizes.includes(size);
+            const active = selectedSize === size;
             return (
               <button
                 key={size}

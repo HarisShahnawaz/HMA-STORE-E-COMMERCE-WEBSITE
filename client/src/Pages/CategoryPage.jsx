@@ -30,7 +30,7 @@ export default function CategoryPage({ title, description, filterOptions }) {
 
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [priceMax, setPriceMax] = useState(10000);
-  const [selectedSizes, setSelectedSizes] = useState([]);
+  const [selectedSize, setSelectedSize] = useState("M");
   const [showAiOnly, setShowAiOnly] = useState(false);
   const [sortValue, setSortValue] = useState("Featured");
   const [gridCols, setGridCols] = useState(4);
@@ -41,7 +41,7 @@ export default function CategoryPage({ title, description, filterOptions }) {
   useEffect(() => {
     setSelectedCategory("All");
     setPriceMax(10000);
-    setSelectedSizes([]);
+    setSelectedSize("M");
     setShowAiOnly(false);
     setSortValue("Featured");
     setVisibleCount(INITIAL_SIZE);
@@ -64,7 +64,7 @@ export default function CategoryPage({ title, description, filterOptions }) {
   const handleReset = () => {
     setSelectedCategory("All");
     setPriceMax(10000);
-    setSelectedSizes([]);
+    setSelectedSize("M");
     setShowAiOnly(false);
     setSortValue("Featured");
     setVisibleCount(INITIAL_SIZE);
@@ -79,8 +79,8 @@ export default function CategoryPage({ title, description, filterOptions }) {
     onCategoryChange: (cat) => { setSelectedCategory(cat); setVisibleCount(INITIAL_SIZE); },
     priceMax,
     onPriceChange: (val) => { setPriceMax(val); setVisibleCount(INITIAL_SIZE); },
-    selectedSizes,
-    onSizeChange: (size) => setSelectedSizes(prev => prev.includes(size) ? prev.filter(s => s !== size) : [...prev, size]),
+    selectedSize,
+    onSizeChange: (size) => setSelectedSize(size),
     showAiOnly,
     onAiToggle: () => { setShowAiOnly(p => !p); setVisibleCount(INITIAL_SIZE); },
     onReset: () => { handleReset(); setDrawerOpen(false); },
@@ -150,7 +150,7 @@ export default function CategoryPage({ title, description, filterOptions }) {
               <>
                 <div className={`grid ${colClass} gap-x-4 gap-y-10 md:gap-x-6 md:gap-y-12`}>
                   {visible.map((product, index) => (
-                    <ProductCard key={product._id} product={{ ...product, id: product._id }} index={index} />
+                    <ProductCard key={product._id} product={{ ...product, id: product._id }} selectedSize={selectedSize} index={index} />
                   ))}
                 </div>
 
