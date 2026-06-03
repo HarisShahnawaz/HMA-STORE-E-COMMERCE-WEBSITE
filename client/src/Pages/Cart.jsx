@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import { products } from "../data/products";
+import { useProducts } from "../hooks/useProducts";
 import ProductCard from "../components/Products/productCard";
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, ShieldCheck, RotateCcw, CheckCircle2, Ticket } from "lucide-react";
 import { Button } from "../components/ui/button";
 
 export default function Cart() {
   const { cartItems, removeFromCart, updateQuantity, cartTotal } = useCart();
+  const { products: dbProducts } = useProducts();
   const [couponInput, setCouponInput] = useState("");
   const [couponCode, setCouponCode] = useState("");
   const [discountAmount, setDiscountAmount] = useState(0);
@@ -30,7 +31,7 @@ export default function Cart() {
   const finalShipping = cartTotal >= freeShippingThreshold ? 0 : shippingFee;
   const finalTotal = cartTotal - discountAmount + finalShipping;
 
-  const suggestedProducts = products.slice(0, 4);
+  const suggestedProducts = dbProducts.slice(0, 4);
 
   const SuggestionsSection = () => (
     <div className="mt-20 mb-10 border-t border-gray-100 pt-16">
@@ -40,7 +41,7 @@ export default function Cart() {
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
         {suggestedProducts.map((product, index) => (
-          <ProductCard key={product.id} product={product} index={index} />
+          <ProductCard key={product._id} product={{ ...product, id: product._id }} index={index} />
         ))}
       </div>
     </div>
