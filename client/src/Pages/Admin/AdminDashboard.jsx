@@ -252,7 +252,7 @@ export default function AdminDashboard() {
 
         {/* Mobile search bar (slides down) */}
         {mobileSearchOpen && (
-          <div className="md:hidden px-4 py-2 bg-white border-b border-gray-100 sticky top-[57px] z-10">
+          <div className="md:hidden px-4 py-2 bg-white border-b border-gray-100 sticky top-14.25 z-10">
             <div className="flex items-center gap-3 bg-gray-100 px-4 py-2.5 rounded-xl border border-transparent focus-within:border-gray-300 focus-within:bg-white transition-all">
               <Search size={16} className="text-gray-400 shrink-0" />
               <input
@@ -400,8 +400,8 @@ export default function AdminDashboard() {
                             className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors"
                           >
                             <td className="py-3 font-bold text-gray-800">
-                              <div className="max-w-[140px] truncate">{order.userName}</div>
-                              <div className="text-[10px] text-gray-400 font-medium max-w-[140px] truncate">
+                              <div className="max-w-35 truncate">{order.userName}</div>
+                              <div className="text-[10px] text-gray-400 font-medium max-w-35 truncate">
                                 {order.userEmail}
                               </div>
                             </td>
