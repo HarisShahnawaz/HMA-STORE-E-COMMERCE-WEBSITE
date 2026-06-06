@@ -36,13 +36,17 @@ export default function CheckoutForm({
   const [loading, setLoading] = useState(false);
   const [cardError, setCardError] = useState('');
 
+  // ── Conversion — defined at component level so button can access it ──
+  const RS_TO_AUD = 0.0042;
+  const amountInAUD = parseFloat((finalTotal * RS_TO_AUD).toFixed(2));
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setCardError('');
 
     try {
-      // Step 1: Create order in your DB first (status: pending)
+      // Step 1: Create order in DB (status: pending)
       const headers = { 'Content-Type': 'application/json' };
       if (token) headers['Authorization'] = `Bearer ${token}`;
 
@@ -72,19 +76,16 @@ export default function CheckoutForm({
 
       const { _id: orderId } = await orderRes.json();
 
-    
-const RS_TO_AUD = 0.0042;
-const amountInAUD = parseFloat((finalTotal * RS_TO_AUD).toFixed(2));
-
-const intentRes = await fetch(`${API_URL}/api/payment/create-payment-intent`, {
-  method: 'POST',
-  headers,
-  body: JSON.stringify({
-    amount: amountInAUD,
-    currency: 'aud',
-    orderId,
-  }),
-});
+      // Step 2: Create payment intent with converted AUD amount
+      const intentRes = await fetch(`${API_URL}/api/payment/create-payment-intent`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          amount: amountInAUD,
+          currency: 'aud',
+          orderId,
+        }),
+      });
 
       if (!intentRes.ok) throw new Error('Failed to initialize payment');
       const { clientSecret } = await intentRes.json();
@@ -150,7 +151,7 @@ const intentRes = await fetch(`${API_URL}/api/payment/create-payment-intent`, {
           disabled={!stripe || loading}
           className="flex-1 h-14 bg-black text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#1a1a1a] transition-all shadow-xl disabled:opacity-50"
         >
-         {loading ? 'Processing...' : `Pay Rs ${finalTotal.toLocaleString()} (~$${amountInAUD} AUD) →`}
+          {loading ? 'Processing...' : `Pay Rs ${finalTotal.toLocaleString()} (~$${amountInAUD} AUD) →`}
         </button>
       </div>
     </form>
