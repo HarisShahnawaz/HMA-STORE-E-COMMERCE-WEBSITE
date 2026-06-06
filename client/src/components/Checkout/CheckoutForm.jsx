@@ -72,16 +72,19 @@ export default function CheckoutForm({
 
       const { _id: orderId } = await orderRes.json();
 
-      // Step 2: Create payment intent on your backend
-      const intentRes = await fetch(`${API_URL}/api/payment/create-payment-intent`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          amount: finalTotal,
-          currency: 'aud',
-          orderId,
-        }),
-      });
+    
+const RS_TO_AUD = 0.0042;
+const amountInAUD = parseFloat((finalTotal * RS_TO_AUD).toFixed(2));
+
+const intentRes = await fetch(`${API_URL}/api/payment/create-payment-intent`, {
+  method: 'POST',
+  headers,
+  body: JSON.stringify({
+    amount: amountInAUD,
+    currency: 'aud',
+    orderId,
+  }),
+});
 
       if (!intentRes.ok) throw new Error('Failed to initialize payment');
       const { clientSecret } = await intentRes.json();
@@ -147,7 +150,7 @@ export default function CheckoutForm({
           disabled={!stripe || loading}
           className="flex-1 h-14 bg-black text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#1a1a1a] transition-all shadow-xl disabled:opacity-50"
         >
-          {loading ? 'Processing...' : `Pay Rs ${finalTotal.toLocaleString()} →`}
+         {loading ? 'Processing...' : `Pay Rs ${finalTotal.toLocaleString()} (~$${amountInAUD} AUD) →`}
         </button>
       </div>
     </form>
