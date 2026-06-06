@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import VirtualTryOn from "../components/TryOn/VirtualTryOn";
 import { 
   ShoppingBag, Star, ShieldCheck, Truck, 
   RotateCcw, Heart, ChevronRight, Sparkles 
@@ -16,6 +17,8 @@ export default function ProductDetail() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showTryOn, setShowTryOn] = useState(false);
+  const [relatedProducts, setRelatedProducts] = useState([]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -25,7 +28,15 @@ export default function ProductDetail() {
         if (!res.ok) throw new Error("Product not found");
         return res.json();
       })
-      .then(data => { setProduct(data); setLoading(false); })
+      .then(data => {
+        setProduct(data);
+        setLoading(false);
+        // Fetch related products (same category) for multi-outfit switcher
+        fetch(`${API_URL}/api/products?category=${data.category}`)
+          .then(r => r.json())
+          .then(all => setRelatedProducts(all.filter(p => p._id !== data._id).slice(0, 5)))
+          .catch(() => {});
+      })
       .catch(err => { setError(err.message); setLoading(false); });
   }, [id]);
 
@@ -131,19 +142,29 @@ export default function ProductDetail() {
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-4 mb-8">
-            <button 
-              onClick={() => addToCart({ ...product, id: product._id, size: selectedSize })}
-              className="flex-1 h-14 bg-black text-white rounded-xl font-bold text-[12px] flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-xl shadow-black/5"
+          <div className="flex flex-col gap-3 mb-8">
+            {/* Virtual Try-On Button */}
+            <button
+              onClick={() => setShowTryOn(true)}
+              className="w-full h-14 rounded-xl font-bold text-[12px] flex items-center justify-center gap-2 text-white hover:opacity-90 active:scale-95 transition-all"
+              style={{ background: 'linear-gradient(135deg, #7c3aed, #ec4899)', boxShadow: '0 8px 24px rgba(124,58,237,0.25)' }}
             >
-              <ShoppingBag size={16} /> Add to Cart
+              <Sparkles size={16} /> ✨ Virtual Try-On
             </button>
-            <button 
-              onClick={handleBuyNow}
-              className="flex-1 h-14 border border-gray-200 rounded-xl font-bold text-[12px] hover:bg-gray-50 transition-colors"
-            >
-              Buy Now
-            </button>
+            <div className="flex gap-3">
+              <button 
+                onClick={() => addToCart({ ...product, id: product._id, size: selectedSize })}
+                className="flex-1 h-13 bg-black text-white rounded-xl font-bold text-[12px] flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-xl shadow-black/5"
+              >
+                <ShoppingBag size={16} /> Add to Cart
+              </button>
+              <button 
+                onClick={handleBuyNow}
+                className="flex-1 h-13 border border-gray-200 rounded-xl font-bold text-[12px] hover:bg-gray-50 transition-colors"
+              >
+                Buy Now
+              </button>
+            </div>
           </div>
 
           {product.aiRecommended && (
@@ -187,6 +208,15 @@ export default function ProductDetail() {
           </div>
         </div>
       </div>
+
+      {/* Virtual Try-On Modal */}
+      {showTryOn && (
+        <VirtualTryOn
+          product={product}
+          relatedProducts={relatedProducts}
+          onClose={() => setShowTryOn(false)}
+        />
+      )}
     </div>
   );
 }

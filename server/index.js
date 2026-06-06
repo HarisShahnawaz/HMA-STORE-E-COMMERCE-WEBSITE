@@ -21,6 +21,7 @@ const authRoute = require('./routes/auth');
 const ordersRoute = require('./routes/orders');
 const adminDashboardRoute = require('./routes/adminDashboard');
 const paymentRoute = require('./routes/payment');
+const tryonRoute = require('./routes/tryon');
 
 
 const app = express();
@@ -28,7 +29,9 @@ app.use(cors());
 
 app.use('/api/payment', paymentRoute); 
 
-app.use(express.json());
+// Increased limit for base64 image uploads (Virtual Try-On)
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Serverless-friendly MongoDB connection
 const connectDB = async () => {
@@ -60,6 +63,7 @@ app.use('/api/assistant', assistantRoute);
 
 app.use('/api/auth', authRoute);
 app.use('/api/orders', ordersRoute);
+app.use('/api/tryon', tryonRoute);
 
 
 app.get("/api/products", async (req, res) => {

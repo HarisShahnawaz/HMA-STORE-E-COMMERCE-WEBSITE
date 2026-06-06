@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useUserAuth } from "../context/UserAuthContext";
 import { Button } from "../components/ui/button";
+import { Sparkles, Trash2, Download, ShoppingBag } from "lucide-react";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export default function Profile() {
   const { user, token, logout } = useUserAuth();
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [orders, setOrders]         = useState([]);
+  const [loading, setLoading]       = useState(true);
+  const [error, setError]           = useState(null);
+  const [tryOns, setTryOns]         = useState([]);
+  const [tryOnsLoading, setTryOnsLoading] = useState(false);
 
   useEffect(() => {
     const fetchUserOrders = async () => {
