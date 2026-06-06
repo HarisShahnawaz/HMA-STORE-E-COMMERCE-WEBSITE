@@ -20,9 +20,14 @@ const assistantRoute = require('./routes/assistant');
 const authRoute = require('./routes/auth');
 const ordersRoute = require('./routes/orders');
 const adminDashboardRoute = require('./routes/adminDashboard');
+const paymentRoute = require('./routes/payment');
+
 
 const app = express();
 app.use(cors());
+
+app.use('/api/payment', paymentRoute); 
+
 app.use(express.json());
 
 // Serverless-friendly MongoDB connection

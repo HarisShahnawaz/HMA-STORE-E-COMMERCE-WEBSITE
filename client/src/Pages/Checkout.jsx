@@ -1,3 +1,5 @@
+import StripeWrapper from "../components/Checkout/StripeWrapper";
+import CheckoutForm from "../components/Checkout/CheckoutForm";
 import { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import { useUserAuth } from "../context/UserAuthContext";
@@ -9,7 +11,7 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 export default function Checkout() {
   const { cartItems, cartTotal, clearCart } = useCart();
   const { user, token } = useUserAuth();
-  const [step, setStep] = useState(1); // 1: Shipping, 2: Payment, 3: Confirm
+  const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -23,18 +25,15 @@ export default function Checkout() {
 
   const [paymentMethod, setPaymentMethod] = useState("Cash on Delivery");
 
-  // Coupon logic
   const [couponInput, setCouponInput] = useState("");
   const [couponCode, setCouponCode] = useState("");
   const [discountAmount, setDiscountAmount] = useState(0);
 
-  // Store final order summary before clearing cart
   const [placedOrderSummary, setPlacedOrderSummary] = useState(null);
 
   const shippingFee = 500;
   const freeShippingThreshold = 30000;
 
-  // Prefill details if user is logged in
   useEffect(() => {
     if (user) {
       setFormData(prev => ({
@@ -48,7 +47,7 @@ export default function Checkout() {
   const handleApplyCoupon = () => {
     if (couponInput.toUpperCase() === "HMA10") {
       setCouponCode("HMA10");
-      setDiscountAmount(cartTotal * 0.1); // 10% discount
+      setDiscountAmount(cartTotal * 0.1);
     } else {
       alert("Invalid coupon code");
       setCouponInput("");
@@ -60,18 +59,26 @@ export default function Checkout() {
   const finalShipping = cartTotal >= freeShippingThreshold ? 0 : shippingFee;
   const finalTotal = cartTotal - discountAmount + finalShipping;
 
+  // Called by CheckoutForm after Stripe payment succeeds
+  const handleStripeSuccess = (summary) => {
+    setPlacedOrderSummary(summary);
+    if (clearCart) clearCart();
+    setStep(3);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Handles non-Stripe payment methods only
   const handleNextStep = async (e) => {
     e.preventDefault();
     if (step === 1) {
       setStep(2);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (step === 2) {
+      if (paymentMethod === "Stripe") return;
       setLoading(true);
       try {
         const headers = { 'Content-Type': 'application/json' };
-        if (token) {
-          headers['Authorization'] = `Bearer ${token}`;
-        }
+        if (token) headers['Authorization'] = `Bearer ${token}`;
 
         const res = await fetch(`${API_URL}/api/orders`, {
           method: 'POST',
@@ -97,13 +104,7 @@ export default function Checkout() {
           throw new Error(errData.error || 'Failed to place order');
         }
 
-        setPlacedOrderSummary({
-          cartTotal,
-          discountAmount,
-          couponCode,
-          finalShipping,
-          finalTotal
-        });
+        setPlacedOrderSummary({ cartTotal, discountAmount, couponCode, finalShipping, finalTotal });
         if (clearCart) clearCart();
         setStep(3);
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -115,6 +116,7 @@ export default function Checkout() {
     }
   };
 
+  // Step 3 — Order Confirmed Screen
   if (step === 3) {
     return (
       <div className="min-h-[80vh] flex flex-col items-center justify-center px-5 py-20 text-center animate-in fade-in zoom-in duration-500">
@@ -125,7 +127,9 @@ export default function Checkout() {
         <p className="text-gray-500 text-lg mb-1">
           Thank you, <span className="font-bold text-black">{formData.fullName}</span>!
         </p>
-        <p className="text-gray-400 text-sm mb-12">We'll contact you on <span className="font-bold">{formData.phone}</span> to confirm delivery.</p>
+        <p className="text-gray-400 text-sm mb-12">
+          We'll contact you on <span className="font-bold">{formData.phone}</span> to confirm delivery.
+        </p>
 
         <div className="bg-white border border-gray-100 rounded-3xl p-8 max-w-md w-full mb-10 shadow-sm text-left">
           <span className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 block mb-6">Order Summary</span>
@@ -169,8 +173,10 @@ export default function Checkout() {
 
           <div className="flex items-center justify-center max-w-lg mx-auto relative">
             <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-0.5 bg-gray-200 -z-10" />
-            <div className="absolute top-1/2 -translate-y-1/2 left-0 h-0.5 bg-black transition-all duration-500 -z-10" style={{ width: step === 1 ? '0%' : step === 2 ? '50%' : '100%' }} />
-
+            <div
+              className="absolute top-1/2 -translate-y-1/2 left-0 h-0.5 bg-black transition-all duration-500 -z-10"
+              style={{ width: step === 1 ? '0%' : step === 2 ? '50%' : '100%' }}
+            />
             <div className="flex justify-between w-full">
               <div className={`flex flex-col items-center gap-2 ${step >= 1 ? 'text-black' : 'text-gray-400'}`}>
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center bg-white border-2 transition-colors ${step >= 1 ? 'border-black text-black' : 'border-gray-200'}`}>
@@ -196,14 +202,16 @@ export default function Checkout() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
 
-          {/* Left Side: Forms */}
-          <div className="lg:col-span-7">
+          {/* Left Side */}
+          <div className="lg:col-span-7 flex flex-col gap-0">
+
+            {/* Main form — handles Step 1 and non-Stripe Step 2 */}
             <form onSubmit={handleNextStep} className="bg-white border border-gray-100 rounded-4xl p-8 md:p-10 shadow-sm">
 
+              {/* ── STEP 1: Shipping ── */}
               {step === 1 && (
                 <div className="animate-in fade-in slide-in-from-right-4 duration-500">
                   <h2 className="font-serif text-2xl font-black mb-8">Shipping Address</h2>
-
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div className="md:col-span-2">
                       <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 block mb-2">Full Name</label>
@@ -273,7 +281,6 @@ export default function Checkout() {
                       </select>
                     </div>
                   </div>
-
                   <button
                     type="submit"
                     className="w-full h-14 bg-black text-white rounded-xl mt-10 font-bold flex items-center justify-center gap-2 hover:bg-[#1a1a1a] transition-all"
@@ -283,6 +290,7 @@ export default function Checkout() {
                 </div>
               )}
 
+              {/* ── STEP 2: Payment Method Selection ── */}
               {step === 2 && (
                 <div className="animate-in fade-in slide-in-from-right-4 duration-500">
                   <h2 className="font-serif text-2xl font-black mb-8">Payment Method</h2>
@@ -292,7 +300,8 @@ export default function Checkout() {
                       { id: "Cash on Delivery", desc: "Pay when your order arrives" },
                       { id: "JazzCash", desc: "Send to 0300-XXXXXXX" },
                       { id: "EasyPaisa", desc: "Send to 0300-XXXXXXX" },
-                      { id: "Bank Transfer", desc: "Account details sent via SMS" }
+                      { id: "Bank Transfer", desc: "Account details sent via SMS" },
+                      { id: "Stripe", desc: "Pay securely with credit or debit card" },
                     ].map((method) => (
                       <label
                         key={method.id}
@@ -317,28 +326,52 @@ export default function Checkout() {
                     ))}
                   </div>
 
-                  <div className="flex gap-4 mt-10">
-                    <button
-                      type="button"
-                      onClick={() => setStep(1)}
-                      className="flex-1 h-14 bg-white text-black border-2 border-gray-200 rounded-xl font-bold hover:border-black transition-all"
-                    >
-                      &larr; Back
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="flex-1 h-14 bg-black text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#1a1a1a] transition-all shadow-xl disabled:opacity-50"
-                    >
-                      {loading ? "Placing Order..." : "Place Order \u2192"}
-                    </button>
-                  </div>
+                  {/* Back + Place Order — only for non-Stripe */}
+                  {paymentMethod !== "Stripe" && (
+                    <div className="flex gap-4 mt-10">
+                      <button
+                        type="button"
+                        onClick={() => setStep(1)}
+                        className="flex-1 h-14 bg-white text-black border-2 border-gray-200 rounded-xl font-bold hover:border-black transition-all"
+                      >
+                        &larr; Back
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={loading}
+                        className="flex-1 h-14 bg-black text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#1a1a1a] transition-all shadow-xl disabled:opacity-50"
+                      >
+                        {loading ? "Placing Order..." : "Place Order \u2192"}
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </form>
+
+            {/* ── Stripe Card Form — OUTSIDE parent form to prevent conflict ── */}
+            {step === 2 && paymentMethod === "Stripe" && (
+              <div className="mt-4 bg-white border border-gray-100 rounded-4xl p-8 md:p-10 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-300">
+                <StripeWrapper>
+                  <CheckoutForm
+                    formData={formData}
+                    cartItems={cartItems}
+                    paymentMethod={paymentMethod}
+                    cartTotal={cartTotal}
+                    discountAmount={discountAmount}
+                    couponCode={couponCode}
+                    finalShipping={finalShipping}
+                    finalTotal={finalTotal}
+                    token={token}
+                    onSuccess={handleStripeSuccess}
+                    onBack={() => setStep(1)}
+                  />
+                </StripeWrapper>
+              </div>
+            )}
           </div>
 
-          {/* Right Side: The Order Summary Card */}
+          {/* Right Side: Order Summary */}
           <div className="lg:col-span-5">
             <div className="bg-white border border-gray-100 rounded-4xl p-8 md:p-10 shadow-sm sticky top-28">
               <span className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 block mb-8">Order Summary</span>
@@ -360,7 +393,7 @@ export default function Checkout() {
                 ))}
               </div>
 
-              {/* Coupon Section */}
+              {/* Coupon */}
               <div className="flex gap-2 mb-8">
                 <input
                   type="text"
@@ -383,19 +416,16 @@ export default function Checkout() {
                   <span>Subtotal ({cartItems.length} items)</span>
                   <span className="text-black font-bold">Rs {cartTotal.toLocaleString()}</span>
                 </div>
-
                 {discountAmount > 0 && (
                   <div className="flex justify-between items-center text-sm text-green-500">
                     <span>Discount ({couponCode})</span>
                     <span className="font-bold">-Rs {discountAmount.toLocaleString()}</span>
                   </div>
                 )}
-
                 <div className="flex justify-between items-center text-sm text-gray-500">
                   <span>Shipping</span>
                   <span className="text-black font-bold">Rs {finalShipping}</span>
                 </div>
-
                 <div className="flex justify-between items-center pt-6 border-t border-gray-100">
                   <span className="font-bold text-lg">Total</span>
                   <span className="font-serif text-2xl font-black text-[#0f172a]">

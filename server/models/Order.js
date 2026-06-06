@@ -20,7 +20,18 @@ const orderSchema = new mongoose.Schema({
   subtotal: { type: Number, required: true },
   discount: { type: Number, default: 0 },
   shippingFee: { type: Number, required: true },
-  total: { type: Number, required: true }
+  total: { type: Number, required: true },
+
+  // ── Stripe Payment Fields ──────────────────────
+  paymentIntentId: { type: String, default: null },
+  paymentStatus: {
+    type: String,
+    enum: ['pending', 'paid', 'failed'],
+    default: 'pending'
+  },
+  paidAt: { type: Date, default: null },
+  // ───────────────────────────────────────────────
+
 }, { timestamps: true, suppressReservedKeysWarning: true });
 
 
