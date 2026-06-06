@@ -298,9 +298,6 @@ export default function Checkout() {
                   <div className="space-y-4">
                     {[
                       { id: "Cash on Delivery", desc: "Pay when your order arrives" },
-                      { id: "JazzCash", desc: "Send to 0300-XXXXXXX" },
-                      { id: "EasyPaisa", desc: "Send to 0300-XXXXXXX" },
-                      { id: "Bank Transfer", desc: "Account details sent via SMS" },
                       { id: "Stripe", desc: "Pay securely with credit or debit card" },
                     ].map((method) => (
                       <label
