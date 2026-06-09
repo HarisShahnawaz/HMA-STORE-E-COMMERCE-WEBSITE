@@ -69,11 +69,11 @@ router.post('/', async (req, res) => {
     // Dynamically import @gradio/client (ESM inside CJS)
     const { Client } = await import('@gradio/client');
 
-    const humanBlob    = base64ToBlob(userPhotoBase64);
-    const garmentBlob  = base64ToBlob(productImageBase64);
+    const humanBlob = base64ToBlob(userPhotoBase64);
+    const garmentBlob = base64ToBlob(productImageBase64);
 
     let outputImage = null;
-    let lastError   = null;
+    let lastError = null;
 
     // Try each space in order until one succeeds
     for (let i = 0; i < SPACES.length; i++) {
@@ -145,7 +145,7 @@ router.post('/save', authMiddleware, async (req, res) => {
   }
 });
 
-// ── GET SAVED TRY-ONS ──
+// ── GET SAVED TRY-ONS  on that──
 // GET /api/tryon/saved  (requires auth)
 router.get('/saved', authMiddleware, async (req, res) => {
   try {
