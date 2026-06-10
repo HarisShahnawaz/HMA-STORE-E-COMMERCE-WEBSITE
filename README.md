@@ -40,7 +40,12 @@ HmaStore is a fully featured e-commerce platform that allows users to browse pro
 - 👤 User profile and order history
 - 🛠️ Admin dashboard for product & order management
 - 📱 Fully responsive design (mobile-first)
-  
+- 🪞 **AI Virtual Try-On Fitting Room:**
+  - 📸 **Webcam Capture:** Snap live photos directly inside the browser fitting room modal.
+  - 🔁 **Multi-Outfit Switcher:** Switch between similar products without closing the modal.
+  - 🎨 **Fashion Loader:** Elegant, customized loading screen during processing.
+  - 💾 **Save to Profile:** Save generated images directly to user profile dashboards with deletion and download functionality.
+  - ⚡ **Client-Side Compression:** Dynamic resizing in-browser to fit Vercel payload limit boundaries (< 4.5 MB).
 
 ---
 
@@ -117,6 +122,9 @@ MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret_key
 JWT_EXPIRES_IN=7d
 
+# HuggingFace (Required for AI Virtual Try-On)
+HF_TOKEN=your_huggingface_write_token
+
 # (Optional) Payment Gateway
 STRIPE_SECRET_KEY=your_stripe_secret_key
 ```
@@ -156,6 +164,7 @@ hmastore/
 │   ├── src/
 │   │   ├── assets/          # Images, icons
 │   │   ├── components/      # Reusable UI components
+│   │   │   └── TryOn/       # AI Fitting Room Modal & Webcam components
 │   │   ├── pages/           # Route-level pages
 │   │   ├── context/         # React context (auth, cart)
 │   │   ├── hooks/           # Custom hooks
@@ -194,6 +203,14 @@ hmastore/
 |---|---|---|
 | POST | `/api/auth/register` | Register a new user |
 | POST | `/api/auth/login` | Login and receive JWT |
+
+### AI Virtual Try-On
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/tryon` | Performs virtual try-on using public Gradio space |
+| POST | `/api/tryon/save` | Saves try-on result with metadata to user's profile |
+| GET | `/api/tryon/saved` | Gets all saved try-ons for the logged-in user |
+| DELETE | `/api/tryon/saved/:id` | Deletes a saved try-on look |
 
 ### Products
 | Method | Endpoint | Description |
