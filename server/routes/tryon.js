@@ -49,8 +49,8 @@ async function tryIDMVTON(client, humanBlob, garmentBlob, category) {
 // Try the Kolors space (Kwai-Kolors/Kolors-Virtual-Try-On)
 async function tryKolors(client, humanBlob, garmentBlob, category) {
   const result = await client.predict('/tryon', {
-    human_img: humanBlob,
-    garm_img: garmentBlob,
+    person_image: humanBlob,
+    garment_image: garmentBlob,
     garment_des: `${category || 'clothing'} item`,
     denoise_steps: 20,
     seed: 42,
@@ -86,9 +86,15 @@ router.post('/', async (req, res) => {
         });
 
         if (i === 0) {
-          outputImage = await tryIDMVTON(client, humanBlob, garmentBlob, category);
+          outputImage = await tryIDMVTON(client, humanBlob, garmentBlob, category).catch(e => {
+            console.warn(`IDM-VTON prediction failed: ${e.message}`);
+            return null;
+          });
         } else {
-          outputImage = await tryKolors(client, humanBlob, garmentBlob, category);
+          outputImage = await tryKolors(client, humanBlob, garmentBlob, category).catch(e => {
+            console.warn(`Kolors prediction failed: ${e.message}`);
+            return null;
+          });
         }
 
         if (outputImage) {
