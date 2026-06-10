@@ -128,6 +128,42 @@ function WebcamCapture({ onCapture, onCancel }) {
   );
 }
 
+// Helper: Resize and compress base64 images on the client side to bypass Vercel's 4.5MB payload limits
+function compressBase64(base64Str, maxWidth = 800, maxHeight = 1000, quality = 0.8) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.src = base64Str;
+    img.onload = () => {
+      let width = img.width;
+      let height = img.height;
+
+      // Keep aspect ratio
+      if (width > height) {
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        }
+      } else {
+        if (height > maxHeight) {
+          width = Math.round((width * maxHeight) / height);
+          height = maxHeight;
+        }
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+
+      // Return compressed JPEG base64 string
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = () => resolve(base64Str); // Fallback to original if failure
+  });
+}
+
 // ── MAIN MODAL ──
 export default function VirtualTryOn({ product, relatedProducts = [], onClose }) {
   const { user, token } = useUserAuth();
@@ -167,8 +203,11 @@ export default function VirtualTryOn({ product, relatedProducts = [], onClose })
         c.height = img.height;
         c.getContext('2d').drawImage(img, 0, 0);
         const b64 = c.toDataURL('image/jpeg');
-        setProductB64(b64);
-        resolve(b64);
+        // Compress product image as well
+        compressBase64(b64, 800, 1000, 0.8).then(comp => {
+          setProductB64(comp);
+          resolve(comp);
+        });
       };
       img.onerror = () => reject(new Error('Failed to load product image'));
       img.src = activeProduct.image;
@@ -178,8 +217,10 @@ export default function VirtualTryOn({ product, relatedProducts = [], onClose })
   const handleFileChange = (file) => {
     if (!file || !file.type.startsWith('image/')) return;
     const reader = new FileReader();
-    reader.onload = (e) => {
-      setUserPhoto(e.target.result);
+    reader.onload = async (e) => {
+      // Compress the uploaded photo
+      const compressed = await compressBase64(e.target.result, 800, 1000, 0.8);
+      setUserPhoto(compressed);
       setResultImage(null);
       setError(null);
       setStep('upload');
@@ -333,7 +374,11 @@ export default function VirtualTryOn({ product, relatedProducts = [], onClose })
                   </button>
                 </div>
               ) : (
-                <WebcamCapture onCapture={(b64) => { setUserPhoto(b64); setPhotoMode('upload'); }} onCancel={() => setPhotoMode('upload')} />
+                <WebcamCapture onCapture={async (b64) => {
+                  const compressed = await compressBase64(b64, 800, 1000, 0.8);
+                  setUserPhoto(compressed);
+                  setPhotoMode('upload');
+                }} onCancel={() => setPhotoMode('upload')} />
               )
             ) : (
               userPhoto ? (
