@@ -99,6 +99,13 @@ router.post('/', async (req, res) => {
 
         if (outputImage) {
           console.log(`✅ Virtual Try-On success via ${spaceName}`);
+          let imageUrl = typeof outputImage === 'object' && outputImage?.url ? outputImage.url : outputImage;
+          if (imageUrl && typeof imageUrl === 'string' && !imageUrl.startsWith('http://') && !imageUrl.startsWith('https://')) {
+            const root = client.config?.root || `https://${spaceName.replace('/', '-').toLowerCase()}.hf.space`;
+            const cleanUrl = imageUrl.startsWith('/') ? imageUrl : '/' + imageUrl;
+            imageUrl = `${root.replace(/\/$/, '')}${cleanUrl}`;
+          }
+          outputImage = imageUrl;
           break;
         }
       } catch (spaceErr) {
@@ -114,11 +121,7 @@ router.post('/', async (req, res) => {
       });
     }
 
-    // outputImage may be { url: '...' } or a raw URL string
-    const imageUrl =
-      typeof outputImage === 'object' && outputImage?.url
-        ? outputImage.url
-        : outputImage;
+    const imageUrl = outputImage;
 
     res.json({ success: true, resultImage: imageUrl });
   } catch (err) {
