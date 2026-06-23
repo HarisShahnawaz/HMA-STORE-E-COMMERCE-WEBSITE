@@ -1,11 +1,12 @@
 const dns = require('dns');
 
-// Fix local DNS resolution issues (c-ares) on Windows/local environment for MongoDB+SRV connections
+// Force Node to use native OS lookup instead of c-ares, bypassing ISP SRV blocks
 if (process.env.NODE_ENV !== "production") {
   try {
+    dns.setDefaultResultOrder('ipv4first'); // Tells node to prioritize standard IPv4 paths
     dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
   } catch (err) {
-    console.warn("⚠️ DNS: Failed to set custom DNS servers:", err.message);
+    console.warn("⚠️ DNS: Failed to set custom DNS configurations:", err.message);
   }
 }
 
@@ -124,8 +125,3 @@ if (process.env.NODE_ENV !== "production") {
 
 module.exports = app;
 
-// Force restart nodemon to load latest .env variables and assistant route
-
-
-
-// trigger rebuild just a commit
