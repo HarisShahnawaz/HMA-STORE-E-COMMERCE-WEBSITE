@@ -8,3 +8,6 @@ const activityLogSchema = new mongoose.Schema({
 }, { timestamps: true, suppressReservedKeysWarning: true });
 
 module.exports = mongoose.model('ActivityLog', activityLogSchema);
+
+
+//tezt
