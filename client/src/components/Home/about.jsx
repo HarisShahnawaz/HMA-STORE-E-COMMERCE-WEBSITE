@@ -187,23 +187,7 @@ export default function About() {
         </div>
       </div>
 
-      {/* Dark Stats Bar */}
-      <div className="w-full bg-foreground py-14 md:py-16">
-        <div className="max-w-360 mx-auto px-6 md:px-12">
-          <div className="grid grid-cols-3 gap-4 md:gap-8">
-            {stats.map((s) => (
-              <div key={s.label} className="flex flex-col items-center text-center">
-                <span className="font-serif text-[2rem] md:text-[3.5rem] font-black text-background leading-none mb-2">
-                  {s.value}
-                </span>
-                <span className="font-sans text-[9px] md:text-[10px] font-bold uppercase tracking-[0.25em] text-background/50">
-                  {s.label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+    
 
       {/* CTA Section */}
       <div className="w-full bg-background py-20 md:py-24 px-6">
