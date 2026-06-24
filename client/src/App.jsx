@@ -12,6 +12,8 @@ import AdminLogin from "./Pages/Admin/AdminLogin";
 import AdminDashboard from "./Pages/Admin/AdminDashboard";
 import AdminProducts from "./Pages/Admin/AdminProducts";
 import AdminProductForm from "./Pages/Admin/AdminProductForm";
+import AllOrders from "./Pages/Admin/AllOrders";
+import AllActivity from "./Pages/Admin/AllActivity";
 import ProtectedRoute from "./components/Admin/ProtectedRoute";
 import HMAAssistant from './components/Layout/HMAAssistant';
 import SearchPage from './Pages/SearchPage';
@@ -36,6 +38,12 @@ function App() {
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={
           <ProtectedRoute><AdminDashboard /></ProtectedRoute>
+        } />
+        <Route path="/admin/orders" element={
+          <ProtectedRoute><AllOrders /></ProtectedRoute>
+        } />
+        <Route path="/admin/activity" element={
+          <ProtectedRoute><AllActivity /></ProtectedRoute>
         } />
         <Route path="/admin/products" element={
           <ProtectedRoute><AdminProducts /></ProtectedRoute>

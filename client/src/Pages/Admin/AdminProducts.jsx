@@ -6,7 +6,8 @@ import { useAdminAuth } from "../../context/AdminAuthContext";
 import {
   Package, Plus, Search, Edit2, Trash2,
   ShoppingBag, LogOut, LayoutDashboard,
-  ExternalLink, Menu, X, ChevronLeft, ChevronRight
+  ExternalLink, Menu, X, ChevronLeft, ChevronRight,
+  ClipboardList, Activity
 } from "lucide-react";
 
 function Sidebar({ open, onClose }) {
@@ -20,6 +21,8 @@ function Sidebar({ open, onClose }) {
 
   const links = [
     { icon: <LayoutDashboard size={18} />, label: "Dashboard", to: "/admin/dashboard" },
+    { icon: <ClipboardList size={18} />, label: "Orders", to: "/admin/orders" },
+    { icon: <Activity size={18} />, label: "Activity Log", to: "/admin/activity" },
     { icon: <Package size={18} />, label: "Products", to: "/admin/products" },
     { icon: <Plus size={18} />, label: "Add Product", to: "/admin/products/new" },
   ];
