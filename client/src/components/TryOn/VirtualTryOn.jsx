@@ -290,13 +290,13 @@ export default function VirtualTryOn({ product, relatedProducts = [], onClose })
     a.click();
   };
 
-  const allProducts = [product, ...relatedProducts.filter(p => p._id !== product._id)].slice(0, 6);
+  const allProducts = [product, ...relatedProducts.filter(p => p._id !== product._id)].slice(0, 8);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)', animation: 'fadeIn 0.2s ease' }}>
 
-      <div className="bg-white rounded-3xl w-full max-w-4xl shadow-2xl flex flex-col"
+      <div className="bg-white rounded-3xl w-full max-w-6xl shadow-2xl flex flex-col"
         style={{ maxHeight: '92vh', animation: 'slideUp 0.3s ease-out' }}>
 
         {/* ── HEADER ── */}
@@ -317,147 +317,157 @@ export default function VirtualTryOn({ product, relatedProducts = [], onClose })
           </button>
         </div>
 
-        {/* ── PRODUCT SWITCHER (Multiple Outfits) ── */}
-        {allProducts.length > 1 && (
-          <div className="px-7 py-3 border-b border-gray-50 shrink-0">
-            <p className="text-[9px] font-black uppercase tracking-widest text-gray-300 mb-2">Switch Outfit</p>
-            <div className="flex gap-2 overflow-x-auto pb-1">
-              {allProducts.map(p => (
-                <button key={p._id} onClick={() => switchProduct(p)}
-                  className="relative shrink-0 w-12 h-14 rounded-xl overflow-hidden border-2 transition-all"
-                  style={{ borderColor: activeProduct._id === p._id ? '#7c3aed' : 'transparent' }}>
-                  <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
-                  {activeProduct._id === p._id && (
-                    <div className="absolute inset-0 flex items-center justify-center"
-                      style={{ background: 'rgba(124,58,237,0.25)' }}>
-                      <CheckCircle size={14} className="text-white" />
-                    </div>
-                  )}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* ── PHOTO MODE TABS ── */}
-        <div className="px-7 pt-4 shrink-0">
-          <div className="flex bg-gray-100 rounded-xl p-1 w-fit gap-1">
-            {[
-              { id: 'upload', icon: <Upload size={13} />, label: 'Upload' },
-              { id: 'webcam', icon: <Camera size={13} />, label: 'Camera' },
-            ].map(tab => (
-              <button key={tab.id} onClick={() => { setPhotoMode(tab.id); setError(null); }}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all"
-                style={photoMode === tab.id
-                  ? { background: 'linear-gradient(135deg, #7c3aed, #ec4899)', color: 'white' }
-                  : { color: '#9ca3af' }}>
-                {tab.icon} {tab.label}
-              </button>
-            ))}
-          </div>
-        </div>
 
         {/* ── MAIN CONTENT ── */}
-        <div className="p-7 grid grid-cols-1 md:grid-cols-2 gap-6 overflow-y-auto">
+        <div className="p-7 grid grid-cols-1 lg:grid-cols-4 gap-8 items-start overflow-y-auto">
 
-          {/* LEFT — Photo Input */}
-          <div>
-            <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">Your Photo</p>
-
-            {photoMode === 'webcam' ? (
-              userPhoto ? (
-                <div className="relative group rounded-2xl overflow-hidden" style={{ aspectRatio: '3/4' }}>
-                  <img src={userPhoto} alt="Captured" className="w-full h-full object-cover" />
-                  <button onClick={() => setUserPhoto(null)}
-                    className="absolute bottom-3 inset-x-3 py-2 rounded-xl bg-black/60 text-white text-xs font-bold backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                    Retake Photo
-                  </button>
-                </div>
-              ) : (
-                <WebcamCapture onCapture={async (b64) => {
-                  const compressed = await compressBase64(b64, 800, 1000, 0.8);
-                  setUserPhoto(compressed);
-                  setPhotoMode('upload');
-                }} onCancel={() => setPhotoMode('upload')} />
-              )
-            ) : (
-              userPhoto ? (
-                <div className="relative group rounded-2xl overflow-hidden" style={{ aspectRatio: '3/4' }}>
-                  <img src={userPhoto} alt="Your photo" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
-                    <button onClick={() => fileRef.current.click()}
-                      className="bg-white text-gray-900 px-4 py-2 rounded-xl text-xs font-bold shadow-lg flex items-center gap-2">
-                      <Upload size={13} /> Change
-                    </button>
-                  </div>
-                  <div className="absolute top-3 right-3 bg-green-500 rounded-full p-1">
-                    <CheckCircle size={14} className="text-white" />
-                  </div>
-                </div>
-              ) : (
-                <button onClick={() => fileRef.current.click()}
-                  onDrop={(e) => { e.preventDefault(); setDragOver(false); handleFileChange(e.dataTransfer.files[0]); }}
-                  onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-                  onDragLeave={() => setDragOver(false)}
-                  className="w-full rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-4 transition-all cursor-pointer"
-                  style={{ aspectRatio: '3/4', borderColor: dragOver ? '#7c3aed' : '#e5e7eb', background: dragOver ? '#f5f3ff' : '#fafafa' }}>
-                  <div className="w-14 h-14 rounded-full flex items-center justify-center"
-                    style={{ background: 'linear-gradient(135deg, #ede9fe, #fce7f3)' }}>
-                    <Upload size={22} className="text-purple-500" />
-                  </div>
-                  <div className="text-center px-4">
-                    <p className="font-bold text-gray-700 text-sm mb-1">Upload photo</p>
-                    <p className="text-xs text-gray-400">Drag & drop or click to browse</p>
-                    <p className="text-[10px] text-gray-300 mt-1">Full-body, clear background = best results</p>
-                  </div>
-                </button>
-              )
-            )}
-            <input ref={fileRef} type="file" accept="image/*" className="hidden"
-              onChange={(e) => handleFileChange(e.target.files[0])} />
-          </div>
-
-          {/* RIGHT — Result / Product Preview */}
-          <div>
-            <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">
-              {step === 'result' ? '✨ Your Look' : 'Outfit to Try'}
-            </p>
-
-            {step === 'processing' ? <FashionLoader /> : (
-              <div className="relative rounded-2xl overflow-hidden group" style={{ aspectRatio: '3/4' }}>
-                <img src={resultImage || activeProduct.image} alt="result"
-                  className="w-full h-full object-cover transition-all duration-700" />
-
-                {step === 'result' && (
-                  <>
-                    <div className="absolute top-3 left-3 px-3 py-1.5 rounded-full text-[10px] font-bold text-white flex items-center gap-1.5"
-                      style={{ background: 'linear-gradient(135deg, #7c3aed, #ec4899)' }}>
-                      <Sparkles size={10} /> AI Result
-                    </div>
-                    {/* Hover actions */}
-                    <div className="absolute bottom-3 inset-x-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button onClick={handleDownload}
-                        className="flex-1 py-2 rounded-xl bg-black/60 text-white text-xs font-bold backdrop-blur-sm flex items-center justify-center gap-1.5">
-                        <Download size={13} /> Save
-                      </button>
-                      <button onClick={() => { setResultImage(null); setStep('upload'); setSaved(false); }}
-                        className="flex-1 py-2 rounded-xl bg-black/60 text-white text-xs font-bold backdrop-blur-sm flex items-center justify-center gap-1.5">
-                        <RotateCcw size={13} /> Retry
-                      </button>
-                    </div>
-                  </>
-                )}
-              </div>
-            )}
-
-            {/* Active product info */}
-            <div className="mt-3 flex items-center gap-2">
-              <img src={activeProduct.image} className="w-8 h-10 rounded-lg object-cover border border-gray-100" alt="" />
+          {/* LEFT — Main Comparison Area (spans 3 columns) */}
+          <div className="lg:col-span-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* YOUR PHOTO */}
               <div>
-                <p className="text-xs font-bold text-gray-700 truncate max-w-[180px]">{activeProduct.name}</p>
-                <p className="text-[10px] text-gray-400">Rs {activeProduct.price?.toLocaleString()}</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">Your Photo</p>
+
+                {photoMode === 'webcam' ? (
+                  userPhoto ? (
+                    <div className="relative group rounded-2xl overflow-hidden" style={{ aspectRatio: '3/4' }}>
+                      <img src={userPhoto} alt="Captured" className="w-full h-full object-cover" />
+                      <button onClick={() => setUserPhoto(null)}
+                        className="absolute bottom-3 inset-x-3 py-2 rounded-xl bg-black/60 text-white text-xs font-bold backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                        Retake Photo
+                      </button>
+                    </div>
+                  ) : (
+                    <WebcamCapture onCapture={async (b64) => {
+                      const compressed = await compressBase64(b64, 800, 1000, 0.8);
+                      setUserPhoto(compressed);
+                      setPhotoMode('upload');
+                    }} onCancel={() => setPhotoMode('upload')} />
+                  )
+                ) : (
+                  userPhoto ? (
+                    <div className="relative group rounded-2xl overflow-hidden" style={{ aspectRatio: '3/4' }}>
+                      <img src={userPhoto} alt="Your photo" className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <button onClick={() => fileRef.current.click()}
+                          className="bg-white text-gray-900 px-4 py-2 rounded-xl text-xs font-bold shadow-lg flex items-center gap-2">
+                          <Upload size={13} /> Change
+                        </button>
+                      </div>
+                      <div className="absolute top-3 right-3 bg-green-500 rounded-full p-1">
+                        <CheckCircle size={14} className="text-white" />
+                      </div>
+                    </div>
+                  ) : (
+                    <button onClick={() => fileRef.current.click()}
+                      onDrop={(e) => { e.preventDefault(); setDragOver(false); handleFileChange(e.dataTransfer.files[0]); }}
+                      onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                      onDragLeave={() => setDragOver(false)}
+                      className="w-full rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-4 transition-all cursor-pointer"
+                      style={{ aspectRatio: '3/4', borderColor: dragOver ? '#7c3aed' : '#e5e7eb', background: dragOver ? '#f5f3ff' : '#fafafa' }}>
+                      <div className="w-14 h-14 rounded-full flex items-center justify-center"
+                        style={{ background: 'linear-gradient(135deg, #ede9fe, #fce7f3)' }}>
+                        <Upload size={22} className="text-purple-500" />
+                      </div>
+                      <div className="text-center px-4">
+                        <p className="font-bold text-gray-700 text-sm mb-1">Upload photo</p>
+                        <p className="text-xs text-gray-400">Drag & drop or click to browse</p>
+                        <p className="text-[10px] text-gray-300 mt-1">Full-body, clear background = best results</p>
+                      </div>
+                    </button>
+                  )
+                )}
+                <input ref={fileRef} type="file" accept="image/*" className="hidden"
+                  onChange={(e) => handleFileChange(e.target.files[0])} />
+              </div>
+
+              {/* OUTFIT TO TRY */}
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">
+                  {step === 'result' ? '✨ Your Look' : 'Outfit to Try'}
+                </p>
+
+                {step === 'processing' ? <FashionLoader /> : (
+                  <div className="relative rounded-2xl overflow-hidden group" style={{ aspectRatio: '3/4' }}>
+                    <img src={resultImage || activeProduct.image} alt="result"
+                      className="w-full h-full object-cover transition-all duration-700" />
+
+                    {step === 'result' && (
+                      <>
+                        <div className="absolute top-3 left-3 px-3 py-1.5 rounded-full text-[10px] font-bold text-white flex items-center gap-1.5"
+                          style={{ background: 'linear-gradient(135deg, #7c3aed, #ec4899)' }}>
+                          <Sparkles size={10} /> AI Result
+                        </div>
+                        {/* Hover actions */}
+                        <div className="absolute bottom-3 inset-x-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button onClick={handleDownload}
+                            className="flex-1 py-2 rounded-xl bg-black/60 text-white text-xs font-bold backdrop-blur-sm flex items-center justify-center gap-1.5">
+                            <Download size={13} /> Save
+                          </button>
+                          <button onClick={() => { setResultImage(null); setStep('upload'); setSaved(false); }}
+                            className="flex-1 py-2 rounded-xl bg-black/60 text-white text-xs font-bold backdrop-blur-sm flex items-center justify-center gap-1.5">
+                            <RotateCcw size={13} /> Retry
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+
+                {/* Active product info */}
+                <div className="mt-3 flex items-center gap-2">
+                  <img src={activeProduct.image} className="w-8 h-10 rounded-lg object-cover border border-gray-100" alt="" />
+                  <div>
+                    <p className="text-xs font-bold text-gray-700 truncate max-w-[180px]">{activeProduct.name}</p>
+                    <p className="text-[10px] text-gray-400">Rs {activeProduct.price?.toLocaleString()}</p>
+                  </div>
+                </div>
               </div>
             </div>
+          </div>
+
+          {/* RIGHT — Control Sidebar (spans 1 column) */}
+          <div className="lg:col-span-1 flex flex-col gap-6">
+            {/* PHOTO MODE TABS */}
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">Photo Source</p>
+              <div className="flex bg-gray-100 rounded-xl p-1 w-full gap-1">
+                {[
+                  { id: 'upload', icon: <Upload size={13} />, label: 'Upload' },
+                  { id: 'webcam', icon: <Camera size={13} />, label: 'Camera' },
+                ].map(tab => (
+                  <button key={tab.id} onClick={() => { setPhotoMode(tab.id); setError(null); }}
+                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all"
+                    style={photoMode === tab.id
+                      ? { background: 'linear-gradient(135deg, #7c3aed, #ec4899)', color: 'white' }
+                      : { color: '#9ca3af' }}>
+                    {tab.icon} {tab.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* PRODUCT SWITCHER */}
+            {allProducts.length > 1 && (
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">Switch Outfit</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {allProducts.map(p => (
+                    <button key={p._id} onClick={() => switchProduct(p)}
+                      className="relative w-20 h-24 rounded-xl overflow-hidden border-2 transition-all"
+                      style={{ borderColor: activeProduct._id === p._id ? '#7c3aed' : 'transparent' }}>
+                      <img src={p.image} alt={p.name} className="w-full h-full object-cover p-1" />
+                      {activeProduct._id === p._id && (
+                        <div className="absolute inset-0 flex items-center justify-center"
+                          style={{ background: 'rgba(124,58,237,0.25)' }}>
+                          <CheckCircle size={14} className="text-white" />
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

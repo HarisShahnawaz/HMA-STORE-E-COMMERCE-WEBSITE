@@ -15,11 +15,7 @@ function authMiddleware(req, res, next) {
   }
 }
 
-
 // ── VIRTUAL TRY-ON ROUTE ──
-// Uses HuggingFace IDM-VTON Gradio Space (free, no credits needed)
-// Falls back through multiple spaces if one is sleeping
-
 const SPACES = [
   'yisol/IDM-VTON',
   'Kwai-Kolors/Kolors-Virtual-Try-On',
@@ -34,28 +30,39 @@ function base64ToBlob(base64) {
 
 // Try the IDM-VTON space (yisol/IDM-VTON)
 async function tryIDMVTON(client, humanBlob, garmentBlob, category) {
-  const result = await client.predict('/tryon', {
-    dict: { background: humanBlob, layers: [], composite: null },
-    garm_img: garmentBlob,
-    garment_des: `${category || 'clothing'} item`,
-    is_checked: true,
-    is_checked_crop: false,
-    denoise_steps: 30,
-    seed: 42,
-  });
-  return result?.data?.[0];
+  try {
+    const result = await client.predict('/tryon', {
+      dict: { background: humanBlob, layers: [], composite: null },
+      garm_img: garmentBlob,
+      garment_des: `${category || 'clothing'} item`,
+      is_checked: true,
+      is_checked_crop: false,
+      denoise_steps: 30,
+      seed: 42,
+    });
+    return result?.data?.[0];
+  } catch (err) {
+    console.warn(`IDM-VTON prediction step execution failed: ${err.message}`);
+    return null;
+  }
 }
 
 // Try the Kolors space (Kwai-Kolors/Kolors-Virtual-Try-On)
 async function tryKolors(client, humanBlob, garmentBlob, category) {
-  const result = await client.predict('/tryon', {
-    person_image: humanBlob,
-    garment_image: garmentBlob,
-    garment_des: `${category || 'clothing'} item`,
-    denoise_steps: 20,
-    seed: 42,
-  });
-  return result?.data?.[0];
+  try {
+    // Bro, updated properties to match current Kwai-Kolors Gradio API payload specs
+    const result = await client.predict('/tryon', {
+      person_img: humanBlob,
+      garment_img: garmentBlob,
+      garment_des: `${category || 'clothing'} item`,
+      denoise_steps: 20,
+      seed: 42,
+    });
+    return result?.data?.[0];
+  } catch (err) {
+    console.warn(`Kolors prediction step execution failed: ${err.message}`);
+    return null;
+  }
 }
 
 router.post('/', async (req, res) => {
@@ -86,15 +93,9 @@ router.post('/', async (req, res) => {
         });
 
         if (i === 0) {
-          outputImage = await tryIDMVTON(client, humanBlob, garmentBlob, category).catch(e => {
-            console.warn(`IDM-VTON prediction failed: ${e.message}`);
-            return null;
-          });
+          outputImage = await tryIDMVTON(client, humanBlob, garmentBlob, category);
         } else {
-          outputImage = await tryKolors(client, humanBlob, garmentBlob, category).catch(e => {
-            console.warn(`Kolors prediction failed: ${e.message}`);
-            return null;
-          });
+          outputImage = await tryKolors(client, humanBlob, garmentBlob, category);
         }
 
         if (outputImage) {
@@ -109,7 +110,7 @@ router.post('/', async (req, res) => {
           break;
         }
       } catch (spaceErr) {
-        console.warn(`⚠️  Space "${spaceName}" failed: ${spaceErr.message}`);
+        console.warn(`⚠️  Space "${spaceName}" connection/execution failed: ${spaceErr.message}`);
         lastError = spaceErr;
       }
     }
@@ -121,9 +122,7 @@ router.post('/', async (req, res) => {
       });
     }
 
-    const imageUrl = outputImage;
-
-    res.json({ success: true, resultImage: imageUrl });
+    res.json({ success: true, resultImage: outputImage });
   } catch (err) {
     console.error('❌ Virtual Try-On Error:', err.message);
     res.status(500).json({
@@ -134,7 +133,6 @@ router.post('/', async (req, res) => {
 });
 
 // ── SAVE TRY-ON RESULT ──
-// POST /api/tryon/save  (requires auth)
 router.post('/save', authMiddleware, async (req, res) => {
   try {
     const { resultImage, productId, productName, productImage, category } = req.body;
@@ -144,7 +142,6 @@ router.post('/save', authMiddleware, async (req, res) => {
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     user.savedTryOns.unshift({ resultImage, productId, productName, productImage, category });
-    // Keep only latest 20 try-ons per user
     if (user.savedTryOns.length > 20) user.savedTryOns = user.savedTryOns.slice(0, 20);
     await user.save();
 
@@ -154,8 +151,7 @@ router.post('/save', authMiddleware, async (req, res) => {
   }
 });
 
-// ── GET SAVED TRY-ONS  on that──
-// GET /api/tryon/saved  (requires auth)
+// ── GET SAVED TRY-ONS ──
 router.get('/saved', authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('savedTryOns');
@@ -167,7 +163,6 @@ router.get('/saved', authMiddleware, async (req, res) => {
 });
 
 // ── DELETE SAVED TRY-ON ──
-// DELETE /api/tryon/saved/:id  (requires auth)
 router.delete('/saved/:id', authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
