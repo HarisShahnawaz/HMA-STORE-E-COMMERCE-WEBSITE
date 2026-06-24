@@ -5,7 +5,7 @@ import {
   LayoutDashboard, Package, Plus, LogOut,
   ShoppingBag, ExternalLink, Menu, X,
   Search, Bell, UserCircle, ChevronRight,
-  ClipboardList, Activity
+  ClipboardList, Activity, Users, DollarSign
 } from "lucide-react";
 
 function Sidebar({ open, onClose }) {
@@ -19,6 +19,8 @@ function Sidebar({ open, onClose }) {
 
   const links = [
     { icon: <LayoutDashboard size={18} />, label: "Dashboard", to: "/admin/dashboard" },
+    { icon: <Users size={18} />, label: "Users", to: "/admin/users" },
+    { icon: <DollarSign size={18} />, label: "Sales Revenue", to: "/admin/revenue" },
     { icon: <ClipboardList size={18} />, label: "Orders", to: "/admin/orders" },
     { icon: <Activity size={18} />, label: "Activity Log", to: "/admin/activity" },
     { icon: <Package size={18} />, label: "Products", to: "/admin/products" },

@@ -8,7 +8,7 @@ import {
   ShoppingBag, TrendingUp, Tag, Sparkles,
   Users, ExternalLink, Menu, X,
   Search, Bell, UserCircle, ChevronRight,
-  ClipboardList, Activity
+  ClipboardList, Activity, DollarSign
 } from "lucide-react";
 
 function Sidebar({ open, onClose }) {
@@ -22,6 +22,8 @@ function Sidebar({ open, onClose }) {
 
   const links = [
     { icon: <LayoutDashboard size={18} />, label: "Dashboard", to: "/admin/dashboard" },
+    { icon: <Users size={18} />, label: "Users", to: "/admin/users" },
+    { icon: <DollarSign size={18} />, label: "Sales Revenue", to: "/admin/revenue" },
     { icon: <ClipboardList size={18} />, label: "Orders", to: "/admin/orders" },
     { icon: <Activity size={18} />, label: "Activity Log", to: "/admin/activity" },
     { icon: <Package size={18} />, label: "Products", to: "/admin/products" },
@@ -184,16 +186,16 @@ export default function AdminDashboard() {
 
   const statCards = stats
     ? [
-        { label: "Total Products", value: stats.total, icon: <Package size={20} />, bg: "bg-gradient-to-br from-black to-gray-800", text: "text-white", sub: "text-white/60" },
-        { label: "Registered Users", value: dashboardData.usersCount, icon: <Users size={20} />, bg: "bg-gradient-to-br from-indigo-500 to-indigo-700", text: "text-white", sub: "text-white/60" },
-        { label: "Total Orders", value: dashboardData.ordersCount, icon: <ShoppingBag size={20} />, bg: "bg-gradient-to-br from-purple-500 to-purple-700", text: "text-white", sub: "text-white/60" },
-        { label: "Sales Revenue", value: `Rs ${(dashboardData.totalRevenue || 0).toLocaleString()}`, icon: <TrendingUp size={20} />, bg: "bg-gradient-to-br from-teal-500 to-cyan-600", text: "text-white", sub: "text-white/60" },
-        { label: "Men's Collection", value: stats.men, icon: <Users size={20} />, bg: "bg-gradient-to-br from-blue-500 to-blue-700", text: "text-white", sub: "text-white/60" },
-        { label: "Women's Collection", value: stats.women, icon: <Users size={20} />, bg: "bg-gradient-to-br from-pink-500 to-rose-600", text: "text-white", sub: "text-white/60" },
-        { label: "Kids Collection", value: stats.kids, icon: <Users size={20} />, bg: "bg-gradient-to-br from-amber-400 to-orange-500", text: "text-white", sub: "text-white/60" },
-        { label: "New Arrivals", value: stats.isNew, icon: <TrendingUp size={20} />, bg: "bg-gradient-to-br from-emerald-400 to-green-600", text: "text-white", sub: "text-white/60" },
-        { label: "On Sale", value: stats.isSale, icon: <Tag size={20} />, bg: "bg-gradient-to-br from-red-400 to-red-600", text: "text-white", sub: "text-white/60" },
-        { label: "AI Recommended", value: stats.aiRecommended, icon: <Sparkles size={20} />, bg: "bg-gradient-to-br from-violet-500 to-purple-700", text: "text-white", sub: "text-white/60" },
+        { label: "Total Products", value: stats.total, icon: <Package size={20} />, bg: "bg-gradient-to-br from-black to-gray-800", text: "text-white", sub: "text-white/60", to: "/admin/products" },
+        { label: "Registered Users", value: dashboardData.usersCount, icon: <Users size={20} />, bg: "bg-gradient-to-br from-indigo-500 to-indigo-700", text: "text-white", sub: "text-white/60", to: "/admin/users" },
+        { label: "Total Orders", value: dashboardData.ordersCount, icon: <ShoppingBag size={20} />, bg: "bg-gradient-to-br from-purple-500 to-purple-700", text: "text-white", sub: "text-white/60", to: "/admin/orders" },
+        { label: "Sales Revenue", value: `Rs ${(dashboardData.totalRevenue || 0).toLocaleString()}`, icon: <TrendingUp size={20} />, bg: "bg-gradient-to-br from-teal-500 to-cyan-600", text: "text-white", sub: "text-white/60", to: "/admin/revenue" },
+        { label: "Men's Collection", value: stats.men, icon: <Users size={20} />, bg: "bg-gradient-to-br from-blue-500 to-blue-700", text: "text-white", sub: "text-white/60", to: "/admin/products?category=men" },
+        { label: "Women's Collection", value: stats.women, icon: <Users size={20} />, bg: "bg-gradient-to-br from-pink-500 to-rose-600", text: "text-white", sub: "text-white/60", to: "/admin/products?category=women" },
+        { label: "Kids Collection", value: stats.kids, icon: <Users size={20} />, bg: "bg-gradient-to-br from-amber-400 to-orange-500", text: "text-white", sub: "text-white/60", to: "/admin/products?category=kids" },
+        { label: "New Arrivals", value: stats.isNew, icon: <TrendingUp size={20} />, bg: "bg-gradient-to-br from-emerald-400 to-green-600", text: "text-white", sub: "text-white/60", to: "/admin/products?filter=new" },
+        { label: "On Sale", value: stats.isSale, icon: <Tag size={20} />, bg: "bg-gradient-to-br from-red-400 to-red-600", text: "text-white", sub: "text-white/60", to: "/admin/products?filter=sale" },
+        { label: "AI Recommended", value: stats.aiRecommended, icon: <Sparkles size={20} />, bg: "bg-gradient-to-br from-violet-500 to-purple-700", text: "text-white", sub: "text-white/60", to: "/admin/products?filter=ai" },
       ]
     : [];
 
@@ -295,21 +297,40 @@ export default function AdminDashboard() {
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-6 sm:mb-8">
               {statCards.map((card, i) => (
-                <div
-                  key={i}
-                  className={`${card.bg} rounded-2xl p-4 sm:p-5 shadow-sm hover:scale-[1.03] transition-all duration-300`}
-                >
-                  <div className={`${card.text} opacity-70 mb-2 sm:mb-3`}>{card.icon}</div>
-                  <p
-                    className={`font-serif text-xl sm:text-2xl lg:text-3xl font-bold ${card.text} truncate`}
-                    title={String(card.value)}
+                card.to ? (
+                  <Link
+                    key={i}
+                    to={card.to}
+                    className={`${card.bg} rounded-2xl p-4 sm:p-5 shadow-sm hover:scale-[1.03] transition-all duration-300 cursor-pointer`}
                   >
-                    {card.value}
-                  </p>
-                  <p className={`text-[9px] sm:text-[10px] font-black uppercase tracking-widest mt-1.5 ${card.sub} truncate`}>
-                    {card.label}
-                  </p>
-                </div>
+                    <div className={`${card.text} opacity-70 mb-2 sm:mb-3`}>{card.icon}</div>
+                    <p
+                      className={`font-serif text-xl sm:text-2xl lg:text-3xl font-bold ${card.text} truncate`}
+                      title={String(card.value)}
+                    >
+                      {card.value}
+                    </p>
+                    <p className={`text-[9px] sm:text-[10px] font-black uppercase tracking-widest mt-1.5 ${card.sub} truncate`}>
+                      {card.label}
+                    </p>
+                  </Link>
+                ) : (
+                  <div
+                    key={i}
+                    className={`${card.bg} rounded-2xl p-4 sm:p-5 shadow-sm hover:scale-[1.03] transition-all duration-300`}
+                  >
+                    <div className={`${card.text} opacity-70 mb-2 sm:mb-3`}>{card.icon}</div>
+                    <p
+                      className={`font-serif text-xl sm:text-2xl lg:text-3xl font-bold ${card.text} truncate`}
+                      title={String(card.value)}
+                    >
+                      {card.value}
+                    </p>
+                    <p className={`text-[9px] sm:text-[10px] font-black uppercase tracking-widest mt-1.5 ${card.sub} truncate`}>
+                      {card.label}
+                    </p>
+                  </div>
+                )
               ))}
             </div>
           )}

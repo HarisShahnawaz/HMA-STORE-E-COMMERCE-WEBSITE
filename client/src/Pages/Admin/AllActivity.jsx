@@ -39,7 +39,7 @@ export default function AllActivity() {
 
   return (
     <AdminLayout>
-      <div className="p-4 sm:p-6 md:p-8">
+      <div className="p-4 sm:p-6 md:p-8 max-w-3xl mx-auto">
         {/* Page heading */}
         <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-3 mb-6 sm:mb-8">
           <div>
@@ -72,23 +72,27 @@ export default function AllActivity() {
                   <span
                     className={`text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-md shrink-0 ${getBadgeColor(activity.action)}`}
                   >
-                    {activity.action.replace("_", " ")}
+                    {activity.action === "password_reset" ? "RESET PS" : activity.action.replace("_", " ")}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-bold text-gray-800 leading-tight truncate">
-                      {activity.userName}
-                    </p>
-                    <p className="text-[11px] text-gray-500 mt-0.5 leading-normal line-clamp-2">
-                      {activity.details}
-                    </p>
-                    <span className="text-[9px] text-gray-400 font-semibold uppercase tracking-wider block mt-1">
-                      {new Date(activity.createdAt).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}{" "}
-                      •{" "}
-                      {new Date(activity.createdAt).toLocaleDateString()}
-                    </span>
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 text-left md:text-center">
+                      <div className="flex-1">
+                        <p className="text-xs font-bold text-gray-800 leading-tight truncate">
+                          {activity.userName}
+                        </p>
+                        <p className="text-[11px] text-gray-500 mt-0.5 leading-normal line-clamp-2">
+                          {activity.details}
+                        </p>
+                      </div>
+                      <span className="text-[9px] text-gray-400 font-semibold uppercase tracking-wider shrink-0 md:ml-4">
+                        {new Date(activity.createdAt).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}{" "}
+                        •{" "}
+                        {new Date(activity.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
                   </div>
                 </div>
               ))}

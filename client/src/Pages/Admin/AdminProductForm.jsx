@@ -6,7 +6,7 @@ import { useAdminAuth } from "../../context/AdminAuthContext";
 import {
   ShoppingBag, LogOut, LayoutDashboard, Package,
   Plus, ExternalLink, X, Menu, Save, ArrowLeft,
-  Image, Tag, DollarSign, Layers, ClipboardList, Activity
+  Image, Tag, DollarSign, Layers, ClipboardList, Activity, Users, DollarSign as DollarSignIcon
 } from "lucide-react";
 
 function Sidebar({ open, onClose }) {
@@ -17,6 +17,8 @@ function Sidebar({ open, onClose }) {
 
   const links = [
     { icon: <LayoutDashboard size={18} />, label: "Dashboard", to: "/admin/dashboard" },
+    { icon: <Users size={18} />, label: "Users", to: "/admin/users" },
+    { icon: <DollarSignIcon size={18} />, label: "Sales Revenue", to: "/admin/revenue" },
     { icon: <ClipboardList size={18} />, label: "Orders", to: "/admin/orders" },
     { icon: <Activity size={18} />, label: "Activity Log", to: "/admin/activity" },
     { icon: <Package size={18} />, label: "Products", to: "/admin/products" },
@@ -41,7 +43,7 @@ function Sidebar({ open, onClose }) {
             </button>
           </div>
         </div>
-        <nav className="flex-1 px-4 py-8 space-y-1 overflow-y-auto">
+        <nav className="flex-1 px-4 py-8 space-y-1">
           <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20 px-3 mb-4">Management</p>
           {links.map((link) => (
             <Link key={link.label} to={link.to} onClick={onClose}
