@@ -246,7 +246,6 @@ hmastore/
 
 ## 📸 Screenshots
 
-> Add your screenshots here
 
 | Home Page | Product Page | Cart |
 |---|---|---|
