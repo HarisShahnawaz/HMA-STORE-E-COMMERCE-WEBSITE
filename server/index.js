@@ -1,9 +1,9 @@
 const dns = require('dns');
 
-// Force Node to use native OS lookup instead of c-ares, bypassing ISP SRV blocks
+
 if (process.env.NODE_ENV !== "production") {
   try {
-    dns.setDefaultResultOrder('ipv4first'); // Tells node to prioritize standard IPv4 paths
+    dns.setDefaultResultOrder('ipv4first'); 
     dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
   } catch (err) {
     console.warn("⚠️ DNS: Failed to set custom DNS configurations:", err.message);

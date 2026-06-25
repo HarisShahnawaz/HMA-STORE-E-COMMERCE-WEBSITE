@@ -33,19 +33,62 @@ HmaStore is a fully featured e-commerce platform that allows users to browse pro
 
 ## ✨ Features
 
+### Customer Features
 - 🔐 User authentication (Register / Login / Logout)
 - 🛒 Shopping cart with real-time updates
 - 📦 Product listing, search, and filtering
 - 💳 Checkout and order management
 - 👤 User profile and order history
-- 🛠️ Admin dashboard for product & order management
-- 📱 Fully responsive design (mobile-first)
+-  Fully responsive design (mobile-first)
 - 🪞 **AI Virtual Try-On Fitting Room:**
   - 📸 **Webcam Capture:** Snap live photos directly inside the browser fitting room modal.
   - 🔁 **Multi-Outfit Switcher:** Switch between similar products without closing the modal.
   - 🎨 **Fashion Loader:** Elegant, customized loading screen during processing.
   - 💾 **Save to Profile:** Save generated images directly to user profile dashboards with deletion and download functionality.
   - ⚡ **Client-Side Compression:** Dynamic resizing in-browser to fit Vercel payload limit boundaries (< 4.5 MB).
+
+### Admin Dashboard Features
+- 🎛️ **Comprehensive Dashboard:**
+  - 📊 Real-time statistics (Total Products, Registered Users, Total Orders, Sales Revenue)
+  - 📈 Category-wise analytics (Men's, Women's, Kids collections)
+  - 🏷️ Product status tracking (New Arrivals, On Sale, AI Recommended)
+  - 📉 Stock distribution visualization with progress bars
+  - 🕐 Recent orders table with customer details
+  - 🔔 Live activity feed (signups, logins, orders, password resets)
+  - ⚡ Quick action buttons for common tasks
+
+- 📦 **Product Management:**
+  - ➕ Create, edit, and delete products
+  - 🔍 Search and filter products by category
+  - 📋 Responsive table view (desktop) and card view (mobile)
+  - 🏷️ Product status badges (New, Sale, AI Pick, Regular)
+  - 📄 Pagination for large product catalogs
+  - 💰 Price management with sale pricing support
+
+- 💰 **Sales & Revenue Analytics:**
+  - 📊 Total revenue tracking
+  - 🛒 Order count and average order value
+  - 📈 Monthly growth metrics
+  - 📅 Daily revenue & orders bar chart
+  - 📊 Revenue by category visualization
+  - 📉 Monthly revenue trend area chart
+  - 📋 Revenue summary table with growth indicators
+
+- 👥 **User Management:**
+  - 📋 View all registered users
+  - 👤 User details and activity history
+  - 🔍 Search and filter users
+
+- 📋 **Order Management:**
+  - 📦 View all orders with customer details
+  - 🔄 Update order status
+  - 🔍 Search and filter orders
+  - 📊 Order analytics and insights
+
+- 📝 **Activity Logging:**
+  - 🕐 Track all user activities (signup, login, orders, password resets)
+  - 🔍 Searchable activity log
+  - 📊 Activity analytics and trends
 
 ---
 
@@ -122,6 +165,10 @@ MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret_key
 JWT_EXPIRES_IN=7d
 
+# Admin Credentials (Default - Change in Production)
+ADMIN_EMAIL=admin@hmastore.com
+ADMIN_PASSWORD=admin123
+
 # HuggingFace (Required for AI Virtual Try-On)
 HF_TOKEN=your_huggingface_write_token
 
@@ -164,9 +211,20 @@ hmastore/
 │   ├── src/
 │   │   ├── assets/          # Images, icons
 │   │   ├── components/      # Reusable UI components
+│   │   │   ├── Admin/       # Admin layout components
 │   │   │   └── TryOn/       # AI Fitting Room Modal & Webcam components
-│   │   ├── pages/           # Route-level pages
-│   │   ├── context/         # React context (auth, cart)
+│   │   ├── context/         # React context (auth, cart, admin auth)
+│   │   ├── Pages/           # Route-level pages
+│   │   │   ├── Admin/       # Admin dashboard pages
+│   │   │   │   ├── AdminDashboard.jsx      # Main dashboard with stats
+│   │   │   │   ├── AdminProducts.jsx       # Product management
+│   │   │   │   ├── AdminProductForm.jsx    # Add/Edit product form
+│   │   │   │   ├── AdminLogin.jsx          # Admin authentication
+│   │   │   │   ├── AllUsers.jsx            # User management
+│   │   │   │   ├── AllOrders.jsx           # Order management
+│   │   │   │   ├── SalesRevenue.jsx        # Sales analytics
+│   │   │   │   └── AllActivity.jsx         # Activity logging
+│   │   │   └── [Customer Pages]
 │   │   ├── hooks/           # Custom hooks
 │   │   ├── services/        # API call functions
 │   │   └── main.jsx
@@ -176,9 +234,9 @@ hmastore/
 ├── server/                  # Node.js backend
 │   ├── config/              # DB connection, env config
 │   ├── controllers/         # Route handler logic
-│   ├── middleware/           # Auth, error handling
+│   ├── middleware/           # Auth, error handling, admin auth
 │   ├── models/              # Mongoose schemas
-│   ├── routes/              # Express routes
+│   ├── routes/              # Express routes (including admin routes)
 │   └── index.js
 │
 └── README.md
@@ -198,11 +256,17 @@ hmastore/
 
 ## 🔌 API Endpoints
 
-### Auth
+### Customer Authentication
 | Method | Endpoint | Description |
 |---|---|---|
 | POST | `/api/auth/register` | Register a new user |
 | POST | `/api/auth/login` | Login and receive JWT |
+
+### Admin Authentication
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/admin/login` | Admin login and receive JWT |
+| GET | `/api/admin/dashboard-stats` | Get dashboard statistics (Admin) |
 
 ### AI Virtual Try-On
 | Method | Endpoint | Description |
@@ -212,22 +276,42 @@ hmastore/
 | GET | `/api/tryon/saved` | Gets all saved try-ons for the logged-in user |
 | DELETE | `/api/tryon/saved/:id` | Deletes a saved try-on look |
 
-### Products
+### Products (Public)
 | Method | Endpoint | Description |
 |---|---|---|
 | GET | `/api/products` | Get all products |
 | GET | `/api/products/:id` | Get single product |
-| POST | `/api/products` | Create product (Admin) |
-| PUT | `/api/products/:id` | Update product (Admin) |
-| DELETE | `/api/products/:id` | Delete product (Admin) |
 
-### Orders
+### Products (Admin)
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/admin/products` | Get all products (Admin) |
+| POST | `/api/admin/products` | Create product (Admin) |
+| PUT | `/api/admin/products/:id` | Update product (Admin) |
+| DELETE | `/api/admin/products/:id` | Delete product (Admin) |
+
+### Orders (Customer)
 | Method | Endpoint | Description |
 |---|---|---|
 | POST | `/api/orders` | Place an order |
 | GET | `/api/orders/my` | Get logged-in user's orders |
-| GET | `/api/orders` | Get all orders (Admin) |
-| PUT | `/api/orders/:id` | Update order status (Admin) |
+
+### Orders (Admin)
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/admin/orders` | Get all orders (Admin) |
+| PUT | `/api/admin/orders/:id` | Update order status (Admin) |
+
+### Users (Admin)
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/admin/users` | Get all registered users (Admin) |
+| GET | `/api/admin/users/:id` | Get single user details (Admin) |
+
+### Activity Log (Admin)
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/admin/activity` | Get all activity logs (Admin) |
 
 ---
 

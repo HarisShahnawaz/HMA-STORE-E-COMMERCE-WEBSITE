@@ -154,7 +154,7 @@ export default function About() {
               <div className="w-40 h-40 md:w-44 md:h-44 rounded-full mb-6 flex items-center justify-center relative overflow-hidden transition-all duration-500 transform group-hover:scale-105 shadow-md bg-neutral-900 border border-border/40 select-none cursor-pointer">
                 
                 {/* Background moving fluid/liquid layout */}
-                <div className={`absolute inset-0 bg-gradient-to-tr ${member.gradient} transition-transform duration-700 ${hoveredMember === index ? 'scale-125 rotate-45' : 'scale-100'}`} />
+                <div className={`absolute inset-0 bg-linear-to-tr ${member.gradient} transition-transform duration-700 ${hoveredMember === index ? 'scale-125 rotate-45' : 'scale-100'}`} />
                 
                 {/* Decorative Tech Grid Ring overlaying the marble gradient */}
                 <div className={`absolute inset-2 rounded-full border border-white/5 mix-blend-overlay transition-all duration-500 ${hoveredMember === index ? 'rotate-180 scale-95 opacity-40' : 'opacity-20'}`} />
@@ -170,7 +170,7 @@ export default function About() {
                 </div>
 
                 {/* Lighting glow highlight across profile on hover */}
-                <div className="absolute inset-0 bg-gradient-to-t from-transparent via-white/5 to-transparent -translate-y-full group-hover:translate-y-full transition-transform duration-1000" />
+                <div className="absolute inset-0 bg-linear-to-t from-transparent via-white/5 to-transparent -translate-y-full group-hover:translate-y-full transition-transform duration-1000" />
               </div>
 
               <h4 className="font-serif text-xl font-bold text-foreground mb-1">
