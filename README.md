@@ -166,8 +166,8 @@ JWT_SECRET=your_jwt_secret_key
 JWT_EXPIRES_IN=7d
 
 # Admin Credentials (Default - Change in Production)
-ADMIN_EMAIL=admin@hmastore.com
-ADMIN_PASSWORD=admin123
+ADMIN_EMAIL=admin@.com
+ADMIN_PASSWORD=********
 
 # HuggingFace (Required for AI Virtual Try-On)
 HF_TOKEN=your_huggingface_write_token
