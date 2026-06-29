@@ -35,7 +35,7 @@ export default  function Categories() {
           Shop by Category
         </h2>
         <p className="font-sans text-sm md:text-base text-muted-foreground">
-          Explore our curated collections designed for every member of your family
+          Explore our curated collections designed for every member of Your family
         </p>
       </div>
 {/* Cards Grid - with gaps and rounded corners */}
