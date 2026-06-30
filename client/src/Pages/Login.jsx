@@ -80,7 +80,7 @@ export default function Login() {
             <input
               type="password"
               required
-              placeholder="••••••••"
+              placeholder="•••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-black outline-none transition-all text-sm"
@@ -112,4 +112,4 @@ export default function Login() {
       </div>
     </div>
   );
-}
+}
